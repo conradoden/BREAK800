@@ -426,6 +426,12 @@
           background-color: {{ settings.scrollbar_thumb_color }};
         }
       {% endif %}
+
+      {% if template == 'index' %}
+        body {
+          background-image: url(https://cdn.shopify.com/s/files/1/0951/8442/1164/files/bg-1.webp?v=1777920377) !important;
+        }
+      {% endif %}
     {% endstyle %}
 
     <noscript>
@@ -442,6 +448,7 @@
     {% if is_rtl %}
       {{ 'rtl.css' | asset_url | stylesheet_tag: preload: true }}
     {% endif %}
+    {{ 'custom.css' | asset_url | stylesheet_tag: preload: true }}
 
     {%- unless settings.type_body_font.system? -%}
       {% comment %}theme-check-disable AssetPreload{% endcomment %}

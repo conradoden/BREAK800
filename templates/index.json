@@ -9,6 +9,21 @@
  */
  {
   "sections": {
+    "bk_home_hero_main": {
+      "type": "bk-home-hero",
+      "settings": {
+        "back_des": "shopify://shop_images/Background_1.png",
+        "image": "shopify://shop_images/product.png",
+        "review_counnt": "3,612 Reviews",
+        "heading_1": "BREAK800",
+        "heading_2": "THE MOST",
+        "heading_3": "POTENT & NATURAL TESTOSTERONE STACK ON EARTH",
+        "description": "8 powerful ingredients packed into one daily male-vitality supplement.",
+        "btn_text": "UNLOCK YOUR POWER TODAY →",
+        "btn_link": "",
+        "bottom_text": "Try it for 90 days. Higher T or your money back."
+      }
+    },
     "featured_in_logos_atjA8n": {
       "type": "featured-in-logos",
       "blocks": {
@@ -59,21 +74,18 @@
         "trust_badge_CXBX3b": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/test-tube.svg",
             "text": "Science-Backed Ingredients"
           }
         },
         "trust_badge_UGhpJL": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/rocket-white.svg",
             "text": "100% Satisfaction Guarantee"
           }
         },
         "trust_badge_pVdzVg": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/white-flag.svg",
             "text": "Manufactured in the USA"
           }
         }
@@ -98,7 +110,6 @@
         "ingredient_TxKChB": {
           "type": "ingredient",
           "settings": {
-            "image": "shopify://shop_images/give-me-image-for-tongkat-ali.png",
             "title": "Tongkat Ali",
             "dosage": "1,000 mg",
             "description": "Boosts testosterone, enhances libido, improves fertility, and supports muscle growth.",
@@ -171,42 +182,36 @@
         "trust_badge_wACX4q": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/1_69455117-f04d-4578-a6ed-431314e4a09c.svg",
             "text": "Made In A cGMP Facility"
           }
         },
         "trust_badge_rHJw9Q": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/3_70c24336-c84f-4eda-b871-e91a1805522a.svg",
             "text": "Hormone-Free"
           }
         },
         "trust_badge_CrRcDw": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/5_666113ec-7790-43c7-9175-cdc51790c224.svg",
             "text": "Non-GMO"
           }
         },
         "trust_badge_C9hhnj": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/2_8e076f31-0728-47b0-afc6-dfee51655ab1.svg",
             "text": "Vegan"
           }
         },
         "trust_badge_P4Ai4a": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/4_ca7c624f-42dd-4e66-8773-eb2b11e7a313.svg",
             "text": "Third Party Tested"
           }
         },
         "trust_badge_gcJndc": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify://shop_images/6_10060341-69ef-4a38-be59-f40554089cf4.svg",
             "text": "Made in USA"
           }
         }
@@ -272,7 +277,6 @@
         "benefit_kXHnbN": {
           "type": "benefit",
           "settings": {
-            "icon": "shopify://shop_images/Vector1.svg",
             "title": "Skyrocket Energy & Stamina",
             "description": "Increase energy & athletic performance"
           }
@@ -280,7 +284,6 @@
         "benefit_zwAqzF": {
           "type": "benefit",
           "settings": {
-            "icon": "shopify://shop_images/Group_20583_ae1c0e14-47a1-44f4-b195-45fdfc929d8f.svg",
             "title": "Support Male Vitality",
             "description": "Amplify passionate energy"
           }
@@ -288,7 +291,6 @@
         "benefit_8WHgqj": {
           "type": "benefit",
           "settings": {
-            "icon": "shopify://shop_images/Vector_396e1867-c402-4ec1-ba08-7df271db3f2f.svg",
             "title": "Enhance Productivity & Focus",
             "description": "Stay sharp & focused all day"
           }
@@ -296,7 +298,6 @@
         "benefit_zrkY44": {
           "type": "benefit",
           "settings": {
-            "icon": "shopify://shop_images/Group_20584_28bf99b7-f293-4c8f-a2c8-7dd8cd627695.svg",
             "title": "Supercharge Strength",
             "description": "Build & maintain lean muscle mass"
           }
@@ -304,7 +305,6 @@
         "benefit_9RUXca": {
           "type": "benefit",
           "settings": {
-            "icon": "shopify://shop_images/Group_20585_186062d6-edd0-4612-b5eb-05d5220ce83e.svg",
             "title": "Improve Recovery",
             "description": "Optimize sleep & muscle recovery"
           }
@@ -322,8 +322,6 @@
         "heading_prefix": "The Solution?",
         "heading_highlight": "Mars Men.",
         "sub_text": "<p>Maintaining balanced testosterone levels is pivotal for contributing to an overall sense of well-being. Encouraging our body's natural hormonal function can help us men:</p>",
-        "product_image": "shopify://shop_images/MarsMen_UsVsThem_A1_1x1_1_8cb77f12-150a-43fe-ba1e-2c6c751bd07e.webp",
-        "ring_image": "shopify://shop_images/Group_20971_7b351f54-3723-417d-9f46-f4e178b77aaa.svg",
         "show_connectors": true,
         "cta_text": "TRY IT NOW",
         "cta_link": "",
@@ -339,7 +337,6 @@
         "phase_YQryWH": {
           "type": "phase",
           "settings": {
-            "icon": "shopify://shop_images/Vector1.svg",
             "day_label": "DAY 7",
             "title": "Ignition",
             "bullets": "<ul><li>Tongkat Ali blocks stress hormones</li><li>Shilajit feeds starving testosterone cells</li><li>Workouts feel intense again</li><li>Start to feel that all-day energy</li></ul>"
@@ -348,7 +345,6 @@
         "phase_cLGdGw": {
           "type": "phase",
           "settings": {
-            "icon": "shopify://shop_images/Frame_2071.svg",
             "day_label": "DAY 30",
             "title": "Spark",
             "bullets": "<ul><li>Boron helps free stuck T</li><li>Zinc provides T-making materials</li><li>Body looks leaner, stronger, more masculine</li><li>People ask what you're doing differently</li></ul>"
@@ -357,7 +353,6 @@
         "phase_GKH89a": {
           "type": "phase",
           "settings": {
-            "icon": "shopify://shop_images/Frame_2072.svg",
             "day_label": "DAY 90",
             "title": "Liftoff",
             "bullets": "<ul><li>All 8 ingredients working like a tuned engine</li><li>T-production optimized fully</li><li>Not temporary, this is your new normal</li><li>Welcome to the man you're supposed to be</li></ul>"
@@ -389,8 +384,6 @@
         "cta_text": "TRY IT NOW",
         "cta_link": "",
         "card_bg_color": "rgba(0,0,0,0)",
-        "photo_image": "shopify://shop_images/David_Maus_x_Mars_Men_Image_6_1aa774aa-2a1b-414e-9336-7f238f79c032.webp",
-        "badge_image": "shopify://shop_images/guarantee-badge.svg",
         "bg_color": "rgba(0,0,0,0.3)",
         "accent_color": "#ff5600"
       }
@@ -489,21 +482,6 @@
         "bg_color": "rgba(0,0,0,0.3)",
         "text_color": "#ffffff",
         "accent_color": "#e85c2b"
-      }
-    },
-    "bk_home_hero_main": {
-      "type": "bk-home-hero",
-      "settings": {
-        "back_des": "shopify://shop_images/Background_1.png",
-        "image": "shopify://shop_images/product.png",
-        "review_counnt": "3,612 Reviews",
-        "heading_1": "MARS MEN®",
-        "heading_2": "THE MOST",
-        "heading_3": "POTENT & NATURAL TESTOSTERONE STACK ON EARTH",
-        "description": "8 powerful ingredients packed into one daily male-vitality supplement.",
-        "btn_text": "UNLOCK YOUR POWER TODAY →",
-        "btn_link": "",
-        "bottom_text": "Try it for 90 days. Higher T or your money back."
       }
     }
   },
