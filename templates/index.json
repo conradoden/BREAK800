@@ -490,9 +490,25 @@
         "text_color": "#ffffff",
         "accent_color": "#e85c2b"
       }
+    },
+    "bk_home_hero_main": {
+      "type": "bk-home-hero",
+      "settings": {
+        "back_des": "shopify://shop_images/Background_1.png",
+        "image": "shopify://shop_images/product.png",
+        "review_counnt": "3,612 Reviews",
+        "heading_1": "MARS MEN®",
+        "heading_2": "THE MOST",
+        "heading_3": "POTENT & NATURAL TESTOSTERONE STACK ON EARTH",
+        "description": "8 powerful ingredients packed into one daily male-vitality supplement.",
+        "btn_text": "UNLOCK YOUR POWER TODAY →",
+        "btn_link": "",
+        "bottom_text": "Try it for 90 days. Higher T or your money back."
+      }
     }
   },
   "order": [
+    "bk_home_hero_main",
     "featured_in_logos_atjA8n",
     "marquee_trust_bar_KMqJyU",
     "ingredients_grid_ACABbP",

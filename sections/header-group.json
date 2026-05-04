@@ -181,7 +181,7 @@
     "header": {
       "type": "header",
       "settings": {
-        "sticky_header_type": "on-scroll-up",
+        "sticky_header_type": "always",
         "show_line_separator": false,
         "color_scheme": "background-1",
         "icons_thickness": 1.5,
