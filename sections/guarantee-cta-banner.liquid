@@ -1,0 +1,388 @@
+{% comment %}
+  ===================================================================================
+  GUARANTEE CTA BANNER
+  ===================================================================================
+  Two-column desktop layout:
+    LEFT  — Dark grunge card (heading, body, CTA) with overlapping circular
+            "100% Higher T Guarantee" badge floating off its right edge.
+    RIGHT — Lifestyle / hero photo, rounded.
+  Stacks on mobile (card on top, photo below).
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (text), body (richtext)
+  * photo_image (image_picker): Right-side lifestyle photo
+  * badge_image (image_picker): Floating circular guarantee badge
+  * cta_text / cta_link
+  * bg_color (color_background, transparent default)
+  * accent_color (color, default #ff5600)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Guarantee CTA Banner
+{% endcomment %}
+
+<style>
+  .guarantee-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+    padding: 70px 20px;
+    color: #ffffff;
+    overflow: hidden;
+  }
+
+  .guarantee__container-{{ section.id }} {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    align-items: stretch;
+    position: relative;
+    border-radius: 16px;
+    box-shadow: 0 30px 60px -20px rgba(156, 155, 155, 0.55), 0 10px 25px -10px rgba(0, 0, 0, 0.4);
+  }
+
+  /* LEFT CARD */
+  .guarantee__card-{{ section.id }} {
+    position: relative;
+    border-radius: 16px 0 0 16px;
+    overflow: visible;
+    background-color: {{ section.settings.card_bg_color }};
+    background-size: cover;
+    background-position: center;
+    padding: 70px 90px 70px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    isolation: isolate;
+  }
+
+  .guarantee__card-{{ section.id }}::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px 0 0 16px;
+    z-index: 0;
+  }
+
+  .guarantee__card-inner-{{ section.id }} {
+    position: relative;
+    z-index: 1;
+    max-width: 460px;
+  }
+
+  .guarantee__heading-{{ section.id }} {
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: clamp(32px, 4.2vw, 52px);
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 0 0 24px;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
+
+  .guarantee__body-{{ section.id }} {
+    font-size: 15px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.85);
+    margin: 0 0 32px;
+  }
+
+  .guarantee__body-{{ section.id }} p { margin: 0 0 12px; }
+  .guarantee__body-{{ section.id }} p:last-child { margin-bottom: 0; }
+
+  .guarantee__cta-{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: {{ section.settings.accent_color }};
+    color: #fff;
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 18px 60px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  .guarantee__cta-{{ section.id }}:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  /* FLOATING BADGE */
+  .guarantee__badge-{{ section.id }} {
+    position: absolute;
+    right: -70px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 140px;
+    height: 140px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .guarantee__badge-{{ section.id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* RIGHT PHOTO */
+  .guarantee__photo-{{ section.id }} {
+    border-radius: 0 16px 16px 0;
+    overflow: hidden;
+    background: #1a1a1a;
+    min-height: 380px;
+    background-size: cover;
+    background-position: center;
+    {%- if section.settings.photo_image != blank -%}
+      background-image: url('{{ section.settings.photo_image | image_url: width: 1400 }}');
+    {%- endif -%}
+  }
+
+  .guarantee__photo-{{ section.id }} img {
+    display: none;
+  }
+
+  @media (max-width: 899px) {
+    .guarantee-{{ section.id }} {
+      padding: 40px 16px;
+    }
+    .guarantee__container-{{ section.id }} {
+      grid-template-columns: 1fr;
+      gap: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 -1px 27.7px 0 rgba(255, 255, 255, 0.25);
+      position: relative;
+    }
+
+    /* Card fills the whole rounded container; photo overlaps inside it */
+    .guarantee__card-{{ section.id }} {
+      order: 1;
+      border-radius: 20px;
+      padding: 50px 24px 36px;
+      text-align: left;
+      min-height: 420px;
+      position: relative;
+      z-index: 1;
+    }
+    .guarantee__card-{{ section.id }}::before {
+      border-radius: 20px;
+    }
+    .guarantee__card-inner-{{ section.id }} {
+      max-width: 100%;
+      position: relative;
+      z-index: 2;
+      margin-top: 100px;
+    }
+
+    .guarantee__heading-{{ section.id }} {
+      font-size: 28px;
+      line-height: 1.05;
+      margin-top: 110px; /* leave room for badge */
+      margin-bottom: 20px;
+      max-width: 220px;
+    }
+    .guarantee__body-{{ section.id }} {
+      font-size: 14px;
+      max-width: 240px;
+      margin-bottom: 28px;
+    }
+
+    /* Right photo: absolutely positioned, partially overlapping the card */
+    .guarantee__photo-{{ section.id }} {
+      order: 2;
+      position: absolute;
+      top: 16px;
+      right: 0;
+      width: 246px;
+      height: 335px;
+      min-height: 0;
+      border-radius: 20px 0 0 20px;
+      z-index: 0;
+    }
+    .guarantee__photo-{{ section.id }}::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(25.53deg, #000000 2.18%, rgba(0, 0, 0, 0) 40.94%);
+      pointer-events: none;
+      border-radius: 20px 0 0 20px;
+    }
+
+    /* Badge sits top-left, above everything */
+    .guarantee__badge-{{ section.id }} {
+      position: absolute;
+      top: 45px;
+      left: 20px;
+      right: auto;
+      transform: none;
+      margin: 0;
+      width: 90px;
+      height: 90px;
+      z-index: 4;
+    }
+
+    .guarantee__cta-{{ section.id }} {
+      width: 100%;
+      max-width: 320px;
+      justify-content: center;
+      padding: 16px 20px;
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+  @media (min-width: 480px) and (max-width: 899px) {
+    .guarantee__photo-{{ section.id }} {
+      width: 295px;
+      height: 402px;
+    }
+    .guarantee__card-{{ section.id }} {
+      min-height: 480px;
+    }
+    .guarantee__heading-{{ section.id }} {
+      font-size: 35px;
+      margin-top: 130px;
+      max-width: 260px;
+    }
+    .guarantee__body-{{ section.id }} {
+      max-width: 273px;
+      font-size: 16px;
+    }
+    .guarantee__badge-{{ section.id }} {
+      width: 110px;
+      height: 110px;
+      top: 24px;
+      left: 24px;
+    }
+  }
+</style>
+
+<div class="guarantee-{{ section.id }}">
+  <div class="guarantee__container-{{ section.id }}">
+
+    <div class="guarantee__card-{{ section.id }}">
+      <div class="guarantee__card-inner-{{ section.id }}">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="guarantee__heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.body != blank -%}
+          <div class="guarantee__body-{{ section.id }}">{{ section.settings.body }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.cta_text != blank -%}
+          <a href="{{ section.settings.cta_link | default: '#' }}" class="guarantee__cta-{{ section.id }}">
+            {{ section.settings.cta_text }} <span aria-hidden="true">&rarr;</span>
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.badge_image != blank -%}
+        <div class="guarantee__badge-{{ section.id }}" aria-hidden="true">
+          <img
+            src="{{ section.settings.badge_image | image_url: width: 280 }}"
+            alt=""
+            width="140"
+            height="140"
+            loading="lazy"
+          >
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div
+      class="guarantee__photo-{{ section.id }}"
+      role="img"
+      aria-label="{{ section.settings.photo_image.alt | default: 'Mars Men lifestyle' }}"
+    ></div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "BK Guarantee CTA Banner",
+  "tag": "section",
+  "class": "bk-guarantee-cta-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "BOOST YOUR TESTOSTERONE IN 90 DAYS"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body Text",
+      "default": "<p>Try Mars Men risk-free for 90 days. If you're not satisfied, we'll refund you, no questions asked. Reclaim your masculinity, risk-free.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "color_background",
+      "id": "card_bg_color",
+      "label": "Left Card Background Color (transparent by default)",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "image_picker",
+      "id": "photo_image",
+      "label": "Right-Side Lifestyle Photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_image",
+      "label": "Floating Guarantee Badge (circular)"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Section Background (transparent by default)",
+      "default": "rgba(0,0,0,0.3)"
+    },
+   
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "CTA Color",
+      "default": "#ff5600"
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Guarantee CTA Banner"
+    }
+  ]
+}
+{% endschema %}

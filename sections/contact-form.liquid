@@ -126,7 +126,7 @@
       {% if section.blocks.size > 0 %}
         {%- for block in section.blocks -%}
           {% case block.type %}
-            {% when 'field_row' %}
+            {% when 'contact_input_row' %}
               {% if block.settings.input_1_enabled and block.settings.input_2_enabled %}
                 <div class="contact__fields">
               {% endif %}
@@ -1193,7 +1193,7 @@
   ],
   "blocks": [
     {
-      "type": "field_row",
+      "type": "contact_input_row",
       "name": "Input row",
       "settings": [
         {
@@ -1531,7 +1531,7 @@
       "name": "t:sections.contact-form.presets.name",
       "blocks": [
         {
-          "type": "field_row",
+          "type": "contact_input_row",
           "settings": {
             "input_1_type": "name",
             "input_2_enabled": true,
@@ -1539,7 +1539,7 @@
           }
         },
         {
-          "type": "field_row",
+          "type": "contact_input_row",
           "settings": {
             "input_1_type": "phone"
           }

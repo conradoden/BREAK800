@@ -1,0 +1,362 @@
+{% comment %}
+  ===================================================================================
+  HOW IT WORKS TIMELINE
+  ===================================================================================
+  "How Does Mars Men Work?" — 3-column timeline with horizontal phase header
+  (icon + DAY label + title) and bulleted list below.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading_prefix / heading_highlight / heading_suffix / sub_text
+  * bg_color (color_background) / bg_image (optional texture) / text_color / accent_color
+  * bullet_icon (section-level image, optional — replaces default • marker)
+  * Blocks: phase (icon, day_label, title, bullets [richtext])
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → How It Works Timeline
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+
+<style>
+  .how-works-{{ sid }} {
+    background-color: {{ s.bg_color }};
+    {%- if s.bg_image != blank -%}
+      background-image: url({{ s.bg_image | image_url: width: 2400 }});
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    {%- endif -%}
+    padding: 80px 20px;
+    color: {{ s.text_color }};
+    font-family: 'Inter', 'Assistant', sans-serif;
+  }
+
+  .how-works__container-{{ sid }} {
+    max-width: 1240px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .how-works__heading-{{ sid }} {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    margin: 0 0 14px;
+    line-height: 1.15;
+    color: {{ s.text_color }};
+  }
+
+  .how-works__heading-{{ sid }} span {
+    color: {{ s.accent_color }};
+  }
+
+  .how-works__sub-text-{{ sid }} {
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 600;
+    color: {{ s.text_color }};
+    max-width: 720px;
+    margin: 0 auto 44px;
+  }
+
+  .how-works__grid-{{ sid }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    text-align: left;
+  }
+
+  .how-works__phase-{{ sid }} {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .how-works__phase-header-{{ sid }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .how-works__phase-icon-{{ sid }} {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .how-works__phase-icon-{{ sid }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .how-works__phase-day-label-{{ sid }} {
+    font-size: clamp(20px, 2vw, 26px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: {{ s.accent_color }};
+  }
+
+  .how-works__phase-title-{{ sid }} {
+    font-size: clamp(20px, 2vw, 26px);
+    font-weight: 800;
+    margin: 0;
+    color: {{ s.text_color }};
+  }
+
+  .how-works__phase-bullets-{{ sid }} ul,
+  .how-works__phase-bullets-{{ sid }} ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .how-works__phase-bullets-{{ sid }} li,
+  .how-works__phase-bullets-{{ sid }} > p {
+    font-size: 15px;
+    line-height: 1.5;
+    color: {{ s.text_color }};
+    margin: 0;
+    padding-left: 22px;
+    position: relative;
+  }
+
+  {%- if s.bullet_icon != blank %}
+    .how-works__phase-bullets-{{ sid }} li::before,
+    .how-works__phase-bullets-{{ sid }} > p::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.4em;
+      width: 14px;
+      height: 14px;
+      background-image: url('{{ s.bullet_icon | image_url: width: 40 }}');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  {%- else %}
+    .how-works__phase-bullets-{{ sid }} li::before,
+    .how-works__phase-bullets-{{ sid }} > p::before {
+      content: '•';
+      position: absolute;
+      left: 4px;
+      top: 0;
+      color: {{ s.text_color }};
+      font-weight: 700;
+      line-height: 1.5;
+    }
+  {%- endif %}
+
+  @media (max-width: 989px) {
+    .how-works__grid-{{ sid }} {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .how-works-{{ sid }} {
+      padding: 50px 16px;
+    }
+  }
+</style>
+
+<div class="how-works-{{ sid }}">
+  <div class="how-works__container-{{ sid }}">
+
+    {%- if s.heading_prefix != blank or s.heading_highlight != blank or s.heading_suffix != blank -%}
+      <h2 class="how-works__heading-{{ sid }}">
+        {{ s.heading_prefix }} <span>{{ s.heading_highlight }}</span> {{ s.heading_suffix }}
+      </h2>
+    {%- endif -%}
+
+    {%- if s.sub_text != blank -%}
+      <p class="how-works__sub-text-{{ sid }}">{{ s.sub_text }}</p>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="how-works__grid-{{ sid }}">
+        {%- for block in section.blocks -%}
+          <div class="how-works__phase-{{ sid }}" {{ block.shopify_attributes }}>
+            <div class="how-works__phase-header-{{ sid }}">
+              {%- if block.settings.icon != blank -%}
+                <div class="how-works__phase-icon-{{ sid }}">
+                  <img
+                    src="{{ block.settings.icon | image_url: width: 100 }}"
+                    alt=""
+                    width="36"
+                    height="36"
+                    loading="lazy"
+                  >
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.day_label != blank -%}
+                <span class="how-works__phase-day-label-{{ sid }}">{{ block.settings.day_label }}</span>
+              {%- endif -%}
+
+              {%- if block.settings.title != blank -%}
+                <h3 class="how-works__phase-title-{{ sid }}">{{ block.settings.title }}</h3>
+              {%- endif -%}
+            </div>
+
+            {%- if block.settings.bullets != blank -%}
+              <div class="how-works__phase-bullets-{{ sid }}">
+                {{ block.settings.bullets }}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "BK How It Works Timeline",
+  "tag": "section",
+  "class": "bk-how-works-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_prefix",
+      "label": "Heading Prefix",
+      "default": "How Does"
+    },
+    {
+      "type": "text",
+      "id": "heading_highlight",
+      "label": "Heading Highlight",
+      "default": "Mars Men"
+    },
+    {
+      "type": "text",
+      "id": "heading_suffix",
+      "label": "Heading Suffix",
+      "default": "Work?"
+    },
+    {
+      "type": "textarea",
+      "id": "sub_text",
+      "label": "Subtext",
+      "default": "With Mars Men, your natural ability to forge usable testosterone is optimized."
+    },
+    {
+      "type": "header",
+      "content": "Colors & Background"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background Color (transparent by default — inherits page background)",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image (optional texture overlay)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#e85c2b"
+    },
+    {
+      "type": "header",
+      "content": "Bullets"
+    },
+    {
+      "type": "image_picker",
+      "id": "bullet_icon",
+      "label": "Bullet Icon",
+      "info": "Optional. Falls back to • bullet marker when empty."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "phase",
+      "name": "Timeline Phase",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Phase Icon"
+        },
+        {
+          "type": "text",
+          "id": "day_label",
+          "label": "Day Label",
+          "default": "DAY 7"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Phase Title",
+          "default": "Ignition"
+        },
+        {
+          "type": "richtext",
+          "id": "bullets",
+          "label": "Bullet Points",
+          "info": "Use the list (UL) option in the editor for bulleted items.",
+          "default": "<ul><li>Tongkat Ali blocks stress hormones</li><li>Shilajit feeds starving testosterone cells</li><li>Workouts feel intense again</li><li>Start to feel that all-day energy</li></ul>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK How It Works Timeline",
+      "blocks": [
+        {
+          "type": "phase",
+          "settings": {
+            "day_label": "DAY 7",
+            "title": "Ignition",
+            "bullets": "<ul><li>Tongkat Ali blocks stress hormones</li><li>Shilajit feeds starving testosterone cells</li><li>Workouts feel intense again</li><li>Start to feel that all-day energy</li></ul>"
+          }
+        },
+        {
+          "type": "phase",
+          "settings": {
+            "day_label": "DAY 30",
+            "title": "Spark",
+            "bullets": "<ul><li>Boron helps free stuck T</li><li>Zinc provides T-making materials</li><li>Body looks leaner, stronger, more masculine</li><li>People ask what you're doing differently</li></ul>"
+          }
+        },
+        {
+          "type": "phase",
+          "settings": {
+            "day_label": "DAY 90",
+            "title": "Liftoff",
+            "bullets": "<ul><li>All 8 ingredients working like a tuned engine</li><li>T-production optimized fully</li><li>Not temporary, this is your new normal</li><li>Welcome to the man you're supposed to be</li></ul>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

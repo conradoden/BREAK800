@@ -1,0 +1,509 @@
+{% comment %}
+  ===================================================================================
+  DECLINE OF T — PROBLEM SECTION
+  ===================================================================================
+  Two-column layout: left text content about testosterone decline,
+  right side animated SVG line chart drawn with JS.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading_prefix / heading_highlight (text)
+  * body (richtext)
+  * normal_points / mars_points (text): comma-separated numbers (one per age tick)
+  * y_min / y_max (number): chart bounds
+  * y_label / x_label (text)
+  * normal_label / mars_label (text)
+  * bg_color (color_background, transparent default)
+  * accent_color (color, default #ff5600)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Decline of T
+{% endcomment %}
+
+{%- assign normal_points = section.settings.normal_points | default: '500,710,690,665,640,620,600,585,575' -%}
+{%- assign mars_points = section.settings.mars_points | default: '500,710,690,705,710,715,718,720,720' -%}
+{%- assign y_min = section.settings.y_min | default: 500 -%}
+{%- assign y_max = section.settings.y_max | default: 800 -%}
+{%- assign normal_band_low = section.settings.normal_band_low | default: 580 -%}
+{%- assign normal_band_high = section.settings.normal_band_high | default: 660 -%}
+
+<style>
+  .decline-t-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+    padding: 80px 20px;
+    color: {{ section.settings.text_color }};
+  }
+
+  .decline-t__container-{{ section.id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .decline-t__heading-{{ section.id }} {
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: clamp(30px, 4.5vw, 48px);
+    font-weight: 800;
+    text-align: center;
+    margin: 0 0 50px;
+    line-height: 1.15;
+    text-transform: none;
+    color: {{ section.settings.text_color }};
+  }
+
+  .decline-t__heading-{{ section.id }} span {
+    color: {{ section.settings.accent_color }};
+  }
+
+  .decline-t__grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 50px;
+    align-items: center;
+  }
+
+  .decline-t__text-{{ section.id }} {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .decline-t__text-{{ section.id }} p {
+    margin: 0 0 22px;
+  }
+
+  .decline-t__text-{{ section.id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .decline-t__text-{{ section.id }} strong {
+    color: {{ section.settings.accent_color }};
+    font-weight: 700;
+  }
+
+  .decline-t__chart-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .decline-t__chart-{{ section.id }} svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+
+  .decline-t__axis-label-{{ section.id }} {
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    fill: {{ section.settings.accent_color }};
+  }
+
+  .decline-t__tick-{{ section.id }} {
+    font-size: 11px;
+    fill: rgba(255,255,255,0.7);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .decline-t__grid-line-{{ section.id }} {
+    stroke: rgba(255,255,255,0.12);
+    stroke-width: 1;
+  }
+
+  .decline-t__band-{{ section.id }} {
+    fill: rgba(255,255,255,0.08);
+  }
+
+  .decline-t__band-label-{{ section.id }} {
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    fill: rgba(255,255,255,0.7);
+  }
+
+  .decline-t__line-normal-{{ section.id }} {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: declineDraw-{{ section.id }} 2s ease-out 0.2s forwards;
+  }
+
+  .decline-t__line-mars-{{ section.id }} {
+    fill: none;
+    stroke: {{ section.settings.accent_color }};
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: declineDraw-{{ section.id }} 2s ease-out 0.2s forwards;
+  }
+
+  .decline-t__dot-normal-{{ section.id }} { fill: #ffffff; }
+  .decline-t__dot-mars-{{ section.id }} { fill: {{ section.settings.accent_color }}; }
+
+  .decline-t__series-label-{{ section.id }} {
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  @keyframes declineDraw-{{ section.id }} {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .decline-t__line-normal-{{ section.id }},
+    .decline-t__line-mars-{{ section.id }} {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (max-width: 899px) {
+    .decline-t-{{ section.id }} {
+      padding: 50px 16px;
+    }
+    .decline-t__grid-{{ section.id }} {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .decline-t__chart-{{ section.id }} {
+      order: -1;
+    }
+    .decline-t__heading-{{ section.id }} {
+      margin-bottom: 30px;
+    }
+    .decline-t__text-{{ section.id }} {
+      font-size: 15px;
+    }
+  }
+</style>
+
+<div class="decline-t-{{ section.id }}">
+  <div class="decline-t__container-{{ section.id }}">
+
+    <h2 class="decline-t__heading-{{ section.id }}">
+      {{ section.settings.heading_prefix }}
+      <span>{{ section.settings.heading_highlight }}</span>
+    </h2>
+
+    <div class="decline-t__grid-{{ section.id }}">
+      <div class="decline-t__text-{{ section.id }}">
+        {{ section.settings.body }}
+      </div>
+
+      <div
+        class="decline-t__chart-{{ section.id }}"
+        data-decline-chart
+        data-normal="{{ normal_points }}"
+        data-mars="{{ mars_points }}"
+        data-ages="{{ section.settings.x_ticks | default: '10,20,30,40,50,60,70,80,90' }}"
+        data-y-min="{{ y_min }}"
+        data-y-max="{{ y_max }}"
+        data-y-ticks="{{ section.settings.y_ticks | default: '500,600,700,800' }}"
+        data-band-low="{{ normal_band_low }}"
+        data-band-high="{{ normal_band_high }}"
+        data-y-label="{{ section.settings.y_label | default: 'TOTAL TESTOSTERONE' }}"
+        data-x-label="{{ section.settings.x_label | default: 'AGE' }}"
+        data-normal-label="{{ section.settings.normal_label | default: 'Normal Range' }}"
+        data-mars-label="{{ section.settings.mars_label | default: 'With Mars Men' }}"
+        data-band-label="{{ section.settings.band_label | default: 'Normal Range' }}"
+        data-section-id="{{ section.id }}"
+      >
+        <svg viewBox="0 0 600 380" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Testosterone decline chart"></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    function drawChart(root) {
+      var svg = root.querySelector('svg');
+      if (!svg) return;
+      var sid = root.dataset.sectionId || '';
+      var W = 600, H = 380;
+      var padL = 70, padR = 40, padT = 20, padB = 50;
+      var plotW = W - padL - padR;
+      var plotH = H - padT - padB;
+
+      var ages = root.dataset.ages.split(',').map(Number);
+      var normal = root.dataset.normal.split(',').map(Number);
+      var mars = root.dataset.mars.split(',').map(Number);
+      var yTicks = root.dataset.yTicks.split(',').map(Number);
+      var yMin = +root.dataset.yMin;
+      var yMax = +root.dataset.yMax;
+      var bandLow = +root.dataset.bandLow;
+      var bandHigh = +root.dataset.bandHigh;
+
+      var xMin = ages[0], xMax = ages[ages.length - 1];
+
+      function xPos(age) { return padL + (age - xMin) / (xMax - xMin) * plotW; }
+      function yPos(val) { return padT + (1 - (val - yMin) / (yMax - yMin)) * plotH; }
+
+      var ns = 'http://www.w3.org/2000/svg';
+      function el(name, attrs, text) {
+        var n = document.createElementNS(ns, name);
+        for (var k in attrs) n.setAttribute(k, attrs[k]);
+        if (text != null) n.textContent = text;
+        return n;
+      }
+
+      // Normal range band
+      var bandY1 = yPos(bandHigh), bandY2 = yPos(bandLow);
+      svg.appendChild(el('rect', {
+        x: padL, y: bandY1, width: plotW, height: bandY2 - bandY1,
+        class: 'decline-t__band-' + sid
+      }));
+
+      // Horizontal grid lines + Y-axis ticks
+      yTicks.forEach(function(v) {
+        var y = yPos(v);
+        svg.appendChild(el('line', {
+          x1: padL, y1: y, x2: padL + plotW, y2: y,
+          class: 'decline-t__grid-line-' + sid
+        }));
+        svg.appendChild(el('text', {
+          x: padL - 10, y: y + 4, 'text-anchor': 'end',
+          class: 'decline-t__tick-' + sid
+        }, v));
+      });
+
+      // X-axis ticks
+      ages.forEach(function(a) {
+        svg.appendChild(el('text', {
+          x: xPos(a), y: padT + plotH + 20, 'text-anchor': 'middle',
+          class: 'decline-t__tick-' + sid
+        }, a));
+      });
+
+      // Y-axis label (rotated)
+      svg.appendChild(el('text', {
+        x: -padT - plotH / 2, y: 18, transform: 'rotate(-90)', 'text-anchor': 'middle',
+        class: 'decline-t__axis-label-' + sid
+      }, root.dataset.yLabel));
+
+      // X-axis label
+      svg.appendChild(el('text', {
+        x: padL + plotW / 2, y: H - 8, 'text-anchor': 'middle',
+        class: 'decline-t__axis-label-' + sid
+      }, root.dataset.xLabel));
+
+      // Band label (centered in band, right side)
+      svg.appendChild(el('text', {
+        x: padL + plotW - 10, y: (bandY1 + bandY2) / 2 + 4, 'text-anchor': 'end',
+        class: 'decline-t__band-label-' + sid
+      }, root.dataset.bandLabel));
+
+      function path(values) {
+        return values.map(function(v, i) {
+          return (i === 0 ? 'M' : 'L') + xPos(ages[i]) + ',' + yPos(v);
+        }).join(' ');
+      }
+
+      // Normal line
+      svg.appendChild(el('path', {
+        d: path(normal), class: 'decline-t__line-normal-' + sid
+      }));
+      // Mars line
+      svg.appendChild(el('path', {
+        d: path(mars), class: 'decline-t__line-mars-' + sid
+      }));
+
+      // End dots
+      svg.appendChild(el('circle', {
+        cx: xPos(ages[0]), cy: yPos(normal[0]), r: 5,
+        class: 'decline-t__dot-mars-' + sid
+      }));
+      svg.appendChild(el('circle', {
+        cx: xPos(ages[ages.length - 1]), cy: yPos(normal[normal.length - 1]), r: 5,
+        class: 'decline-t__dot-normal-' + sid
+      }));
+      svg.appendChild(el('circle', {
+        cx: xPos(ages[ages.length - 1]), cy: yPos(mars[mars.length - 1]), r: 5,
+        class: 'decline-t__dot-mars-' + sid
+      }));
+
+      // Series labels at end
+      svg.appendChild(el('text', {
+        x: xPos(ages[ages.length - 1]) - 10, y: yPos(mars[mars.length - 1]) - 14,
+        'text-anchor': 'end',
+        class: 'decline-t__series-label-' + sid,
+        fill: 'currentColor', style: 'fill:' + getComputedStyle(root).getPropertyValue('color')
+      }, root.dataset.marsLabel));
+    }
+
+    function init() {
+      document.querySelectorAll('[data-decline-chart]').forEach(drawChart);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    document.addEventListener('shopify:section:load', function(e) {
+      var n = e.target.querySelector('[data-decline-chart]');
+      if (n) { n.querySelector('svg').innerHTML = ''; drawChart(n); }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK Decline of T",
+  "tag": "section",
+  "class": "bk-decline-t-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_prefix",
+      "label": "Heading Prefix",
+      "default": "The Decline of T:"
+    },
+    {
+      "type": "text",
+      "id": "heading_highlight",
+      "label": "Heading Highlight (accent color)",
+      "default": "A Modern Epidemic"
+    },
+    {
+      "type": "header",
+      "content": "Body"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body Content",
+      "default": "<p><strong>Testosterone levels</strong> have been dropping by 1% every year since 1980. Stress, poor sleep, processed diets, and toxins are destroying natural hormone production.</p><p>The impact? Low testosterone drains energy, strength, and focus—making it harder to perform at your best in life and the gym.</p><p><strong>The good news:</strong> Mars Men helps you reclaim your edge with natural testosterone support for energy, focus, and strength.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Chart Data"
+    },
+    {
+      "type": "text",
+      "id": "x_ticks",
+      "label": "X-axis ticks (ages, comma-separated)",
+      "default": "10,20,30,40,50,60,70,80,90"
+    },
+    {
+      "type": "text",
+      "id": "normal_points",
+      "label": "Normal Range data points (one per age tick)",
+      "default": "500,710,690,665,640,620,600,585,575"
+    },
+    {
+      "type": "text",
+      "id": "mars_points",
+      "label": "With Mars Men data points (one per age tick)",
+      "default": "500,710,690,705,710,715,718,720,720"
+    },
+    {
+      "type": "text",
+      "id": "y_ticks",
+      "label": "Y-axis ticks",
+      "default": "500,600,700,800"
+    },
+    {
+      "type": "number",
+      "id": "y_min",
+      "label": "Y-axis minimum",
+      "default": 500
+    },
+    {
+      "type": "number",
+      "id": "y_max",
+      "label": "Y-axis maximum",
+      "default": 800
+    },
+    {
+      "type": "number",
+      "id": "normal_band_low",
+      "label": "Normal-range band low",
+      "default": 580
+    },
+    {
+      "type": "number",
+      "id": "normal_band_high",
+      "label": "Normal-range band high",
+      "default": 660
+    },
+    {
+      "type": "header",
+      "content": "Chart Labels"
+    },
+    {
+      "type": "text",
+      "id": "y_label",
+      "label": "Y-axis label",
+      "default": "TOTAL TESTOSTERONE"
+    },
+    {
+      "type": "text",
+      "id": "x_label",
+      "label": "X-axis label",
+      "default": "AGE"
+    },
+    {
+      "type": "text",
+      "id": "mars_label",
+      "label": "Mars Men line label",
+      "default": "WITH MARS MEN"
+    },
+    {
+      "type": "text",
+      "id": "band_label",
+      "label": "Band label",
+      "default": "NORMAL RANGE"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background (transparent by default)",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#ff5600"
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Decline of T"
+    }
+  ]
+}
+{% endschema %}

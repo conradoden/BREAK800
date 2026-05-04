@@ -1,0 +1,325 @@
+{% comment %}
+  ===================================================================================
+  FAQ ACCORDION
+  ===================================================================================
+  "Frequently Asked Questions" — collapsible FAQ cards with smooth
+  open/close animation. Includes CTA at bottom.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (text)
+  * cta_text / cta_link
+  * Blocks: faq (question, answer)
+  * bg_color / text_color / accent_color
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → FAQ Accordion
+{% endcomment %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+  .faq-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    {%- if section.settings.bg_image != blank -%}
+      background-image: url({{ section.settings.bg_image | image_url: width: 2400 }});
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    {%- endif -%}
+    padding: 80px 20px;
+    color: {{ section.settings.text_color }};
+    font-family: 'Inter', 'Assistant', sans-serif;
+  }
+
+  .faq__container-{{ section.id }} {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .faq__heading-{{ section.id }} {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    margin: 0 0 40px;
+    line-height: 1.2;
+  }
+
+  .faq__list-{{ section.id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    margin-bottom: 40px;
+  }
+
+  .faq__item-{{ section.id }} {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+
+  .faq__item-{{ section.id }}[open] {
+    border-color: {{ section.settings.accent_color }};
+  }
+
+  .faq__question-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: {{ section.settings.text_color }};
+    list-style: none;
+    user-select: none;
+    transition: color 0.2s ease;
+  }
+
+  .faq__question-{{ section.id }}::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__question-{{ section.id }}::marker {
+    display: none;
+    content: '';
+  }
+
+  .faq__chevron-{{ section.id }} {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: {{ section.settings.text_color }};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .faq__chevron-{{ section.id }} svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .faq__item-{{ section.id }}[open] .faq__chevron-{{ section.id }} {
+    transform: rotate(180deg);
+  }
+
+  .faq__answer-{{ section.id }} {
+    padding: 0 22px 20px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.7);
+    animation: faqFadeIn-{{ section.id }} 0.3s ease;
+  }
+
+  .faq__answer-{{ section.id }} p {
+    margin: 0;
+  }
+
+  @keyframes faqFadeIn-{{ section.id }} {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .faq__cta-{{ section.id }} {
+    display: inline-block;
+    background: {{ section.settings.accent_color }};
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 16px 50px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  .faq__cta-{{ section.id }}:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 749px) {
+    .faq-{{ section.id }} {
+      padding: 50px 16px;
+    }
+    .faq__question-{{ section.id }} {
+      font-size: 13px;
+      padding: 16px 18px;
+    }
+    .faq__answer-{{ section.id }} {
+      padding: 0 18px 18px;
+      font-size: 13px;
+    }
+    .faq__cta-{{ section.id }} {
+      width: 100%;
+      text-align: center;
+      padding: 16px 20px;
+    }
+  }
+</style>
+
+<div class="faq-{{ section.id }}">
+  <div class="faq__container-{{ section.id }}">
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="faq__heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="faq__list-{{ section.id }}">
+        {%- for block in section.blocks -%}
+          <details class="faq__item-{{ section.id }}" {{ block.shopify_attributes }}>
+            <summary class="faq__question-{{ section.id }}">
+              <span>{{ block.settings.question }}</span>
+              <span class="faq__chevron-{{ section.id }}" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </summary>
+            <div class="faq__answer-{{ section.id }}">
+              {{ block.settings.answer }}
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.cta_text != blank -%}
+      <a href="{{ section.settings.cta_link | default: '#' }}" class="faq__cta-{{ section.id }}">
+        {{ section.settings.cta_text }} →
+      </a>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<script>
+  (function() {
+    const section = document.querySelector('.faq-{{ section.id }}');
+    if (!section) return;
+
+    // Optional: close other items when one opens (accordion behavior)
+    const items = section.querySelectorAll('.faq__item-{{ section.id }}');
+    items.forEach(function(item) {
+      item.addEventListener('toggle', function() {
+        if (this.open) {
+          items.forEach(function(other) {
+            if (other !== item && other.open) {
+              other.open = false;
+            }
+          });
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK FAQ Accordion",
+  "tag": "section",
+  "class": "bk-faq-accordion-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image (optional texture overlay)"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background Color (transparent by default — inherits page background)",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#e85c2b"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "WHAT IS MARS MEN?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Mars Men is a natural testosterone support supplement with 8 clinically dosed ingredients designed to help men optimize their hormonal health.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK FAQ Accordion",
+      "blocks": [
+        { "type": "faq", "settings": { "question": "WHAT IS MARS MEN?", "answer": "<p>Mars Men is a natural testosterone support supplement with 8 clinically dosed ingredients designed to help men optimize their hormonal health.</p>" } },
+        { "type": "faq", "settings": { "question": "WHO IS MARS MEN FOR?", "answer": "<p>Mars Men is designed for men who want to naturally support their testosterone levels, energy, focus, and overall vitality.</p>" } },
+        { "type": "faq", "settings": { "question": "HOW DO I TAKE MARS MEN?", "answer": "<p>Take the recommended daily serving with water, preferably with a meal for optimal absorption.</p>" } },
+        { "type": "faq", "settings": { "question": "HOW LONG UNTIL I SEE RESULTS?", "answer": "<p>Most men begin noticing improvements in energy and focus within the first 7 days, with full results by day 90.</p>" } },
+        { "type": "faq", "settings": { "question": "CAN MARS MEN HELP INCREASE MY ENERGY?", "answer": "<p>Yes. The ingredients in Mars Men are specifically chosen to support natural energy production and reduce fatigue.</p>" } },
+        { "type": "faq", "settings": { "question": "WILL MARS MEN IMPROVE MY STRENGTH GAINS IN THE GYM?", "answer": "<p>Optimized testosterone levels support muscle growth, recovery, and strength, helping you perform better in the gym.</p>" } },
+        { "type": "faq", "settings": { "question": "DO I NEED TO CYCLE MARS MEN?", "answer": "<p>No. Mars Men uses natural ingredients that are safe for daily, long-term use without cycling.</p>" } },
+        { "type": "faq", "settings": { "question": "DO I HAVE TO SIGN UP FOR A SUBSCRIPTION?", "answer": "<p>No. You can purchase a one-time order or subscribe for convenience and savings.</p>" } },
+        { "type": "faq", "settings": { "question": "WHAT IS YOUR 90-DAY HIGHER-T GUARANTEE?", "answer": "<p>Try Mars Men risk-free for 90 days. If you're not satisfied, we'll refund you — no questions asked.</p>" } },
+        { "type": "faq", "settings": { "question": "DO YOU ACCEPT RETURNS?", "answer": "<p>Yes. We offer a 90-day money-back guarantee on all orders.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

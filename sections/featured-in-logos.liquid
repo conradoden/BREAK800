@@ -1,0 +1,300 @@
+{% comment %}
+  ===================================================================================
+  FEATURED IN / LOGO BAR
+  ===================================================================================
+  "Featured In" heading with media logos (GQ, Men's Health, Forbes).
+  Self-contained section.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (text): Section heading. Default: "Featured In"
+  * bg_color (color): Background. Default: #111111
+  * text_color (color): Text color. Default: #ffffff
+  * Blocks (logo): image (image_picker) + link (url)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Featured In Logos
+{% endcomment %}
+
+{%- assign logo_height = section.settings.logo_height | default: 50 -%}
+{%- assign logo_height_mb = section.settings.logo_height_mb | default: 36 -%}
+{%- assign heading_size = section.settings.heading_size | default: 15 -%}
+{%- assign heading_size_mb = section.settings.heading_size_mb | default: 13 -%}
+
+<style>
+  .featured-in-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    {%- if section.settings.bg_image != blank -%}
+      background-image: url({{ section.settings.bg_image | image_url: width: 2400 }});
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    {%- endif -%}
+    padding: 50px 20px;
+    text-align: center;
+  }
+
+  .featured-in__heading-{{ section.id }} {
+    color: {{ section.settings.text_color }};
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: {{ heading_size }}px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: capitalize !important;
+    margin: 0 0 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .featured-in__arrow-{{ section.id }} {
+    color: {{ section.settings.arrow_color }};
+    font-weight: 400;
+  }
+
+  .featured-in__row-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .featured-in__rule-{{ section.id }} {
+    flex: 1;
+    height: 1px;
+    background: {{ section.settings.text_color }};
+    opacity: 0.4;
+    min-width: 30px;
+  }
+
+  .featured-in__logos-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .featured-in__logo-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .featured-in__logo-{{ section.id }} img {
+    max-height: {{ logo_height }}px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+  }
+
+  .featured-in__logo-{{ section.id }}:hover img {
+    opacity: 1;
+  }
+
+  @media (max-width: 749px) {
+    .featured-in-{{ section.id }} {
+      padding: 35px 15px;
+    }
+    .featured-in__heading-{{ section.id }} {
+      font-size: {{ heading_size_mb }}px;
+    }
+    .featured-in__row-{{ section.id }} {
+      gap: 12px;
+    }
+    .featured-in__rule-{{ section.id }} {
+      display: none;
+    }
+    .featured-in__logos-{{ section.id }} {
+      gap: 18px;
+      flex: 0 1 auto;
+    }
+    .featured-in__logo-{{ section.id }} img {
+      max-height: {{ logo_height_mb }}px;
+    }
+  }
+</style>
+
+<div class="featured-in-{{ section.id }}">
+  {%- if section.settings.heading != blank -%}
+    <p class="featured-in__heading-{{ section.id }}">
+      {{ section.settings.heading }}
+      {%- if section.settings.show_arrow -%}
+        <span class="featured-in__arrow-{{ section.id }}" aria-hidden="true">&darr;</span>
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+
+  <div class="featured-in__row-{{ section.id }}">
+    {%- if section.settings.show_rules -%}
+      <span class="featured-in__rule-{{ section.id }}" aria-hidden="true"></span>
+    {%- endif -%}
+
+    <div class="featured-in__logos-{{ section.id }}">
+      {%- for block in section.blocks -%}
+        {%- capture logo_img -%}
+          {%- if block.settings.image != blank -%}
+            {%- assign img_width = block.settings.image.width | times: logo_height | divided_by: block.settings.image.height -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 600 }}"
+              alt="{{ block.settings.image.alt | default: 'Featured in logo' }}"
+              width="{{ img_width }}"
+              height="{{ logo_height }}"
+              loading="lazy"
+            >
+          {%- endif -%}
+        {%- endcapture -%}
+
+        <div class="featured-in__logo-{{ section.id }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}" target="_blank" rel="noopener noreferrer">
+              {{ logo_img }}
+            </a>
+          {%- else -%}
+            {{ logo_img }}
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_rules -%}
+      <span class="featured-in__rule-{{ section.id }}" aria-hidden="true"></span>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "BK Featured In Logos",
+  "tag": "section",
+  "class": "bk-featured-in-section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured In"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Font Size (desktop)",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mb",
+      "label": "Heading Font Size (mobile)",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrow",
+      "label": "Show down arrow next to heading",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rules",
+      "label": "Show horizontal lines flanking logos",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo Height (desktop)",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "logo_height_mb",
+      "label": "Logo Height (mobile)",
+      "min": 12,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Colors & Background"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background Color (transparent by default — inherits page background)",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image (optional texture overlay)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text & Logo Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow Accent Color",
+      "default": "#ff5600",
+      "visible_if": "{{ section.settings.show_arrow }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Logo Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Featured In Logos",
+      "blocks": [
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

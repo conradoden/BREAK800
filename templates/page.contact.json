@@ -113,7 +113,7 @@
       "type": "contact-form",
       "blocks": {
         "field_row_B7EVcM": {
-          "type": "field_row",
+          "type": "contact_input_row",
           "settings": {
             "input_1_enabled": true,
             "input_1_type": "name",
@@ -128,7 +128,7 @@
           }
         },
         "field_row_HX8WGh": {
-          "type": "field_row",
+          "type": "contact_input_row",
           "settings": {
             "input_1_enabled": true,
             "input_1_type": "phone",

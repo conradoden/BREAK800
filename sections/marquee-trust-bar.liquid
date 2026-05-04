@@ -1,0 +1,278 @@
+{% comment %}
+  ===================================================================================
+  MARQUEE TRUST BAR
+  ===================================================================================
+  Infinite scrolling horizontal ticker with trust badges (icon + text).
+  Self-contained section — no external CSS/JS dependencies.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * speed (range): Animation duration in seconds. Default: 30
+  * bg_color (color_background): Optional background — transparent by default
+  * text_color (color): Text color. Default: #ffffff
+  * text_transform (select): none | uppercase
+  * show_fade_edges (checkbox): Show edge fades (only meaningful with solid bg)
+  * Blocks (trust_badge): icon (image_picker) + text (text)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Marquee Trust Bar
+{% endcomment %}
+
+{%- assign speed = section.settings.speed | default: 30 -%}
+
+<style>
+  .marquee-trust-bar-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+    overflow: hidden;
+    padding: 14px 0;
+    position: relative;
+    width: 100%;
+  }
+
+  {%- if section.settings.show_fade_edges -%}
+    .marquee-trust-bar-{{ section.id }}::before,
+    .marquee-trust-bar-{{ section.id }}::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-trust-bar-{{ section.id }}::before {
+      left: 0;
+      background: linear-gradient(to right, {{ section.settings.bg_color }}, transparent);
+    }
+    .marquee-trust-bar-{{ section.id }}::after {
+      right: 0;
+      background: linear-gradient(to left, {{ section.settings.bg_color }}, transparent);
+    }
+  {%- endif -%}
+
+  .marquee-trust-bar__track-{{ section.id }} {
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    will-change: transform;
+    animation: marqueeScroll-{{ section.id }} {{ speed }}s linear infinite;
+  }
+
+  .marquee-trust-bar__group-{{ section.id }} {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+
+  .marquee-trust-bar__item-{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 32px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    color: {{ section.settings.text_color }};
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: {{ section.settings.text_transform | default: 'none' }};
+  }
+
+  .marquee-trust-bar__item-{{ section.id }} img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: brightness(0) invert(1);
+  }
+
+  @keyframes marqueeScroll-{{ section.id }} {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .marquee-trust-bar-{{ section.id }}:hover .marquee-trust-bar__track-{{ section.id }} {
+    animation-play-state: paused;
+  }
+</style>
+
+<div class="marquee-trust-bar-{{ section.id }}" aria-label="Trust badges" data-marquee-root>
+  {%- liquid
+    assign block_count = section.blocks.size
+    assign inner_repeats = 1
+    if block_count > 0 and block_count < 8
+      assign inner_repeats = 8 | divided_by: block_count | plus: 1
+    endif
+  -%}
+  <div class="marquee-trust-bar__track-{{ section.id }}" data-marquee-track data-speed="{{ speed }}">
+    {%- for outer in (1..2) -%}
+      <div class="marquee-trust-bar__group-{{ section.id }}" {% if outer > 1 %}aria-hidden="true"{% endif %}>
+        {%- for i in (1..inner_repeats) -%}
+          {%- for block in section.blocks -%}
+            <div class="marquee-trust-bar__item-{{ section.id }}" {{ block.shopify_attributes }}>
+              {%- if block.settings.icon != blank -%}
+                <img
+                  src="{{ block.settings.icon | image_url: width: 48 }}"
+                  alt=""
+                  width="24"
+                  height="24"
+                  loading="lazy"
+                >
+              {%- endif -%}
+              <span>{{ block.settings.text }}</span>
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+  (function() {
+    function startMarquee(track) {
+      if (track.dataset.marqueeStarted === '1') return;
+      track.dataset.marqueeStarted = '1';
+
+      var firstGroup = track.firstElementChild;
+      if (!firstGroup) return;
+
+      var speed = parseFloat(track.dataset.speed) || 30; // seconds for full loop
+      var distance = firstGroup.offsetWidth;
+      if (distance <= 0) return;
+
+      // Disable any CSS animation; we drive transform manually.
+      track.style.animation = 'none';
+      track.style.willChange = 'transform';
+
+      var pxPerSec = distance / speed;
+      var x = 0;
+      var last = performance.now();
+      var paused = false;
+
+      var root = track.closest('[data-marquee-root]');
+      if (root) {
+        root.addEventListener('mouseenter', function() { paused = true; });
+        root.addEventListener('mouseleave', function() { paused = false; last = performance.now(); });
+      }
+
+      function tick(now) {
+        var dt = (now - last) / 1000;
+        last = now;
+        if (!paused) {
+          x -= pxPerSec * dt;
+          if (-x >= distance) x += distance;
+          track.style.transform = 'translate3d(' + x + 'px,0,0)';
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      window.addEventListener('resize', function() {
+        var newDist = firstGroup.offsetWidth;
+        if (newDist > 0) {
+          distance = newDist;
+          pxPerSec = distance / speed;
+        }
+      });
+    }
+
+    function init() {
+      document.querySelectorAll('[data-marquee-track]').forEach(startMarquee);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    document.addEventListener('shopify:section:load', init);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK Marquee Trust Bar",
+  "tag": "section",
+  "class": "bk-marquee-trust-bar-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll Speed (seconds)",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "default": 30
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text Case",
+      "default": "none",
+      "options": [
+        { "value": "none", "label": "Title case" },
+        { "value": "uppercase", "label": "Uppercase" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_fade_edges",
+      "label": "Fade edges (use only with solid background)",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background (transparent by default)",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text & Icon Color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_badge",
+      "name": "Trust Badge",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Badge Text",
+          "default": "Science-Backed Ingredients"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Marquee Trust Bar",
+      "blocks": [
+        { "type": "trust_badge", "settings": { "text": "Science-Backed Ingredients" } },
+        { "type": "trust_badge", "settings": { "text": "100% Satisfaction Guarantee" } },
+        { "type": "trust_badge", "settings": { "text": "Manufactured in the USA" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

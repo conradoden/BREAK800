@@ -1,0 +1,476 @@
+{% comment %}
+  ===================================================================================
+  SOLUTION BENEFITS
+  ===================================================================================
+  "The Solution? Mars Men." — centered product image with optional circular
+  tech-ring graphic behind it; benefits listed on the right with dashed
+  connector lines from the ring center to each benefit.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading_prefix / heading_highlight (text)
+  * sub_text (richtext)
+  * product_image (image_picker): Centered product / pill
+  * ring_image (image_picker): Optional circular ring graphic (behind product)
+  * cta_text / cta_link
+  * show_connectors (checkbox): show dashed connector lines
+  * Blocks: benefit (icon, title, description)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Solution Benefits
+{% endcomment %}
+
+<style>
+  .solution-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    {%- if section.settings.bg_gradient != blank -%}
+      background-image: {{ section.settings.bg_gradient }};
+    {%- endif -%}
+    padding: 80px 20px;
+    color: {{ section.settings.text_color }};
+  }
+
+  .solution__container-{{ section.id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .solution__header-{{ section.id }} {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .solution__heading-{{ section.id }} {
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: clamp(30px, 4.5vw, 48px);
+    font-weight: 800;
+    margin: 0 0 18px;
+    line-height: 1.15;
+  }
+
+  .solution__heading-{{ section.id }} span {
+    color: {{ section.settings.accent_color }};
+  }
+
+  .solution__sub-text-{{ section.id }} {
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.95);
+    max-width: 720px;
+    margin: 0 auto;
+    font-weight: 500;
+  }
+
+  .solution__grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+  }
+
+  .solution__line-bridge-{{ section.id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%);
+    width: calc(30px + 30px);
+    height: 0;
+    margin-left: -30px;
+    border-top: 2px dashed rgba(255,255,255,0.55);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .solution__visual-{{ section.id }} {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    max-width: 520px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .solution__ring-{{ section.id }} {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.95;
+    z-index: 1;
+    animation: solutionRingSpin-{{ section.id }} 60s linear infinite;
+  }
+
+  @keyframes solutionRingSpin-{{ section.id }} {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .solution__ring-{{ section.id }} { animation: none; }
+  }
+
+  .solution__product-{{ section.id }} {
+    position: relative;
+    z-index: 2;
+    width: 38%;
+    max-width: 220px;
+    height: auto;
+    object-fit: contain;
+    margin-right: -35px;
+  }
+
+  .solution__benefits-{{ section.id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .solution__line-v-{{ section.id }} {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 0;
+    border-left: 2px dashed rgba(255,255,255,0.55);
+    pointer-events: none;
+  }
+
+  .solution__benefit-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+  }
+
+  .solution__line-h-{{ section.id }} {
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 0;
+    border-top: 2px dashed rgba(255,255,255,0.55);
+    pointer-events: none;
+  }
+
+  .solution__benefit-icon-{{ section.id }} {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: {{ section.settings.accent_color }};
+  }
+
+  .solution__benefit-icon-{{ section.id }} img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    background: transparent;
+  }
+
+  .solution__benefit-title-{{ section.id }} {
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: clamp(18px, 1.6vw, 22px);
+    font-weight: 800;
+    margin: 0 0 4px;
+    line-height: 1.15;
+    color: {{ section.settings.text_color }};
+  }
+
+  .solution__benefit-desc-{{ section.id }} {
+    font-size: clamp(14px, 1.2vw, 18px);
+    line-height: 1.35;
+    color: rgba(255,255,255,0.85);
+    margin: 0;
+  }
+
+  .solution__cta-wrap-{{ section.id }} {
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .solution__cta-{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: {{ section.settings.accent_color }};
+    color: #fff;
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 18px 60px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  .solution__cta-{{ section.id }}:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 899px) {
+    .solution-{{ section.id }} {
+      padding: 50px 16px;
+    }
+    .solution__grid-{{ section.id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .solution__visual-{{ section.id }} {
+      order: -1;
+      max-width: 320px;
+    }
+    .solution__product-{{ section.id }} {
+      margin-right: -25px;
+    }
+    .solution__line-v-{{ section.id }} {
+      top: 24px;
+      bottom: 24px;
+    }
+    .solution__line-h-{{ section.id }} {
+      width: 18px;
+    }
+    .solution__line-bridge-{{ section.id }} {
+      display: none;
+    }
+    .solution__cta-{{ section.id }} {
+      width: 100%;
+      justify-content: center;
+      padding: 16px 20px;
+    }
+  }
+</style>
+
+<div class="solution-{{ section.id }}">
+  <div class="solution__container-{{ section.id }}">
+
+    <div class="solution__header-{{ section.id }}">
+      <h2 class="solution__heading-{{ section.id }}">
+        {{ section.settings.heading_prefix }} <span>{{ section.settings.heading_highlight }}</span>
+      </h2>
+      {%- if section.settings.sub_text != blank -%}
+        <div class="solution__sub-text-{{ section.id }}">{{ section.settings.sub_text }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="solution__grid-wrap-{{ section.id }}">
+    <div class="solution__grid-{{ section.id }}">
+      {%- if section.settings.show_connectors -%}
+        <span class="solution__line-bridge-{{ section.id }}" aria-hidden="true"></span>
+      {%- endif -%}
+      <div class="solution__visual-{{ section.id }}">
+        {%- if section.settings.ring_image != blank -%}
+          <img
+            class="solution__ring-{{ section.id }}"
+            src="{{ section.settings.ring_image | image_url: width: 800 }}"
+            alt=""
+            loading="lazy"
+            width="520"
+            height="520"
+          >
+        {%- endif -%}
+        {%- if section.settings.product_image != blank -%}
+          <img
+            class="solution__product-{{ section.id }}"
+            src="{{ section.settings.product_image | image_url: width: 500 }}"
+            alt="{{ section.settings.product_image.alt | default: 'Mars Men product' }}"
+            loading="lazy"
+            width="220"
+            height="400"
+          >
+        {%- endif -%}
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="solution__benefits-{{ section.id }}">
+          {%- if section.settings.show_connectors -%}
+            <span class="solution__line-v-{{ section.id }}" aria-hidden="true"></span>
+          {%- endif -%}
+          {%- for block in section.blocks -%}
+            <div class="solution__benefit-{{ section.id }}" {{ block.shopify_attributes }}>
+              {%- if section.settings.show_connectors -%}
+                <span class="solution__line-h-{{ section.id }}" aria-hidden="true"></span>
+              {%- endif -%}
+              <div class="solution__benefit-icon-{{ section.id }}">
+                {%- if block.settings.icon != blank -%}
+                  <img
+                    src="{{ block.settings.icon | image_url: width: 56 }}"
+                    alt=""
+                    width="28"
+                    height="28"
+                    loading="lazy"
+                  >
+                {%- endif -%}
+              </div>
+              <div>
+                {%- if block.settings.title != blank -%}
+                  <h3 class="solution__benefit-title-{{ section.id }}">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                {%- if block.settings.description != blank -%}
+                  <p class="solution__benefit-desc-{{ section.id }}">{{ block.settings.description }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+    </div>
+
+    {%- if section.settings.cta_text != blank -%}
+      <div class="solution__cta-wrap-{{ section.id }}">
+        <a href="{{ section.settings.cta_link | default: '#' }}" class="solution__cta-{{ section.id }}">
+          {{ section.settings.cta_text }} <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "BK Solution Benefits",
+  "tag": "section",
+  "class": "bk-solution-benefits-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_prefix",
+      "label": "Heading Prefix",
+      "default": "The Solution?"
+    },
+    {
+      "type": "text",
+      "id": "heading_highlight",
+      "label": "Heading Highlight (accent color)",
+      "default": "Mars Men."
+    },
+    {
+      "type": "richtext",
+      "id": "sub_text",
+      "label": "Subtext",
+      "default": "<p>Maintaining balanced testosterone levels is pivotal for contributing to an overall sense of well-being. Encouraging our body's natural hormonal function can help us men:</p>"
+    },
+    {
+      "type": "header",
+      "content": "Visual"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product / Pill Image (centered)"
+    },
+    {
+      "type": "image_picker",
+      "id": "ring_image",
+      "label": "Circular Ring Graphic (optional, behind product)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_connectors",
+      "label": "Show dashed connector lines",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background (transparent by default)",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_gradient",
+      "label": "Background Gradient (optional, overlays color)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#ff5600"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon (orange, no background)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Skyrocket Energy & Stamina"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "Increase energy & athletic performance"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Solution Benefits",
+      "blocks": [
+        { "type": "benefit", "settings": { "title": "Skyrocket Energy & Stamina", "description": "Increase energy & athletic performance" } },
+        { "type": "benefit", "settings": { "title": "Support Male Vitality", "description": "Amplify passionate energy" } },
+        { "type": "benefit", "settings": { "title": "Enhance Productivity & Focus", "description": "Stay sharp & focused all day" } },
+        { "type": "benefit", "settings": { "title": "Supercharge Strength", "description": "Build & maintain lean muscle mass" } },
+        { "type": "benefit", "settings": { "title": "Improve Recovery", "description": "Optimize sleep & muscle recovery" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
