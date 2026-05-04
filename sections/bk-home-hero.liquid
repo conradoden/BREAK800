@@ -27,59 +27,65 @@
 
   <div class="bk-home-hero__overlay" aria-hidden="true"></div>
 
-  <div class="bk-home-hero-body page-width">
-    <div class="bk-home-hero-review-count">
-      <div class="bk-home-hero-stars">
-        {% for i in (1..5) %}
-          <svg
-            width="16"
-            height="15"
-            viewBox="0 0 16 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M7.68021 0L9.49332 5.66273H15.3607L10.6139 9.16249L12.427 14.8252L7.68021 11.3255L2.93342 14.8252L4.74653 9.16249L-0.000254154 5.66273H5.8671L7.68021 0Z"
-              fill="#FF5600"
-            ></path>
-          </svg>
-        {% endfor %}
+  <div class="bk-home-hero-body-wrap">
+    <div class="bk-home-hero-body page-width">
+      <div class="bk-home-hero-review-count">
+        <div class="bk-home-hero-stars">
+          {% for i in (1..5) %}
+            <svg
+              width="16"
+              height="15"
+              viewBox="0 0 16 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M7.68021 0L9.49332 5.66273H15.3607L10.6139 9.16249L12.427 14.8252L7.68021 11.3255L2.93342 14.8252L4.74653 9.16249L-0.000254154 5.66273H5.8671L7.68021 0Z"
+                fill="#FF5600"
+              ></path>
+            </svg>
+          {% endfor %}
+        </div>
+        <span class="bk-home-hero-review-text">{{ section.settings.review_counnt }}</span>
       </div>
-      <span class="bk-home-hero-review-text">{{ section.settings.review_counnt }}</span>
+
+      <h1 class="bk-heading">
+        <div class="bk-home-hero-heading-1">{{ section.settings.heading_1 }}</div>
+        <div class="bk-home-hero-heading-2">{{ section.settings.heading_2 }}</div>
+        <div class="bk-home-hero-heading-3">{{ section.settings.heading_3 }}</div>
+      </h1>
+
+      <p class="bk-text bk-home-hero-description">{{ section.settings.description }}</p>
+
+      <a
+        class="bk-btn bk-home-hero-btn"
+        {% if section.settings.btn_link != blank %}
+          href="{{ section.settings.btn_link }}"
+        {% else %}
+          href="#"
+          role="link"
+          aria-disabled="true"
+        {% endif %}
+      >
+        {{ section.settings.btn_text }}
+      </a>
+
+      <div class="bk-home-hero-bottom-text">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="21" viewBox="0 0 18 21" fill="none" aria-hidden="true">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M4.39903 1.60573L0 3.20735L0.000369622 7.18038L0.000738892 11.1535L0.0472003 11.5691L0.0936613 11.9848L0.189955 12.4697L0.286249 12.9546L0.485995 13.5637L0.685741 14.1728L0.941185 14.6952L1.19658 15.2177L1.51378 15.7026L1.83092 16.1875L2.12779 16.5562L2.42466 16.9248L2.87325 17.3742L3.32179 17.8236L3.79097 18.1974L4.2602 18.5712L4.65868 18.8382L5.05716 19.1052L5.51276 19.3726L5.96841 19.6399L6.52881 19.9045L7.08925 20.1691L7.57428 20.3574L8.05931 20.5457L8.46332 20.6628L8.86734 20.7798L9.27145 20.663L9.67556 20.5461L10.276 20.31L10.8763 20.074L11.5229 19.7457L12.1695 19.4175L12.6464 19.1188L13.1233 18.82L13.5634 18.4909L14.0035 18.1618L14.4421 17.7751L14.8807 17.3883L15.2801 16.934L15.6795 16.4797L15.9499 16.1027L16.2204 15.7257L16.4778 15.289L16.7352 14.8523L16.9553 14.3422L17.1753 13.8321L17.3351 13.301L17.4948 12.7699L17.6019 12.1926L17.7091 11.6153L17.7237 7.40982L17.7383 3.20439L13.3315 1.60217L8.92466 0L8.86138 0.00203213L8.79807 0.00411042L4.39903 1.60573ZM10.5997 11.176L7.38964 14.3861L5.65787 12.6548L3.92615 10.9235L4.44494 10.4032L4.96373 9.88298L6.1767 11.0953L7.38973 12.3077L10.0794 9.61797L12.7691 6.9283L13.2894 7.44714L13.8097 7.96597L10.5997 11.176Z"
+            fill="white"
+          ></path>
+        </svg>
+        <span>{{ section.settings.bottom_text }}</span>
+      </div>
     </div>
 
-    <h1 class="bk-heading">
-      <div class="bk-home-hero-heading-1">{{ section.settings.heading_1 }}</div>
-      <div class="bk-home-hero-heading-1">{{ section.settings.heading_2 }}</div>
-      <div class="bk-home-hero-heading-1">{{ section.settings.heading_3 }}</div>
-    </h1>
-
-    <p class="bk-text bk-home-hero-description">{{ section.settings.description }}</p>
-
-    <a
-      class="bk-btn bk-home-hero-btn"
-      {% if section.settings.btn_link != blank %}
-        href="{{ section.settings.btn_link }}"
-      {% else %}
-        href="#"
-        role="link"
-        aria-disabled="true"
-      {% endif %}
-    >
-      {{ section.settings.btn_text }}
-    </a>
-
-    <div class="bk-home-hero-botton-text">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="21" viewBox="0 0 18 21" fill="none" aria-hidden="true">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M4.39903 1.60573L0 3.20735L0.000369622 7.18038L0.000738892 11.1535L0.0472003 11.5691L0.0936613 11.9848L0.189955 12.4697L0.286249 12.9546L0.485995 13.5637L0.685741 14.1728L0.941185 14.6952L1.19658 15.2177L1.51378 15.7026L1.83092 16.1875L2.12779 16.5562L2.42466 16.9248L2.87325 17.3742L3.32179 17.8236L3.79097 18.1974L4.2602 18.5712L4.65868 18.8382L5.05716 19.1052L5.51276 19.3726L5.96841 19.6399L6.52881 19.9045L7.08925 20.1691L7.57428 20.3574L8.05931 20.5457L8.46332 20.6628L8.86734 20.7798L9.27145 20.663L9.67556 20.5461L10.276 20.31L10.8763 20.074L11.5229 19.7457L12.1695 19.4175L12.6464 19.1188L13.1233 18.82L13.5634 18.4909L14.0035 18.1618L14.4421 17.7751L14.8807 17.3883L15.2801 16.934L15.6795 16.4797L15.9499 16.1027L16.2204 15.7257L16.4778 15.289L16.7352 14.8523L16.9553 14.3422L17.1753 13.8321L17.3351 13.301L17.4948 12.7699L17.6019 12.1926L17.7091 11.6153L17.7237 7.40982L17.7383 3.20439L13.3315 1.60217L8.92466 0L8.86138 0.00203213L8.79807 0.00411042L4.39903 1.60573ZM10.5997 11.176L7.38964 14.3861L5.65787 12.6548L3.92615 10.9235L4.44494 10.4032L4.96373 9.88298L6.1767 11.0953L7.38973 12.3077L10.0794 9.61797L12.7691 6.9283L13.2894 7.44714L13.8097 7.96597L10.5997 11.176Z"
-          fill="white"
-        ></path>
-      </svg>
-      <span>{{ section.settings.bottom_text }}</span>
+    <div class="bk-home-hero-image-wrap">
+      <img src="{{ section.settings.image | img_url: 'master' }}">
     </div>
   </div>
 </section>
@@ -110,16 +116,6 @@
     display: none;
   }
 
-  @media screen and (max-width: 749px) {
-    #shopify-section-{{ section.id }} .bk-home-hero__bg--desktop {
-      display: none;
-    }
-
-    #shopify-section-{{ section.id }} .bk-home-hero__bg--mobile {
-      display: block;
-    }
-  }
-
   #shopify-section-{{ section.id }} .bk-home-hero__overlay {
     position: absolute;
     inset: 0;
@@ -128,11 +124,30 @@
     pointer-events: none;
   }
 
+  #shopify-section-{{ section.id }} .bk-home-hero-body-wrap {
+    max-width: 1440px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    z-index: 1;
+    position: relative;
+  }
+
   #shopify-section-{{ section.id }} .bk-home-hero-body {
     position: relative;
     z-index: 2;
     max-width: 720px;
-    padding: clamp(24px, 4vw, 64px) clamp(16px, 3vw, 48px);
+    width: 50%;
+    padding: clamp(24px, 6vw, 80px) clamp(16px, 3vw, 48px);
+    margin-right: auto;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .bk-home-hero-image-wrap {
+    width: 50%;
   }
 
   #shopify-section-{{ section.id }} .bk-home-hero-stars {
@@ -144,6 +159,7 @@
   #shopify-section-{{ section.id }} .bk-home-hero-review-count {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     margin-bottom: 16px;
   }
@@ -153,10 +169,24 @@
     font-weight: 800;
     text-transform: uppercase;
     line-height: 1.05;
+    font-size: 52px;
+  }
+
+  #shopify-section-{{ section.id }} .bk-home-hero-heading-1 {
+    color: #F4EFE8;
+  }
+
+  #shopify-section-{{ section.id }} .bk-home-hero-heading-2 {
+    color: #8B2020;
+  }
+
+  #shopify-section-{{ section.id }} .bk-home-hero-heading-3 {
+    color: #F4EFE8;
   }
 
   #shopify-section-{{ section.id }} .bk-home-hero-description {
-    margin: 0 0 20px;
+    margin: auto;
+    margin-bottom: 30px;
     max-width: 52ch;
     line-height: 1.35;
   }
@@ -174,13 +204,42 @@
     text-decoration: none;
   }
 
-  #shopify-section-{{ section.id }} .bk-home-hero-botton-text {
+  #shopify-section-{{ section.id }} .bk-home-hero-bottom-text {
     display: flex;
     align-items: flex-start;
+    justify-content: center;
     gap: 10px;
+    margin: auto;
     margin-top: 16px;
     max-width: 52ch;
     line-height: 1.35;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .bk-home-hero__bg--desktop {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .bk-home-hero__bg--mobile {
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .bk-heading {
+      font-size: 28px;
+    }
+
+    #shopify-section-{{ section.id }} .bk-home-hero-body-wrap {
+      flex-direction: column;
+    }
+
+    #shopify-section-{{ section.id }} .bk-home-hero-body {
+      width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .bk-home-hero-image-wrap {
+      width: 100%;
+      order: -1;
+    }
   }
 {%- endstyle -%}
 
@@ -199,6 +258,11 @@
       "type": "image_picker",
       "id": "back_mob",
       "label": "Mobile background"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero product image"
     },
     {
       "type": "text",
