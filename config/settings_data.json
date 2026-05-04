@@ -10,7 +10,7 @@
 {
   "current": {
     "animations_type": "AwxGyUgSWa24sAmu+FKs5P8mB6NnuSVKaIdD6sWNwdyO9pp5zDg/oRrrrEWnM2g5lAqqk8XNqVc7X/IqRVnB01c17uUWfLDzEIfZ3Kj60w4UhXGIvcnqkWtNtPP+bDsiloe2NnrTQ1gaExhq082bLz/jaWHxB8uSIrfgyAHOBinoWCBifn9RukuhJC3Gc0Ih0X6GXG7oEvvBXfq786UbMBvnH+vtq43BQo6Pi3w8FEzIn1RrGwP925/T8v3YLv45QfDLIHDXb2iLVZR7XZLkIa1/05sKfhx0mJi0xNw99GGB0/spGduK2Oym5B7ooyyRyyZje2uEm6hU4pIQyXZYDJVJm+5Q5sKq7ifREhDA1vuI3R69AK1hiMiJSfA5WfBuwCL/yQ80307gyxwEWz+HyQ==",
-    "disable_inspect": true,
+    "disable_inspect": false,
     "logo": "shopify://shop_images/Logo_desktop.png",
     "logo_mobile": "shopify://shop_images/Logo_desktop.png",
     "logo_width": 200,
