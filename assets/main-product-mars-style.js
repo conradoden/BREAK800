@@ -17,32 +17,6 @@ class MarsProductForm extends HTMLElement {
 
   connectedCallback() {
     this.initGallery();
-    this.logPageState();
-  }
-
-  logPageState() {
-    const giftIds = (this.dataset.gifts || '').split(',').filter(Boolean);
-    const total = parseInt(this.dataset.giftBlocksTotal || '0', 10);
-    const configured = parseInt(this.dataset.giftBlocksConfigured || '0', 10);
-    console.groupCollapsed('[mars-product-form] Loaded — what will be sent on Add to cart');
-    console.log('product handle:', this.dataset.productHandle || '(unknown)');
-    console.log('variant id:', this.dataset.variantId || '(none)');
-    console.log('selling plan id:', this.dataset.sellingPlanId || '(none — will add as one-time purchase)');
-    console.log('gift blocks total:', total);
-    console.log('gift blocks configured w/ a usable variant:', configured);
-    console.log('gift variant ids in data-gifts:', giftIds.length ? giftIds : '(empty)');
-    if (total > 0 && giftIds.length === 0) {
-      console.warn(
-        '[mars-product-form] Gifts will NOT be added to cart. The Liquid found ' +
-        total + ' free_gift block(s) but none had a usable variant. ' +
-        'Either the gift product was not picked in the customizer, or the picked product is not published to Online Store / has no available variant. ' +
-        'Add ?mars_debug=1 to the URL to see the per-block diagnostic panel.'
-      );
-    }
-    if (giftIds.length > 0 && giftIds.length < configured) {
-      console.warn('[mars-product-form] data-gifts and configured count are out of sync — clear theme cache.');
-    }
-    console.groupEnd();
   }
 
   /* --------------------------- Gallery --------------------------- */
@@ -97,13 +71,6 @@ class MarsProductForm extends HTMLElement {
       });
     });
 
-    console.groupCollapsed('[mars-product-form] Submitting cart/add');
-    console.log('variantId:', variantId);
-    console.log('sellingPlanId:', sellingPlanId || '(none — will add as one-time purchase)');
-    console.log('giftIds:', giftIds.length ? giftIds : '(none — no gift products configured in this section)');
-    console.log('payload.items:', JSON.parse(JSON.stringify(items)));
-    console.groupEnd();
-
     const sectionsToRender = this.getSectionsToRender();
 
     try {
@@ -125,17 +92,8 @@ class MarsProductForm extends HTMLElement {
       const data = await res.json();
       if (!res.ok || data.status) {
         const msg = data.description || data.message || 'Could not add to cart.';
-        console.error('[mars-product-form] cart/add failed:', data);
         throw new Error(msg);
       }
-      console.groupCollapsed('[mars-product-form] cart/add success');
-      console.log('items added:', (data.items || []).map((it) => ({
-        title: it.title,
-        variant_id: it.variant_id,
-        selling_plan_allocation: it.selling_plan_allocation && it.selling_plan_allocation.selling_plan && it.selling_plan_allocation.selling_plan.id,
-        properties: it.properties
-      })));
-      console.groupEnd();
       this.onAddSuccess(data);
     } catch (err) {
       console.error('[mars-product-form]', err);

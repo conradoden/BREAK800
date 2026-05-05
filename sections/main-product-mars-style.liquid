@@ -60,10 +60,6 @@
     endif
   endfor
 
-  assign show_debug = request.design_mode
-  if section.settings.enable_debug_panel
-    assign show_debug = true
-  endif
 -%}
 
 <section
@@ -90,65 +86,6 @@
       --pdp-card: {{ section.settings.card_color }};
     }
   {%- endstyle -%}
-
-  {%- if show_debug -%}
-    <div class="pdp-mars__admin-debug" style="background:#111;color:#fff;border:1px solid #ff5600;padding:12px 16px;margin:0 0 16px;font:13px/1.5 ui-monospace,Menlo,monospace;">
-      <strong style="color:#ff5600;">Mars-style PDP — diagnostics (theme editor or ?mars_debug=1):</strong>
-      <ul style="margin:8px 0 0;padding-left:20px;">
-        <li>Product: <code>{{ mars_product.handle | default: 'NOT FOUND' }}</code> (id: {{ mars_product.id }})</li>
-        <li>Variant ID being submitted: <code>{{ current_variant.id | default: 'NONE' }}</code></li>
-        <li>
-          Variant available: <code>{{ current_variant.available }}</code>
-          {%- if current_variant.available == false -%}
-            <span style="color:#ff5d5d;"> ← this is why "SOLD OUT" is showing.</span>
-            <br>↳ inventory_management: <code>{{ current_variant.inventory_management | default: '(none)' }}</code>,
-            inventory_policy: <code>{{ current_variant.inventory_policy }}</code>,
-            inventory_quantity: <code>{{ current_variant.inventory_quantity }}</code>
-            <br>↳ Fix: in Shopify admin → product → variant → either set a quantity, or set "When sold out" to "Continue selling", or turn off inventory tracking.
-          {%- endif -%}
-        </li>
-        <li>Selling plan groups on product: <code>{{ mars_product.selling_plan_groups.size }}</code></li>
-        <li>Selling plan ID being submitted:
-          {%- if selling_plan_id != blank -%}
-            <code>{{ selling_plan_id }}</code>
-          {%- else -%}
-            <span style="color:#ff5d5d;">NONE — product has no Kaching Subscriptions plan attached. Cart will add as one-time purchase.</span>
-          {%- endif -%}
-        </li>
-        <li>Gift blocks (configured w/ variant / total): <code>{{ configured_gift_count }} / {{ total_gift_blocks }}</code></li>
-        <li>Gift variant IDs being submitted: <code>{{ gift_ids | default: '(none)' }}</code></li>
-      </ul>
-      {%- if total_gift_blocks > 0 -%}
-        <div style="margin-top:8px;">
-          <strong style="color:#ff5600;">Per-block status:</strong>
-          <ol style="margin:8px 0 0;padding-left:24px;">
-            {%- for block in section.blocks -%}
-              {%- if block.type == 'free_gift' -%}
-                <li>
-                  {%- if block.settings.gift_product == blank -%}
-                    <span style="color:#ff5d5d;">EMPTY — pick a Gift product in this block (customizer → Free gift block → Gift product).</span>
-                  {%- else -%}
-                    {%- assign _gp = block.settings.gift_product -%}
-                    {%- assign _gv = _gp.selected_or_first_available_variant -%}
-                    {%- if _gv == blank -%}{%- assign _gv = _gp.variants | first -%}{%- endif -%}
-                    handle <code>{{ _gp.handle }}</code> · variant <code>{{ _gv.id | default: 'NO VARIANT' }}</code> · available <code>{{ _gp.available }}</code> · price <code>{{ _gp.price | money }}</code>
-                    {%- if _gp.available == false -%}
-                      <br><span style="color:#ff5d5d;">↳ Product not available on Online Store. Make sure it's published to the <strong>Online Store</strong> sales channel and has inventory (or "continue selling when out of stock").</span>
-                    {%- endif -%}
-                    {%- if _gv == blank -%}
-                      <br><span style="color:#ff5d5d;">↳ No variant returned. Check that the product is published.</span>
-                    {%- endif -%}
-                  {%- endif -%}
-                </li>
-              {%- endif -%}
-            {%- endfor -%}
-          </ol>
-        </div>
-      {%- else -%}
-        <p style="margin:8px 0 0;color:#ff5d5d;">No <code>free_gift</code> blocks exist on this section. Add some in the customizer.</p>
-      {%- endif -%}
-    </div>
-  {%- endif -%}
 
   <div id="PDP-Mars-{{ section.id }}" class="pdp-mars__container">
     <div class="pdp-mars__grid">
@@ -262,19 +199,10 @@
           data-selling-plan-id="{{ selling_plan_id }}"
           data-quantity="1"
           data-gifts="{{ gift_ids }}"
-          data-product-handle="{{ mars_product.handle }}"
-          data-gift-blocks-total="{{ total_gift_blocks }}"
-          data-gift-blocks-configured="{{ configured_gift_count }}"
         >
-          {%- if current_variant.available or show_debug -%}
-            <button type="button" class="pdp-mars__atc{% if current_variant.available == false %} is-debug-forced{% endif %}" data-mars-atc>
-              <span class="pdp-mars__atc-label">
-                {%- if current_variant.available -%}
-                  {{ section.settings.atc_label | default: 'Try It Now' }}
-                {%- else -%}
-                  Try It Now (sold out — debug only)
-                {%- endif -%}
-              </span>
+          {%- if current_variant.available -%}
+            <button type="button" class="pdp-mars__atc" data-mars-atc>
+              <span class="pdp-mars__atc-label">{{ section.settings.atc_label | default: 'Try It Now' }}</span>
               <span class="pdp-mars__atc-arrow" aria-hidden="true">
                 <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M2 8h18M14 2l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -573,17 +501,6 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "background-1"
-    },
-    {
-      "type": "header",
-      "content": "Developer / debug"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_debug_panel",
-      "label": "Show diagnostic panel on storefront",
-      "info": "Renders a debug panel showing variant availability, selling plan, and gift block status. Turn off for production.",
-      "default": false
     },
     {
       "type": "header",
