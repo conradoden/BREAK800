@@ -74,18 +74,21 @@
         "trust_badge_CXBX3b": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/rocket-white.svg",
             "text": "Science-Backed Ingredients"
           }
         },
         "trust_badge_UGhpJL": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/white-flag.svg",
             "text": "100% Satisfaction Guarantee"
           }
         },
         "trust_badge_pVdzVg": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/3_70c24336-c84f-4eda-b871-e91a1805522a.svg",
             "text": "Manufactured in the USA"
           }
         }
@@ -322,6 +325,8 @@
         "heading_prefix": "The Solution?",
         "heading_highlight": "Mars Men.",
         "sub_text": "<p>Maintaining balanced testosterone levels is pivotal for contributing to an overall sense of well-being. Encouraging our body's natural hormonal function can help us men:</p>",
+        "product_image": "shopify://shop_images/MarsMen_UsVsThem_A1_1x1_1_8cb77f12-150a-43fe-ba1e-2c6c751bd07e.webp",
+        "ring_image": "shopify://shop_images/Group_20971_7b351f54-3723-417d-9f46-f4e178b77aaa.svg",
         "show_connectors": true,
         "cta_text": "TRY IT NOW",
         "cta_link": "",
@@ -367,9 +372,9 @@
       "name": "How It Works Timeline",
       "settings": {
         "heading_prefix": "How Does",
-        "heading_highlight": "Mars Men",
+        "heading_highlight": "BREAK800",
         "heading_suffix": "Work?",
-        "sub_text": "With Mars Men, your natural ability to forge usable testosterone is optimized.",
+        "sub_text": "With BREAK800, your natural ability to forge usable testosterone is optimized.",
         "bg_color": "rgba(0,0,0,0.3)",
         "text_color": "#ffffff",
         "accent_color": "#e85c2b"
@@ -384,6 +389,8 @@
         "cta_text": "TRY IT NOW",
         "cta_link": "",
         "card_bg_color": "rgba(0,0,0,0)",
+        "photo_image": "shopify://shop_images/David_Maus_x_Mars_Men_Image_6_1aa774aa-2a1b-414e-9336-7f238f79c032.webp",
+        "badge_image": "shopify://shop_images/guarantee-badge.svg",
         "bg_color": "rgba(0,0,0,0.3)",
         "accent_color": "#ff5600"
       }
