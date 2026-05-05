@@ -1,0 +1,450 @@
+/* =====================================================================
+   Mars-Men style PDP — scoped to .pdp-mars{...}
+   Vars are also overridden inline per-section (#PDP-Mars-{section.id}).
+===================================================================== */
+.pdp-mars {
+  --pdp-bg: #000;
+  --pdp-text: #fff;
+  --pdp-muted: #c0c0c0;
+  --pdp-accent: #ff5600;
+  --pdp-card: #2a2a2a;
+  --pdp-radius: 12px;
+
+  background-color: var(--pdp-bg);
+  color: var(--pdp-text);
+  padding: 32px 16px;
+  overflow: hidden;
+}
+.pdp-mars * {
+  box-sizing: border-box;
+}
+.pdp-mars__container {
+  max-width: 1168px;
+  margin: 0 auto;
+}
+.pdp-mars__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 1024px) {
+  .pdp-mars {
+    padding: 64px 24px 32px;
+  }
+  .pdp-mars__grid {
+    grid-template-columns: 11.7fr 12fr;
+    gap: 42px;
+    align-items: start;
+  }
+}
+
+/* ---------- Gallery ---------- */
+.pdp-mars__gallery {
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .pdp-mars__gallery {
+    position: sticky;
+    top: 84px;
+    align-self: start;
+  }
+}
+.pdp-mars__gallery-main {
+  border-radius: 20px;
+  overflow: hidden;
+  background: #111;
+  aspect-ratio: 1 / 1;
+}
+.pdp-mars__gallery-main img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.pdp-mars__gallery-thumbs {
+  margin-top: 14px;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pdp-mars__gallery-thumbs::-webkit-scrollbar {
+  display: none;
+}
+.pdp-mars__thumb {
+  flex: 0 0 auto;
+  width: 55px;
+  height: 55px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+  background: #111;
+  padding: 0;
+}
+.pdp-mars__thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.pdp-mars__thumb.is-active {
+  border-color: var(--pdp-text);
+}
+
+/* ---------- Quote / nutrition link under gallery ---------- */
+.pdp-mars__quote {
+  margin: 14px 0 0;
+  background: var(--pdp-card);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+.pdp-mars__quote cite {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-style: normal;
+  color: var(--pdp-muted);
+  font-size: 12px;
+}
+.pdp-mars__nutrition-link {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 10px 18px;
+  border: 1px solid var(--pdp-text);
+  border-radius: 8px;
+  color: var(--pdp-text);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 16px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.pdp-mars__nutrition-link:hover {
+  background: #f5e8d7;
+  color: #0b0b0b;
+  border-color: #f5e8d7;
+}
+
+/* ---------- Info column ---------- */
+.pdp-mars__info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+.pdp-mars__subtitle,
+.pdp-mars__subtitle * {
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+@media (min-width: 768px) {
+  .pdp-mars__subtitle,
+  .pdp-mars__subtitle * {
+    font-size: 42px;
+  }
+}
+.pdp-mars__title {
+  font-size: 26px;
+  line-height: 1.15;
+  font-weight: 700;
+  margin: 0;
+}
+@media (min-width: 768px) {
+  .pdp-mars__title {
+    font-size: 36px;
+  }
+}
+.pdp-mars__reviews {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--pdp-muted);
+}
+.pdp-mars__stars {
+  color: var(--pdp-accent);
+  letter-spacing: 1px;
+}
+.pdp-mars__description {
+  font-size: 16px;
+  line-height: 1.3;
+}
+@media (min-width: 1024px) {
+  .pdp-mars__description {
+    font-size: 20px;
+  }
+}
+
+/* ---------- Bullets ---------- */
+.pdp-mars__bullets {
+  margin: 0;
+}
+.pdp-mars__bullets ul,
+.pdp-mars__bullets ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pdp-mars__bullets li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  list-style: none;
+}
+@media (min-width: 1024px) {
+  .pdp-mars__bullets li {
+    font-size: 20px;
+  }
+}
+.pdp-mars__bullets li::before {
+  content: '';
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--pdp-accent)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'><path d='M12 5.5L6.79125 10.9407L4 8.14949' stroke='white' stroke-width='1.4' stroke-linejoin='round'/></svg>")
+    center / 60% 60% no-repeat;
+}
+
+/* ---------- Price ---------- */
+.pdp-mars__price-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.pdp-mars__price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 900;
+  line-height: 1;
+}
+.pdp-mars__price-current {
+  font-size: 32px;
+}
+@media (min-width: 1024px) {
+  .pdp-mars__price-current {
+    font-size: 36px;
+  }
+}
+.pdp-mars__price-compare {
+  font-size: 22px;
+  text-decoration: line-through;
+  color: #9b9b9b;
+  font-weight: 500;
+}
+@media (min-width: 1024px) {
+  .pdp-mars__price-compare {
+    font-size: 28px;
+  }
+}
+.pdp-mars__discount-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 86, 0, 0.18);
+  color: var(--pdp-accent);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* ---------- ATC ---------- */
+.pdp-mars__form {
+  display: block;
+  margin-top: 6px;
+}
+.pdp-mars__atc {
+  position: relative;
+  width: 100%;
+  background: var(--pdp-accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--pdp-radius);
+  padding: 18px 24px;
+  font-weight: 800;
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  transition: background 0.2s ease, transform 0.05s ease;
+  font-family: inherit;
+}
+.pdp-mars__atc:hover {
+  background: #ff6900;
+}
+.pdp-mars__atc:active {
+  transform: scale(0.99);
+}
+.pdp-mars__atc[disabled],
+.pdp-mars__atc.is-loading,
+.pdp-mars__atc.is-disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+.pdp-mars__atc-arrow svg {
+  width: 22px;
+  height: auto;
+  display: block;
+}
+.pdp-mars__spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: pdp-mars-spin 0.7s linear infinite;
+}
+.pdp-mars__atc.is-loading .pdp-mars__spinner {
+  display: inline-block;
+}
+.pdp-mars__atc.is-loading .pdp-mars__atc-arrow {
+  display: none;
+}
+@keyframes pdp-mars-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.pdp-mars__error {
+  display: none;
+  margin: 10px 0 0;
+  background: rgba(255, 0, 0, 0.12);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  color: #ffb1b1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.pdp-mars__error.is-visible {
+  display: block;
+}
+
+/* ---------- Trust row ---------- */
+.pdp-mars__trust {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.pdp-mars__trust-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+.pdp-mars__trust-item img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+.pdp-mars__trust-item span {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--pdp-text);
+}
+@media (min-width: 1024px) {
+  .pdp-mars__trust-item span {
+    font-size: 12px;
+  }
+}
+.pdp-mars__disclaimer {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--pdp-muted);
+  text-align: center;
+  max-width: 480px;
+  margin: 4px auto 0;
+}
+
+/* ---------- Free gifts ---------- */
+.pdp-mars__gifts {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pdp-mars__gifts-heading {
+  text-align: center;
+  font-weight: 900;
+  font-size: 20px;
+  margin: 0;
+  color: var(--pdp-accent);
+  text-transform: uppercase;
+}
+.pdp-mars__gifts-list {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.pdp-mars__gift {
+  position: relative;
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pdp-mars__gift-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: visible;
+}
+.pdp-mars__gift-img img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.pdp-mars__gift-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  color: var(--pdp-accent);
+  font-weight: 800;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.pdp-mars__gift-label {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+}

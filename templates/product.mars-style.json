@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-mars-style",
+      "blocks": {
+        "gift_1": {
+          "type": "free_gift",
+          "settings": {
+            "gift_label": "Travel Tin",
+            "badge_text": "FREE $10"
+          }
+        },
+        "gift_2": {
+          "type": "free_gift",
+          "settings": {
+            "gift_label": "Testosterone E-Book",
+            "badge_text": "FREE $20"
+          }
+        },
+        "gift_3": {
+          "type": "free_gift",
+          "settings": {
+            "gift_label": "Month of Ladder Workout App",
+            "badge_text": "FREE $30"
+          }
+        },
+        "gift_4": {
+          "type": "free_gift",
+          "settings": {
+            "gift_label": "Apple Watch Ultra 3.0",
+            "badge_text": "CHANCE TO WIN"
+          }
+        }
+      },
+      "block_order": ["gift_1", "gift_2", "gift_3", "gift_4"],
+      "settings": {
+        "subtitle": "<p>Unblock Your T<br>Unlock Your Potential</p>",
+        "reviews_text": "3,703 Reviews",
+        "description": "<p>The most potent and natural stack on earth. It works four ways: produces, frees, protects & optimizes.*</p>",
+        "bullets": "<ul><li>8 Ingredients at Full Clinical Doses</li><li>Zero Fillers or 'Proprietary' Blends</li><li>Made in USA & Third-Party Tested</li><li>90-Day 100% Money-Back Guarantee</li><li>Fast & Free Shipping on First Order</li></ul>",
+        "discount_badge_text": "50% OFF FOR LIFE",
+        "atc_label": "Try it now",
+        "subscription_disclaimer": "<p>By default you will receive a 30 day supply every 30 days. Skip, pause, or cancel anytime. By subscribing, you get discounted pricing and subscriber-only benefits and gifts.</p>",
+        "show_trust_badges": true,
+        "trust_1_text": "$59 Refill Ships in 30 Days",
+        "trust_2_text": "Try Risk-Free for 90 Days or 100% Money Back",
+        "trust_3_text": "Fast & Free Shipping with 1st Order",
+        "gifts_heading": "YOUR FREE GIFTS",
+        "review_quote": "<p>\"It took about 10-15 days to notice results. Better sleep, no crash in the afternoon and better energy in the gym.\"</p>",
+        "review_author": "Jonathan S.",
+        "background_color": "#000000",
+        "text_color": "#ffffff",
+        "muted_color": "#9b9b9b",
+        "card_color": "#2a2a2a",
+        "accent_color": "#ff5600",
+        "color_scheme": "background-1",
+        "padding_top": 60,
+        "padding_bottom": 40
+      }
+    }
+  },
+  "order": ["main"]
+}

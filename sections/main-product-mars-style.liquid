@@ -1,0 +1,569 @@
+{{ 'main-product-mars-style.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'main-product-mars-style.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign mars_product = section.settings.product
+  if mars_product == blank
+    assign mars_product = product
+  endif
+
+  assign current_variant = mars_product.selected_or_first_available_variant
+
+  assign selling_plan_id = section.settings.selling_plan_id
+  if selling_plan_id == blank and mars_product.selling_plan_groups.size > 0
+    assign first_group = mars_product.selling_plan_groups | first
+    assign first_plan = first_group.selling_plans | first
+    if first_plan != blank
+      assign selling_plan_id = first_plan.id
+    endif
+  endif
+
+  assign mars_price = current_variant.price
+  assign mars_compare = current_variant.compare_at_price
+  if mars_compare == blank or mars_compare <= mars_price
+    assign mars_compare = 0
+  endif
+
+  if selling_plan_id != blank
+    for allocation in current_variant.selling_plan_allocations
+      if allocation.selling_plan.id == selling_plan_id
+        assign mars_price = allocation.price
+        if allocation.compare_at_price and allocation.compare_at_price > mars_price
+          assign mars_compare = allocation.compare_at_price
+        endif
+        break
+      endif
+    endfor
+  endif
+
+  assign gift_ids = ''
+  for block in section.blocks
+    if block.type == 'free_gift' and block.settings.gift_product != blank
+      assign gp = block.settings.gift_product
+      assign gv = gp.selected_or_first_available_variant
+      if gv != blank
+        if gift_ids == ''
+          assign gift_ids = gv.id | append: ''
+        else
+          assign gift_ids = gift_ids | append: ',' | append: gv.id
+        endif
+      endif
+    endif
+  endfor
+-%}
+
+<section
+  class="pdp-mars color-{{ section.settings.color_scheme }} section-{{ section.id }}-padding"
+  data-section-id="{{ section.id }}"
+  style="background-color: {{ section.settings.background_color }}; color: {{ section.settings.text_color }};"
+>
+  {%- style -%}
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    }
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+    #PDP-Mars-{{ section.id }} {
+      --pdp-accent: {{ section.settings.accent_color }};
+      --pdp-text: {{ section.settings.text_color }};
+      --pdp-bg: {{ section.settings.background_color }};
+      --pdp-muted: {{ section.settings.muted_color }};
+      --pdp-card: {{ section.settings.card_color }};
+    }
+  {%- endstyle -%}
+
+  <div id="PDP-Mars-{{ section.id }}" class="pdp-mars__container">
+    <div class="pdp-mars__grid">
+      {%- comment -%} ===================== GALLERY ===================== {%- endcomment -%}
+      <div class="pdp-mars__gallery" data-mars-gallery="{{ section.id }}">
+        {%- if mars_product.media.size > 0 -%}
+          {%- assign featured = mars_product.featured_media -%}
+          <div class="pdp-mars__gallery-main">
+            <img
+              data-mars-main-img
+              src="{{ featured | image_url: width: 800 }}"
+              srcset="{{ featured | image_url: width: 600 }} 600w, {{ featured | image_url: width: 900 }} 900w, {{ featured | image_url: width: 1200 }} 1200w"
+              sizes="(min-width: 990px) 600px, 100vw"
+              alt="{{ featured.alt | escape | default: mars_product.title }}"
+              width="{{ featured.width }}"
+              height="{{ featured.height }}"
+              loading="eager"
+              fetchpriority="high"
+            >
+          </div>
+          <div class="pdp-mars__gallery-thumbs">
+            {%- for media in mars_product.media -%}
+              <button
+                type="button"
+                class="pdp-mars__thumb {% if forloop.first %}is-active{% endif %}"
+                data-mars-thumb
+                data-full="{{ media | image_url: width: 1200 }}"
+                data-full-srcset="{{ media | image_url: width: 600 }} 600w, {{ media | image_url: width: 900 }} 900w, {{ media | image_url: width: 1200 }} 1200w"
+                aria-label="View image {{ forloop.index }}"
+              >
+                <img
+                  src="{{ media | image_url: width: 160 }}"
+                  alt="{{ media.alt | escape | default: mars_product.title }}"
+                  width="80"
+                  height="80"
+                  loading="lazy"
+                >
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- elsif section.settings.placeholder_image != blank -%}
+          <div class="pdp-mars__gallery-main">
+            <img
+              src="{{ section.settings.placeholder_image | image_url: width: 1200 }}"
+              alt="{{ mars_product.title }}"
+              loading="eager"
+            >
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.review_quote != blank -%}
+          <blockquote class="pdp-mars__quote">
+            <p>{{ section.settings.review_quote }}</p>
+            <cite>
+              <span class="pdp-mars__stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              {{- section.settings.review_author -}}
+            </cite>
+          </blockquote>
+        {%- endif -%}
+
+        {%- if section.settings.nutrition_label_url != blank -%}
+          <a class="pdp-mars__nutrition-link" href="{{ section.settings.nutrition_label_url }}" target="_blank" rel="noopener">
+            {{ section.settings.nutrition_label_text | default: 'View Nutrition Label' }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} ===================== INFO ===================== {%- endcomment -%}
+      <div class="pdp-mars__info">
+        {%- if section.settings.subtitle != blank -%}
+          <div class="pdp-mars__subtitle">{{ section.settings.subtitle }}</div>
+        {%- endif -%}
+
+        <h1 class="pdp-mars__title">{{ section.settings.product_title_override | default: mars_product.title }}</h1>
+
+        {%- if section.settings.reviews_text != blank -%}
+          <div class="pdp-mars__reviews">
+            <span class="pdp-mars__stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span class="pdp-mars__reviews-text">{{ section.settings.reviews_text }}</span>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.description != blank -%}
+          <div class="pdp-mars__description rte">{{ section.settings.description }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.bullets != blank -%}
+          <div class="pdp-mars__bullets rte">
+            {{ section.settings.bullets }}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} ===================== PRICE ===================== {%- endcomment -%}
+        <div class="pdp-mars__price-block">
+          <div class="pdp-mars__price">
+            <span class="pdp-mars__price-current">{{ mars_price | money_without_trailing_zeros }}</span>
+            {%- if mars_compare > 0 and mars_compare > mars_price -%}
+              <span class="pdp-mars__price-compare">{{ mars_compare | money_without_trailing_zeros }}</span>
+            {%- endif -%}
+          </div>
+          {%- if section.settings.discount_badge_text != blank -%}
+            <span class="pdp-mars__discount-badge">{{ section.settings.discount_badge_text }}</span>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} ===================== ADD-TO-CART ===================== {%- endcomment -%}
+        <mars-product-form
+          class="pdp-mars__form"
+          data-section="{{ section.id }}"
+          data-variant-id="{{ current_variant.id }}"
+          data-selling-plan-id="{{ selling_plan_id }}"
+          data-quantity="1"
+          data-gifts="{{ gift_ids }}"
+        >
+          {%- if current_variant.available -%}
+            <button type="button" class="pdp-mars__atc" data-mars-atc>
+              <span class="pdp-mars__atc-label">{{ section.settings.atc_label | default: 'Try It Now' }}</span>
+              <span class="pdp-mars__atc-arrow" aria-hidden="true">
+                <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 8h18M14 2l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="pdp-mars__spinner" aria-hidden="true"></span>
+            </button>
+          {%- else -%}
+            <button type="button" class="pdp-mars__atc is-disabled" disabled>
+              <span class="pdp-mars__atc-label">Sold Out</span>
+            </button>
+          {%- endif -%}
+          <p class="pdp-mars__error" data-mars-error></p>
+        </mars-product-form>
+
+        {%- if section.settings.show_trust_badges -%}
+          <div class="pdp-mars__trust">
+            {%- if section.settings.trust_1_text != blank -%}
+              <div class="pdp-mars__trust-item">
+                {%- if section.settings.trust_1_icon != blank -%}
+                  <img src="{{ section.settings.trust_1_icon | image_url: width: 60 }}" alt="" loading="lazy" width="20" height="20">
+                {%- endif -%}
+                <span>{{ section.settings.trust_1_text }}</span>
+              </div>
+            {%- endif -%}
+            {%- if section.settings.trust_2_text != blank -%}
+              <div class="pdp-mars__trust-item">
+                {%- if section.settings.trust_2_icon != blank -%}
+                  <img src="{{ section.settings.trust_2_icon | image_url: width: 60 }}" alt="" loading="lazy" width="20" height="20">
+                {%- endif -%}
+                <span>{{ section.settings.trust_2_text }}</span>
+              </div>
+            {%- endif -%}
+            {%- if section.settings.trust_3_text != blank -%}
+              <div class="pdp-mars__trust-item">
+                {%- if section.settings.trust_3_icon != blank -%}
+                  <img src="{{ section.settings.trust_3_icon | image_url: width: 60 }}" alt="" loading="lazy" width="20" height="20">
+                {%- endif -%}
+                <span>{{ section.settings.trust_3_text }}</span>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.subscription_disclaimer != blank -%}
+          <p class="pdp-mars__disclaimer">{{ section.settings.subscription_disclaimer }}</p>
+        {%- endif -%}
+
+        {%- comment -%} ===================== FREE GIFTS ===================== {%- endcomment -%}
+        {%- assign gift_blocks_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'free_gift' -%}
+            {%- assign gift_blocks_count = gift_blocks_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if gift_blocks_count > 0 -%}
+          <div class="pdp-mars__gifts">
+            <h3 class="pdp-mars__gifts-heading">
+              {{ section.settings.gifts_heading | default: 'YOUR FREE GIFTS' }}
+            </h3>
+            <div class="pdp-mars__gifts-list">
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'free_gift' -%}
+                  {%- assign gp = block.settings.gift_product -%}
+                  {%- if gp != blank or block.settings.gift_image != blank -%}
+                    <div class="pdp-mars__gift" {{ block.shopify_attributes }}>
+                      <div class="pdp-mars__gift-img">
+                        {%- if block.settings.gift_image != blank -%}
+                          <img src="{{ block.settings.gift_image | image_url: width: 300 }}" alt="{{ block.settings.gift_label | default: gp.title }}" loading="lazy" width="120" height="120">
+                        {%- elsif gp.featured_image != blank -%}
+                          <img src="{{ gp.featured_image | image_url: width: 300 }}" alt="{{ gp.title }}" loading="lazy" width="120" height="120">
+                        {%- endif -%}
+                        {%- if block.settings.badge_text != blank -%}
+                          <span class="pdp-mars__gift-badge">{{ block.settings.badge_text }}</span>
+                        {%- endif -%}
+                      </div>
+                      <div class="pdp-mars__gift-label">
+                        {{ block.settings.gift_label | default: gp.title }}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main product (Mars-style)",
+  "tag": "section",
+  "class": "section-main-product-mars",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Defaults to the current product on the product page."
+    },
+    {
+      "type": "text",
+      "id": "selling_plan_id",
+      "label": "Selling plan ID (optional)",
+      "info": "Force a specific selling plan. Leave blank to auto-pick the first available subscription plan. Found in the URL of the selling plan in admin."
+    },
+    {
+      "type": "text",
+      "id": "product_title_override",
+      "label": "Title override",
+      "info": "Leave blank to use the product title."
+    },
+    {
+      "type": "header",
+      "content": "Hero copy"
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle (eyebrow)",
+      "default": "<p>Unlock Your Potential</p>"
+    },
+    {
+      "type": "text",
+      "id": "reviews_text",
+      "label": "Reviews text",
+      "default": "3,703 Reviews"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Short description",
+      "default": "<p>The most potent and natural stack on earth.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "bullets",
+      "label": "Bullet points (use <li>…</li>)",
+      "default": "<ul><li>8 Ingredients at Full Clinical Doses</li><li>Zero Fillers or 'Proprietary' Blends</li><li>Made in USA & Third-Party Tested</li><li>90-Day 100% Money-Back Guarantee</li><li>Fast & Free Shipping on First Order</li></ul>"
+    },
+    {
+      "type": "header",
+      "content": "Price & badge"
+    },
+    {
+      "type": "text",
+      "id": "discount_badge_text",
+      "label": "Discount badge",
+      "default": "50% OFF FOR LIFE"
+    },
+    {
+      "type": "header",
+      "content": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "atc_label",
+      "label": "Button label",
+      "default": "Try it now"
+    },
+    {
+      "type": "richtext",
+      "id": "subscription_disclaimer",
+      "label": "Disclaimer text",
+      "default": "<p>By default you will receive a 30 day supply every 30 days. Skip, pause, or cancel anytime. By subscribing, you get discounted pricing and subscriber-only benefits and gifts.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Trust badges (3 columns)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_badges",
+      "label": "Show trust row",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "trust_1_icon",
+      "label": "Icon 1"
+    },
+    {
+      "type": "text",
+      "id": "trust_1_text",
+      "label": "Text 1",
+      "default": "$59 Refill Ships in 30 Days"
+    },
+    {
+      "type": "image_picker",
+      "id": "trust_2_icon",
+      "label": "Icon 2"
+    },
+    {
+      "type": "text",
+      "id": "trust_2_text",
+      "label": "Text 2",
+      "default": "Try Risk-Free for 90 Days or 100% Money Back"
+    },
+    {
+      "type": "image_picker",
+      "id": "trust_3_icon",
+      "label": "Icon 3"
+    },
+    {
+      "type": "text",
+      "id": "trust_3_text",
+      "label": "Text 3",
+      "default": "Fast & Free Shipping with 1st Order"
+    },
+    {
+      "type": "header",
+      "content": "Free gifts heading"
+    },
+    {
+      "type": "text",
+      "id": "gifts_heading",
+      "label": "Heading",
+      "default": "YOUR FREE GIFTS"
+    },
+    {
+      "type": "header",
+      "content": "Gallery extras"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image",
+      "label": "Placeholder image"
+    },
+    {
+      "type": "richtext",
+      "id": "review_quote",
+      "label": "Review quote",
+      "default": "<p>\"It took about 10-15 days to notice results. Better sleep, no crash in the afternoon and better energy in the gym.\"</p>"
+    },
+    {
+      "type": "text",
+      "id": "review_author",
+      "label": "Review author",
+      "default": "Jonathan S."
+    },
+    {
+      "type": "url",
+      "id": "nutrition_label_url",
+      "label": "Nutrition label link"
+    },
+    {
+      "type": "text",
+      "id": "nutrition_label_text",
+      "label": "Nutrition label button text",
+      "default": "View Nutrition Label"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text",
+      "default": "#9b9b9b"
+    },
+    {
+      "type": "color",
+      "id": "card_color",
+      "label": "Card / pill background",
+      "default": "#2a2a2a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#ff5600"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "free_gift",
+      "name": "Free gift",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "product",
+          "id": "gift_product",
+          "label": "Gift product",
+          "info": "Required. The product/variant to auto-add to cart. Use a $0-priced product hidden from sales channels."
+        },
+        {
+          "type": "text",
+          "id": "gift_label",
+          "label": "Display label",
+          "info": "Leave blank to use product title."
+        },
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge text",
+          "default": "FREE $10"
+        },
+        {
+          "type": "image_picker",
+          "id": "gift_image",
+          "label": "Display image (optional)",
+          "info": "Leave blank to use the product image."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main product (Mars-style)",
+      "category": "Product",
+      "blocks": [
+        { "type": "free_gift" },
+        { "type": "free_gift" },
+        { "type": "free_gift" },
+        { "type": "free_gift" }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
