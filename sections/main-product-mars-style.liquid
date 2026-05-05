@@ -7,7 +7,17 @@
     assign mars_product = product
   endif
 
-  assign current_variant = mars_product.selected_or_first_available_variant
+  comment
+    Prefer a variant Shopify considers purchasable. This template has no variant picker, so we must
+    not stick on an unavailable variant when another is in stock (avoids false "Sold out").
+  endcomment
+  assign current_variant = mars_product.first_available_variant
+  if current_variant == blank
+    assign current_variant = mars_product.selected_or_first_available_variant
+  endif
+  if current_variant == blank
+    assign current_variant = mars_product.variants.first
+  endif
 
   assign selling_plan_id = section.settings.selling_plan_id
   if selling_plan_id == blank and mars_product.selling_plan_groups.size > 0
@@ -200,7 +210,12 @@
           data-quantity="1"
           data-gifts="{{ gift_ids }}"
         >
-          {%- if current_variant.available -%}
+          {%- comment -%}
+            Single-variant products: drive button state from product-level availability so admin
+            inventory toggles (e.g. "continue selling when out of stock") propagate even before the
+            variant cache catches up.
+          {%- endcomment -%}
+          {%- if mars_product.available -%}
             <button type="button" class="pdp-mars__atc" data-mars-atc>
               <span class="pdp-mars__atc-label">{{ section.settings.atc_label | default: 'Try It Now' }}</span>
               <span class="pdp-mars__atc-arrow" aria-hidden="true">
