@@ -22,6 +22,14 @@
       endif
     %}
 
+    {%- comment -%}
+      mars-cart-guardian must run BEFORE any other script (including the BREAK
+      remote bundle) so that its fetch / XHR interceptors are installed before
+      other scripts capture references to those globals. Loaded synchronously
+      from theme assets — file is small.
+    {%- endcomment -%}
+    <script src="{{ 'mars-cart-guardian.js' | asset_url }}"></script>
+
     <script src="https://js.shrinetheme.com/js/v2/main.js?version=1" defer="defer" data-defer="true" data-is-rtl="{{ is_rtl }}" data-country-list-function="{{ settings.country_list_function }}" data-country-list="{{ settings.country_list }}" data-country-list-error="{{ settings.country_invalid_error_msg }}" data-animations-type="{{ settings.animations_type }}"></script>
     <script src="{{ 'secondary.js' | asset_url }}" defer="defer" data-defer="true" data-is-rtl="{{ is_rtl }}"></script>
     

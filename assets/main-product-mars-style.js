@@ -2,208 +2,202 @@
    <mars-product-form> custom element
    ---------------------------------------------------------------------
    - Submits a single /cart/add.js call with: main variant + selling plan
-     + free gift variants (all in one request via the `items` array).
-   - Updates cart-notification or cart-drawer if available.
-   - Falls back to redirecting to /cart on success.
+     + free gift variants. Each gift is tagged with `_free_gift: 'true'`
+     and `_main_variant: '<main variant id>'` so mars-cart-guardian.js
+     can enforce: gifts always quantity 1, gifts removed if main is.
+   - On success the cart drawer / cart icon sections are re-fetched and
+     patched in place (no page reload), then the drawer is opened.
 ===================================================================== */
-class MarsProductForm extends HTMLElement {
-  constructor() {
-    super();
-    this.button = this.querySelector('[data-mars-atc]');
-    this.errorEl = this.querySelector('[data-mars-error]');
-    this.gallery = document.querySelector(`[data-mars-gallery="${this.dataset.section}"]`);
-    if (this.button) this.button.addEventListener('click', this.onSubmit.bind(this));
-  }
+(function () {
+  const SECTION_IDS = ['cart-drawer', 'cart-icon-bubble'];
 
-  connectedCallback() {
-    this.initGallery();
-  }
+  /* ---------------------- in-place cart refresh --------------------- */
 
-  /* --------------------------- Gallery --------------------------- */
-  initGallery() {
-    if (!this.gallery) return;
-    const main = this.gallery.querySelector('[data-mars-main-img]');
-    const thumbs = this.gallery.querySelectorAll('[data-mars-thumb]');
-    if (!main || !thumbs.length) return;
-    thumbs.forEach((t) => {
-      t.addEventListener('click', () => {
-        const src = t.dataset.full || t.querySelector('img')?.src;
-        const srcset = t.dataset.fullSrcset || '';
-        if (src) {
-          main.src = src;
-          if (srcset) main.srcset = srcset;
-        }
-        thumbs.forEach((x) => x.classList.remove('is-active'));
-        t.classList.add('is-active');
-      });
-    });
-  }
-
-  /* --------------------------- ATC -------------------------------- */
-  async onSubmit(evt) {
-    evt.preventDefault();
-    if (this.button.classList.contains('is-loading')) return;
-    this.setLoading(true);
-    this.hideError();
-
-    const variantId = parseInt(this.dataset.variantId || '0', 10);
-    if (!variantId) {
-      this.showError('Product is unavailable.');
-      this.setLoading(false);
-      return;
-    }
-    const sellingPlanId = parseInt(this.dataset.sellingPlanId || '0', 10);
-    const quantity = parseInt(this.dataset.quantity || '1', 10) || 1;
-    const giftIds = (this.dataset.gifts || '')
-      .split(',')
-      .map((s) => parseInt(s.trim(), 10))
-      .filter((id) => Number.isFinite(id) && id > 0);
-
-    const main = { id: variantId, quantity };
-    if (sellingPlanId) main.selling_plan = sellingPlanId;
-
-    const items = [main];
-    giftIds.forEach((id) => {
-      items.push({
-        id,
-        quantity: 1,
-        properties: { _free_gift: 'true' }
-      });
-    });
-
-    const sectionsToRender = this.getSectionsToRender();
-
+  async function refreshCartSections() {
     try {
-      const url = (window.routes && window.routes.cart_add_url) || '/cart/add.js';
-      const body = { items };
-      if (sectionsToRender.length) {
-        body.sections = sectionsToRender.map((s) => s.id).join(',');
-        body.sections_url = window.location.pathname;
-      }
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/javascript',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(body)
+      const url = `/?sections=${SECTION_IDS.join(',')}`;
+      const fetcher = window.__marsOriginalFetch || window.fetch;
+      const res = await fetcher.call(window, url, {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: { 'X-Mars-Guardian': '1' }
       });
       const data = await res.json();
-      if (!res.ok || data.status) {
-        const msg = data.description || data.message || 'Could not add to cart.';
-        throw new Error(msg);
-      }
-      this.onAddSuccess(data);
-    } catch (err) {
-      console.error('[mars-product-form]', err);
-      this.showError(err.message || 'Could not add to cart.');
-      this.setLoading(false);
-    }
-  }
+      const parser = new DOMParser();
 
-  onAddSuccess(data) {
-    const fallback = () => {
-      window.location.href = (window.routes && window.routes.cart_url) || '/cart';
-    };
-
-    // 1) Try BREAK theme cart-drawer if present.
-    const drawerEl = document.querySelector('cart-drawer');
-    if (drawerEl) {
-      // BREAK's drawer reads cart state on open. Refresh sections then open.
-      this.refreshDrawer(drawerEl)
-        .then(() => {
-          if (typeof drawerEl.open === 'function') drawerEl.open();
-          else drawerEl.classList.add('active');
-          this.setLoading(false);
-        })
-        .catch(() => {
-          fallback();
-        });
-      return;
-    }
-
-    // 2) Try theme's cart-notification (renderContents API).
-    const note = document.querySelector('cart-notification');
-    if (note && data && data.sections && typeof note.renderContents === 'function') {
-      try {
-        // The first added line item's key is the freshest — use main item.
-        const itemKey = (data.items && data.items[0] && data.items[0].key) || data.key;
-        note.renderContents({ key: itemKey, sections: data.sections });
-        this.setLoading(false);
-        return;
-      } catch (e) {
-        console.warn('[mars-product-form] cart-notification render failed', e);
-      }
-    }
-
-    // 3) Fallback — go to the cart page.
-    fallback();
-  }
-
-  async refreshDrawer(drawerEl) {
-    // Re-fetch /?sections=cart-drawer to get fresh HTML and patch in.
-    const cartDrawerSelector = '#CartDrawer';
-    const url = `${window.location.pathname}?sections=cart-drawer`;
-    try {
-      const res = await fetch(url, { credentials: 'same-origin' });
-      const json = await res.json();
-      const html = json && json['cart-drawer'];
-      if (!html) return;
-      const parsed = new DOMParser().parseFromString(html, 'text/html');
-      const fresh = parsed.querySelector(cartDrawerSelector);
-      const current = drawerEl.querySelector(cartDrawerSelector);
-      if (fresh && current) current.innerHTML = fresh.innerHTML;
-      // Refresh icon bubble too
-      const bubble = document.getElementById('cart-icon-bubble');
-      if (bubble) {
-        const bubbleRes = await fetch(`${window.location.pathname}?sections=cart-icon-bubble`, {
-          credentials: 'same-origin'
-        });
-        const bubbleJson = await bubbleRes.json();
-        const bubbleHTML = bubbleJson && bubbleJson['cart-icon-bubble'];
-        if (bubbleHTML) {
-          const tmp = new DOMParser().parseFromString(bubbleHTML, 'text/html');
-          const freshBubble = tmp.querySelector('#cart-icon-bubble');
-          if (freshBubble) bubble.innerHTML = freshBubble.innerHTML;
+      const cartDrawerHtml = data && data['cart-drawer'];
+      if (cartDrawerHtml) {
+        const fresh = parser.parseFromString(cartDrawerHtml, 'text/html');
+        const freshInner = fresh.querySelector('#CartDrawer');
+        const currentInner = document.querySelector('#CartDrawer');
+        if (freshInner && currentInner) {
+          currentInner.innerHTML = freshInner.innerHTML;
+          const freshOuter = fresh.querySelector('cart-drawer');
+          const currentOuter = document.querySelector('cart-drawer');
+          if (freshOuter && currentOuter) {
+            currentOuter.classList.toggle('is-empty', freshOuter.classList.contains('is-empty'));
+          }
         }
       }
+
+      const bubbleHtml = data && data['cart-icon-bubble'];
+      if (bubbleHtml) {
+        const fresh = parser.parseFromString(bubbleHtml, 'text/html');
+        const freshBubble = fresh.querySelector('#cart-icon-bubble');
+        const currentBubble = document.querySelector('#cart-icon-bubble');
+        if (freshBubble && currentBubble) currentBubble.innerHTML = freshBubble.innerHTML;
+      }
     } catch (e) {
-      console.warn('[mars-product-form] drawer refresh failed', e);
+      console.warn('[mars-product-form] section refresh failed', e);
     }
   }
 
-  getSectionsToRender() {
-    const ids = [];
-    if (document.getElementById('cart-notification-product')) ids.push({ id: 'cart-notification-product' });
-    if (document.getElementById('cart-notification-button')) ids.push({ id: 'cart-notification-button' });
-    if (document.getElementById('cart-icon-bubble')) ids.push({ id: 'cart-icon-bubble' });
-    return ids;
+  /* ----------------------- cart drawer opener ----------------------- */
+
+  function openCartDrawer(maxAttempts = 20) {
+    let attempts = 0;
+    const tryOnce = () => {
+      attempts += 1;
+      const drawer = document.querySelector('cart-drawer');
+      if (drawer) {
+        if (typeof drawer.open === 'function') {
+          try { drawer.open(); return; } catch (_) {}
+        }
+        drawer.classList.add('active');
+        document.documentElement.classList.add('cart-drawer-open');
+        return;
+      }
+      const cartIcon =
+        document.querySelector('[data-cart-icon-bubble], #cart-icon-bubble, a[href="/cart"], .header__icon--cart');
+      if (cartIcon) { cartIcon.click(); return; }
+      if (attempts < maxAttempts) setTimeout(tryOnce, 150);
+    };
+    tryOnce();
   }
 
-  /* --------------------------- UI helpers ------------------------- */
-  setLoading(on) {
-    if (!this.button) return;
-    if (on) {
-      this.button.classList.add('is-loading');
-      this.button.disabled = true;
-    } else {
-      this.button.classList.remove('is-loading');
-      this.button.disabled = false;
+  /* --------------------------- form element ------------------------- */
+
+  class MarsProductForm extends HTMLElement {
+    constructor() {
+      super();
+      this.button = this.querySelector('[data-mars-atc]');
+      this.errorEl = this.querySelector('[data-mars-error]');
+      this.gallery = document.querySelector(`[data-mars-gallery="${this.dataset.section}"]`);
+      if (this.button) this.button.addEventListener('click', this.onSubmit.bind(this));
+    }
+
+    connectedCallback() {
+      this.initGallery();
+    }
+
+    /* ----------------------------- gallery ----------------------------- */
+    initGallery() {
+      if (!this.gallery) return;
+      const main = this.gallery.querySelector('[data-mars-main-img]');
+      const thumbs = this.gallery.querySelectorAll('[data-mars-thumb]');
+      if (!main || !thumbs.length) return;
+      thumbs.forEach((t) => {
+        t.addEventListener('click', () => {
+          const src = t.dataset.full || t.querySelector('img')?.src;
+          const srcset = t.dataset.fullSrcset || '';
+          if (src) {
+            main.src = src;
+            if (srcset) main.srcset = srcset;
+          }
+          thumbs.forEach((x) => x.classList.remove('is-active'));
+          t.classList.add('is-active');
+        });
+      });
+    }
+
+    /* ------------------------------- ATC ------------------------------- */
+    async onSubmit(evt) {
+      evt.preventDefault();
+      if (this.button.classList.contains('is-loading')) return;
+      this.setLoading(true);
+      this.hideError();
+
+      const variantId = parseInt(this.dataset.variantId || '0', 10);
+      if (!variantId) {
+        this.showError('Product is unavailable.');
+        this.setLoading(false);
+        return;
+      }
+      const sellingPlanId = parseInt(this.dataset.sellingPlanId || '0', 10);
+      const quantity = parseInt(this.dataset.quantity || '1', 10) || 1;
+      const giftIds = (this.dataset.gifts || '')
+        .split(',')
+        .map((s) => parseInt(s.trim(), 10))
+        .filter((id) => Number.isFinite(id) && id > 0);
+
+      const main = { id: variantId, quantity };
+      if (sellingPlanId) main.selling_plan = sellingPlanId;
+
+      const items = [main];
+      giftIds.forEach((id) => {
+        items.push({
+          id,
+          quantity: 1,
+          properties: {
+            _free_gift: 'true',
+            _main_variant: String(variantId)
+          }
+        });
+      });
+
+      try {
+        const url = (window.routes && window.routes.cart_add_url) || '/cart/add.js';
+        const fetcher = window.__marsOriginalFetch || window.fetch;
+        const res = await fetcher.call(window, url, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/javascript',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Mars-Guardian': '1'
+          },
+          body: JSON.stringify({ items })
+        });
+        const data = await res.json();
+        if (!res.ok || data.status) {
+          const msg = data.description || data.message || 'Could not add to cart.';
+          throw new Error(msg);
+        }
+        await refreshCartSections();
+        openCartDrawer();
+        this.setLoading(false);
+      } catch (err) {
+        console.error('[mars-product-form]', err);
+        this.showError(err.message || 'Could not add to cart.');
+        this.setLoading(false);
+      }
+    }
+
+    /* ---------------------------- UI helpers --------------------------- */
+    setLoading(on) {
+      if (!this.button) return;
+      if (on) {
+        this.button.classList.add('is-loading');
+        this.button.disabled = true;
+      } else {
+        this.button.classList.remove('is-loading');
+        this.button.disabled = false;
+      }
+    }
+    showError(msg) {
+      if (!this.errorEl) return;
+      this.errorEl.textContent = msg;
+      this.errorEl.classList.add('is-visible');
+    }
+    hideError() {
+      if (!this.errorEl) return;
+      this.errorEl.textContent = '';
+      this.errorEl.classList.remove('is-visible');
     }
   }
-  showError(msg) {
-    if (!this.errorEl) return;
-    this.errorEl.textContent = msg;
-    this.errorEl.classList.add('is-visible');
-  }
-  hideError() {
-    if (!this.errorEl) return;
-    this.errorEl.textContent = '';
-    this.errorEl.classList.remove('is-visible');
-  }
-}
 
-if (!customElements.get('mars-product-form')) {
-  customElements.define('mars-product-form', MarsProductForm);
-}
+  if (!customElements.get('mars-product-form')) {
+    customElements.define('mars-product-form', MarsProductForm);
+  }
+})();
