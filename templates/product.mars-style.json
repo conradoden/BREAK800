@@ -407,37 +407,10 @@
             "star_count": 5,
             "review_text": "<p><strong>Better than TRT. Lab confirmed.</strong><br/>“I got off TRT months ago to do something more natural. This boosted my total T by 225% since being off TRT. My levels went back down to 330ng/dl after cycling off; now I am up to 742ng/dl. I just confirmed with labs as of 4/16. This is higher than my total T has been on actual TRT. Amazing!”</p>"
           }
-        },
-        "review_card_W3Qgxr": {
-          "type": "review_card",
-          "settings": {
-            "reviewer_name": "Jay S.",
-            "star_count": 5,
-            "review_text": "<p><strong>Was a skeptic but not now after 30 days”</strong><br/>I was able to drop almost 20lbs in 30 days. My energy levels throughout the day were up. I wasn’t crashing in the evenings after I got home from work.”</p>"
-          }
-        },
-        "review_card_8CHMgg": {
-          "type": "review_card",
-          "settings": {
-            "reviewer_name": "Joshua D.",
-            "star_count": 5,
-            "review_text": "<p><strong>This boosted my Testosterone more than 3X”</strong><br/>To be honest, I was skeptical when I saw the ad for this supplement while doom scrolling on instagram like many of us do. I wrote this off for months - it wasn’t until my wife and I had started getting worried about our fertility and starting a family that I more seriously looked into BREAK800. I got my testosterone checked out and to my shock it was a paltry 254 ng/dl. After ~1.5 months of taking the supplement, my testosterone sky rocketed from 254 ng/dl to 861 ng/dl! Needless to say, I’m a big believer in this product and will be a customer for life.”</p>"
-          }
-        },
-        "review_card_qHrLGc": {
-          "type": "review_card",
-          "settings": {
-            "reviewer_name": "Shane W.",
-            "star_count": 5,
-            "review_text": "<p><strong>Energized with mental focus</strong><br/>“After three weeks I have noticed a serious increase in my overall energy and mental clarity. There are no more afternoons where I struggle with energy. My brain and mind are sharp and clear.”</p>"
-          }
         }
       },
       "block_order": [
-        "review_card_VzeiLJ",
-        "review_card_W3Qgxr",
-        "review_card_8CHMgg",
-        "review_card_qHrLGc"
+        "review_card_VzeiLJ"
       ],
       "name": "BK Getting Results",
       "settings": {
