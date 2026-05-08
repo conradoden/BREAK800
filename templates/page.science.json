@@ -327,17 +327,17 @@
       ],
       "name": "BK Liftoff Difference",
       "settings": {
-        "heading": "The Mars Men Difference",
+        "heading": "The BREAK800 Difference",
         "intro_text": "<p>Natural Testosterone Support is not your typical T Booster. It's a next-generation and natural formula designed to support hormone optimization without the risks and commitment of TRT.</p>",
-        "left_column_title": "MARS MEN",
+        "left_column_title": "BREAK800",
         "right_column_title": "TRT",
-        "left_header_image": "shopify://shop_images/4x_img.webp",
-        "logo_image": "shopify://shop_images/Group_21747.svg",
+        "left_header_image": "shopify://shop_images/break800-natural-testosterone-support-no-background-removebg-preview_3.png",
+        "logo_image": "shopify://shop_images/Primary_Logo_copy_2.png",
         "right_header_image": "shopify://shop_images/33yPjj.svg",
         "left_check_icon": "shopify://shop_images/Group_20157.svg",
         "right_x_icon": "shopify://shop_images/Vector_3232bf30-35c6-4dff-9f80-34afa46aaa62.svg",
         "cta_text": "Try It Now",
-        "cta_link": "",
+        "cta_link": "shopify://products/birch-chaga-cacao-truffles",
         "accent_color": "#8b2020",
         "text_color": "#ffffff",
         "bg_color": "rgba(0,0,0,0.3)",
@@ -349,6 +349,7 @@
     },
     "liftoff_from_founder_JwGRz6": {
       "type": "liftoff-from-founder",
+      "disabled": true,
       "name": "BK Liftoff From Founder",
       "settings": {
         "eyebrow": "FROM THE FOUNDER",
@@ -456,7 +457,7 @@
       "settings": {
         "heading": "Frequently Asked Questions",
         "cta_text": "TRY IT NOW",
-        "cta_link": "",
+        "cta_link": "shopify://products/birch-chaga-cacao-truffles",
         "bg_color": "rgba(0,0,0,0.3)",
         "text_color": "#ffffff",
         "accent_color": "#8b2020"
