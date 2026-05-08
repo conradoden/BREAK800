@@ -223,142 +223,104 @@
         "pb_mob": 0
       }
     },
-    "liftoff_ingredients_HegiTc": {
-      "type": "liftoff-ingredients",
+    "liftoff_difference_rcPgEh": {
+      "type": "liftoff-difference",
       "blocks": {
-        "ingredient_Mh9hX8": {
-          "type": "ingredient",
+        "row_QtQRTG": {
+          "type": "row",
           "settings": {
-            "number": "01",
-            "title": "Tongkat Ali",
-            "dosage": "1,000 mg",
-            "description": "Boosts testosterone, enhances libido, improves fertility, and supports muscle growth.",
-            "image": "shopify://shop_images/tongkat_c4701ed9-9395-4ff4-bf78-eda04f7b1e5c.webp"
+            "category": "APPROACH",
+            "left_text": "Natural Support",
+            "right_text": "Synthetic Replacement"
           }
         },
-        "ingredient_Yw4Bqk": {
-          "type": "ingredient",
+        "row_fgqz9X": {
+          "type": "row",
           "settings": {
-            "number": "02",
-            "title": "Zinc",
-            "dosage": "30 mg",
-            "description": "Essential mineral for testosterone production, immune function, and cellular repair.",
-            "image": "shopify://shop_images/zinc_d10e4c95-2ede-49f4-ab23-741e7f652cfe.png"
+            "category": "COMMITMENT",
+            "left_text": "Flexible Use",
+            "right_text": "Lifelong Dependency"
           }
         },
-        "ingredient_c6iK39": {
-          "type": "ingredient",
+        "row_YNfPhW": {
+          "type": "row",
           "settings": {
-            "number": "03",
-            "title": "Shilajit",
-            "dosage": "400 mg",
-            "description": "Fulvic acid-rich compound that boosts energy, stamina, and testosterone levels.",
-            "image": "shopify://shop_images/shilajit_50a582f8-5403-40d8-b415-7a3f573ce372.png"
+            "category": "SIDE EFFECTS",
+            "left_text": "Minimal Risk",
+            "right_text": "Significant Risks"
           }
         },
-        "ingredient_8AckYK": {
-          "type": "ingredient",
+        "row_M76FgB": {
+          "type": "row",
           "settings": {
-            "number": "04",
-            "title": "Magnesium",
-            "dosage": "675 mg",
-            "description": "Amino acid supporting endurance, muscle recovery, and antioxidant defense.",
-            "image": "shopify://shop_images/taurine_146593c7-0966-490e-b51c-ae55bf4c920f.webp"
+            "category": "COST",
+            "left_text": "$59/month",
+            "right_text": "$250+/month"
           }
         },
-        "ingredient_kJJgYb": {
-          "type": "ingredient",
+        "row_9pCfAF": {
+          "type": "row",
           "settings": {
-            "number": "05",
-            "title": "Vitamin D",
-            "dosage": "4,000 IU",
-            "description": "Critical for testosterone synthesis, bone health, and immune regulation.",
-            "image": "shopify://shop_images/vitamind_e78128eb-1567-43db-a92a-663797c7ae02.webp"
+            "category": "CONVENIENCE",
+            "left_text": "Take at Home",
+            "right_text": "Doctor Visits Required"
           }
         },
-        "ingredient_QjLmEN": {
-          "type": "ingredient",
+        "row_AbEWrL": {
+          "type": "row",
           "settings": {
-            "number": "06",
-            "title": "Boron",
-            "dosage": "4 mg",
-            "description": "Trace mineral that increases free testosterone and supports bone density.",
-            "image": "shopify://shop_images/boron_640a1c07-6f40-4bff-9030-3416d3ebd316.png"
+            "category": "BODY'S PRODUCTION",
+            "left_text": "Supports Natural Production",
+            "right_text": "Shuts Down Natural Production"
           }
         },
-        "trust_badge_KKgWwa": {
-          "type": "trust_badge",
+        "row_bF9Qhb": {
+          "type": "row",
           "settings": {
-            "icon": "shopify://shop_images/1_a1f32074-7004-4106-ac7e-71ae511c9e3d.svg",
-            "text": "Made In A CGMP Facility"
+            "category": "MONITORING",
+            "left_text": "Optional Testing",
+            "right_text": "Required Blood Work"
           }
         },
-        "trust_badge_WAztLM": {
-          "type": "trust_badge",
+        "row_iEqmWm": {
+          "type": "row",
           "settings": {
-            "icon": "shopify://shop_images/3_f7b2e18a-e8be-4674-a873-6d9cfde0485e.svg",
-            "text": "Hormone-Free"
-          }
-        },
-        "trust_badge_hrD7N7": {
-          "type": "trust_badge",
-          "settings": {
-            "icon": "shopify://shop_images/5_f6d121e2-6d43-46f4-9fc5-e28bfcdb066b.svg",
-            "text": "Non-GMO"
-          }
-        },
-        "trust_badge_ThekYB": {
-          "type": "trust_badge",
-          "settings": {
-            "icon": "shopify://shop_images/2_58fef480-4c65-4683-9c31-8eda3f225f98.svg",
-            "text": "Vegan"
-          }
-        },
-        "trust_badge_bgdbt4": {
-          "type": "trust_badge",
-          "settings": {
-            "icon": "shopify://shop_images/4_c520c43c-3750-4521-a19e-a0094c5a03b5.svg",
-            "text": "Third Party Tested"
-          }
-        },
-        "trust_badge_GNwABt": {
-          "type": "trust_badge",
-          "settings": {
-            "icon": "shopify://shop_images/6_5afc8a32-86b3-43b3-91cd-31d686d349db.svg",
-            "text": "Made in USA"
+            "category": "REVERSIBILITY",
+            "left_text": "Easily Reversible",
+            "right_text": "Difficult to Stop"
           }
         }
       },
       "block_order": [
-        "ingredient_Mh9hX8",
-        "ingredient_Yw4Bqk",
-        "ingredient_c6iK39",
-        "ingredient_8AckYK",
-        "ingredient_kJJgYb",
-        "ingredient_QjLmEN",
-        "trust_badge_KKgWwa",
-        "trust_badge_WAztLM",
-        "trust_badge_hrD7N7",
-        "trust_badge_ThekYB",
-        "trust_badge_bgdbt4",
-        "trust_badge_GNwABt"
+        "row_QtQRTG",
+        "row_fgqz9X",
+        "row_YNfPhW",
+        "row_M76FgB",
+        "row_9pCfAF",
+        "row_AbEWrL",
+        "row_bF9Qhb",
+        "row_iEqmWm"
       ],
-      "name": "BK Liftoff Ingredients",
+      "name": "BK Liftoff Difference",
       "settings": {
-        "heading": "6 Ingredients in 1 Powerful Formula",
-        "sub_heading": "CLINICALLY DOSED + EFFECTIVE",
-        "pill_image": "shopify://shop_images/MarsMen_UsVsThem_A1_1x1_1_989dcb2d-6202-4e93-aeca-95017d598e3f.webp",
-        "center_bg_image": "shopify://shop_images/Group_20971_7b351f54-3723-417d-9f46-f4e178b77aaa.svg",
-        "body_text": "Natural Testosterone Support is a unique blend of natural herbs and minerals that are scientifically proven to support healthy testosterone levels and overall well-being. Most testosterone-enhancing supplements do not contain proper dosages. At BREAK800, we utilize clinical doses of each ingredient to support powerful results.",
-        "cta_text": "TRY IT NOW",
-        "cta_link": "",
+        "heading": "The BREAK800 Difference",
+        "intro_text": "<p>Natural Testosterone Support is not your typical T Booster. It's a next-generation and natural formula designed to support hormone optimization without the risks and commitment of TRT.</p>",
+        "left_column_title": "BREAK800",
+        "right_column_title": "TRT",
+        "left_header_image": "shopify://shop_images/break800-natural-testosterone-support-no-background-removebg-preview_3.png",
+        "logo_image": "shopify://shop_images/Primary_Logo_copy_2.png",
+        "right_header_image": "shopify://shop_images/33yPjj.svg",
+        "left_check_icon": "shopify://shop_images/Group_20157.svg",
+        "right_x_icon": "shopify://shop_images/Vector_3232bf30-35c6-4dff-9f80-34afa46aaa62.svg",
+        "cta_text": "Try It Now",
+        "cta_link": "shopify://products/birch-chaga-cacao-truffles",
         "accent_color": "#8b2020",
-        "text_color": "#f4efe8",
+        "text_color": "#ffffff",
         "bg_color": "rgba(0,0,0,0.3)",
-        "padding_top": 80,
-        "padding_bottom": 80,
-        "padding_top_mb": 48,
-        "padding_bottom_mb": 48
+        "padding_top": 100,
+        "padding_bottom": 0,
+        "padding_top_mb": 44,
+        "padding_bottom_mb": 0
       }
     },
     "liftoff_break800_graph_8TKGcq": {
@@ -746,7 +708,7 @@
   "order": [
     "main",
     "pdp_tabs_mEg88z",
-    "liftoff_ingredients_HegiTc",
+    "liftoff_difference_rcPgEh",
     "liftoff_break800_graph_8TKGcq",
     "liftoff_getting_results_LzTkwk",
     "liftoff_crew_videos_g8z47R",
