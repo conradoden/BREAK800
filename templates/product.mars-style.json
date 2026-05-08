@@ -352,8 +352,8 @@
         "body_text": "Natural Testosterone Support is a unique blend of natural herbs and minerals that are scientifically proven to support healthy testosterone levels and overall well-being. Most testosterone-enhancing supplements do not contain proper dosages. At BREAK800, we utilize clinical doses of each ingredient to support powerful results.",
         "cta_text": "TRY IT NOW",
         "cta_link": "",
-        "accent_color": "#8B2020",
-        "text_color": "#F4EFE8",
+        "accent_color": "#8b2020",
+        "text_color": "#f4efe8",
         "bg_color": "rgba(0,0,0,0.3)",
         "padding_top": 80,
         "padding_bottom": 80,
@@ -607,160 +607,6 @@
         "padding_bottom_mb": 0
       }
     },
-    "liftoff_progress_N339HE": {
-      "type": "liftoff-progress",
-      "blocks": {
-        "week_tab_m6W9GB": {
-          "type": "week_tab",
-          "settings": {
-            "tab_label": "WEEK 1-2",
-            "phase_number": "01",
-            "phase_title": "Adjustment",
-            "description": "Your body is getting used to the new supplement, gradually absorbing and processing its ingredients.",
-            "benefits": "<ul><li>Minor increases in daily energy, but no drastic changes yet.</li><li>Slight improvements in mood and focus as your system adapts</li><li>Some users may notice early signs of improved sleep quality.</li><li>Your body is laying the foundation for the benefits to come in the following weeks.</li></ul>",
-            "chart_week_end": 2
-          }
-        },
-        "week_tab_F3Ram6": {
-          "type": "week_tab",
-          "settings": {
-            "tab_label": "WEEK 3-4",
-            "phase_number": "02",
-            "phase_title": "Activation",
-            "description": "The ingredients are starting to take effect, but results will vary depending on lifestyle, diet, and consistency.",
-            "benefits": "<ul><li>Minor increases in daily energy, but no drastic changes yet.</li><li>Slight improvements in mood and focus as your system adapts</li><li>Some users may notice early signs of improved sleep quality.</li><li>Your body is laying the foundation for the benefits to come in the following weeks.</li></ul>",
-            "chart_week_end": 4
-          }
-        },
-        "week_tab_UfjfF8": {
-          "type": "week_tab",
-          "settings": {
-            "tab_label": "WEEK 5-6",
-            "phase_number": "03",
-            "phase_title": "Momentum",
-            "description": "Your body has had time to adjust, and the supplement's full benefits are beginning to take shape.",
-            "benefits": "<ul><li>Minor increases in daily energy, but no drastic changes yet.</li><li>Slight improvements in mood and focus as your system adapts</li><li>Some users may notice early signs of improved sleep quality.</li><li>Your body is laying the foundation for the benefits to come in the following weeks.</li></ul>",
-            "chart_week_end": 6
-          }
-        },
-        "week_tab_UNDqyx": {
-          "type": "week_tab",
-          "settings": {
-            "tab_label": "WEEK 7-8",
-            "phase_number": "04",
-            "phase_title": "Alpha",
-            "description": "Testosterone production is now more optimized, and results should feel more consistent.",
-            "benefits": "<ul><li>Minor increases in daily energy, but no drastic changes yet.</li><li>Slight improvements in mood and focus as your system adapts</li><li>Some users may notice early signs of improved sleep quality.</li><li>Your body is laying the foundation for the benefits to come in the following weeks.</li></ul>",
-            "chart_week_end": 8
-          }
-        },
-        "week_tab_GEhhhM": {
-          "type": "week_tab",
-          "settings": {
-            "tab_label": "WEEK 9-10",
-            "phase_number": "05",
-            "phase_title": "Refinement",
-            "description": "By now, you should have built consistency with your routine, and the supplement is supporting your progress.",
-            "benefits": "<ul><li>Minor increases in daily energy, but no drastic changes yet.</li><li>Slight improvements in mood and focus as your system adapts</li><li>Some users may notice early signs of improved sleep quality.</li><li>Your body is laying the foundation for the benefits to come in the following weeks.</li></ul>",
-            "chart_week_end": 10
-          }
-        },
-        "week_tab_8jNzAH": {
-          "type": "week_tab",
-          "settings": {
-            "tab_label": "WEEK 11-12",
-            "phase_number": "06",
-            "phase_title": "Sustainable Growth",
-            "description": "You've built a strong foundation, and now it's about sustaining and maximizing the results over the long term.",
-            "benefits": "<ul><li>Minor increases in daily energy, but no drastic changes yet.</li><li>Slight improvements in mood and focus as your system adapts</li><li>Some users may notice early signs of improved sleep quality.</li><li>Your body is laying the foundation for the benefits to come in the following weeks.</li></ul>",
-            "chart_week_end": 12
-          }
-        },
-        "week_tab_t7PTAx": {
-          "type": "week_tab",
-          "settings": {
-            "tab_label": "WEEK 13 + BEYOND",
-            "phase_number": "07",
-            "phase_title": "Optimization",
-            "description": "The foundation is set, and long-term benefits depend on continued consistency with supplementation, training, and nutrition.",
-            "benefits": "<ul><li>Minor increases in daily energy, but no drastic changes yet.</li><li>Slight improvements in mood and focus as your system adapts</li><li>Some users may notice early signs of improved sleep quality.</li><li>Your body is laying the foundation for the benefits to come in the following weeks.</li></ul>",
-            "chart_week_end": 12
-          }
-        }
-      },
-      "block_order": [
-        "week_tab_m6W9GB",
-        "week_tab_F3Ram6",
-        "week_tab_UfjfF8",
-        "week_tab_UNDqyx",
-        "week_tab_GEhhhM",
-        "week_tab_8jNzAH",
-        "week_tab_t7PTAx"
-      ],
-      "name": "BK Liftoff Progress",
-      "settings": {
-        "footnote": "<p>*These results are based on customer-reported survey feedback from verified purchasers and are not intended to represent clinical or medical outcomes.</p>",
-        "cta_text": "",
-        "cta_link": "",
-        "accent_color": "#8b2020",
-        "text_color": "#ffffff",
-        "bg_color": "rgba(0,0,0,0.3)",
-        "padding_top": 60,
-        "padding_bottom": 80,
-        "padding_top_mb": 40,
-        "padding_bottom_mb": 48
-      }
-    },
-    "liftoff_advisory_board_PQ4cN4": {
-      "type": "liftoff-advisory-board",
-      "blocks": {
-        "doctor_W88gXg": {
-          "type": "doctor",
-          "settings": {
-            "image": "shopify://shop_images/dr1.webp",
-            "name": "Dr. Latt Mansor",
-            "title": "Research Lead at\nH.V.M.N. Biography",
-            "bio": "Dr. Latt Mansor holds a PhD in Physiology, Anatomy and Genetics from the University of Oxford, where his research focused on the metabolism of the type 2 diabetic heart in hypoxia. He is a world expert in physiology and metabolism, and consults with elite sport, military, clinical and research organizations."
-          }
-        },
-        "doctor_Az3k8B": {
-          "type": "doctor",
-          "settings": {
-            "image": "shopify://shop_images/dr2.webp",
-            "name": "Dr. Jesse Ropat",
-            "title": "Biochemist in\nHuman Kinetics",
-            "bio": "Dr. Jesse Ropat is a licensed pharmacist with a deep interest in natural medicine and over a decade of clinical experience. His background in biochemistry and human kinetics, combined with published research on natural compounds in cancer care, has shaped a holistic, evidence-based approach to health."
-          }
-        },
-        "doctor_cQrcAN": {
-          "type": "doctor",
-          "settings": {
-            "image": "shopify://shop_images/dr3.png",
-            "name": "Dr. Jeff Vogel",
-            "title": "Board-Certified\nMedicine Physician",
-            "bio": "Jeffrey E. Vogel, MD, MPH is a board-certified occupational and preventive medicine physician with deep expertise in men's health and hormone optimization. He serves as Medical Director for multiple testosterone and longevity clinics, overseeing advanced treatment protocols for performance, vitality, and metabolic health."
-          }
-        }
-      },
-      "block_order": [
-        "doctor_W88gXg",
-        "doctor_Az3k8B",
-        "doctor_cQrcAN"
-      ],
-      "name": "BK Liftoff Advisory Board",
-      "settings": {
-        "heading": "Meet Our Medical Advisory Board",
-        "cta_text": "",
-        "cta_link": "",
-        "accent_color": "#8b2020",
-        "text_color": "#ffffff",
-        "bg_color": "rgba(0,0,0,0.3)",
-        "padding_top": 80,
-        "padding_bottom": 64,
-        "padding_top_mb": 56,
-        "padding_bottom_mb": 68
-      }
-    },
     "liftoff_timeline_q68Xgh": {
       "type": "liftoff-timeline",
       "blocks": {
@@ -880,94 +726,6 @@
         "accent_color": "#e85c2b"
       }
     },
-    "liftoff_launch_kit_8mNCW7": {
-      "type": "liftoff-launch-kit",
-      "blocks": {
-        "line_item_baECX6": {
-          "type": "line_item",
-          "settings": {
-            "title": "<p>BREAK800 Natural T Support</p>",
-            "subtitle": "",
-            "original_price": "$178",
-            "sale_price": "$89/mo",
-            "is_free": false
-          }
-        },
-        "line_item_Q67qaX": {
-          "type": "line_item",
-          "settings": {
-            "title": "<p>BREAK800 Travel Tin</p>",
-            "subtitle": "",
-            "original_price": "$14",
-            "sale_price": "",
-            "is_free": true
-          }
-        },
-        "line_item_436GA7": {
-          "type": "line_item",
-          "settings": {
-            "title": "<p>Galactic Testosterone Guide</p>",
-            "subtitle": "",
-            "original_price": "$28",
-            "sale_price": "",
-            "is_free": true
-          }
-        },
-        "line_item_RPC4PM": {
-          "type": "line_item",
-          "settings": {
-            "title": "<p>Ladder Workout App</p>",
-            "subtitle": "(30 Day Program)",
-            "original_price": "$42",
-            "sale_price": "",
-            "is_free": true
-          }
-        },
-        "line_item_zWGnXq": {
-          "type": "line_item",
-          "settings": {
-            "title": "<p>Shipping On First Order</p>",
-            "subtitle": "",
-            "original_price": "$14",
-            "sale_price": "",
-            "is_free": true
-          }
-        },
-        "line_item_gRfAxx": {
-          "type": "line_item",
-          "settings": {
-            "title": "<p><strong>Chance to Win</strong> Apple Watch Ultra 3.0</p>",
-            "subtitle": "",
-            "original_price": "$1082",
-            "sale_price": "",
-            "is_free": true
-          }
-        }
-      },
-      "block_order": [
-        "line_item_baECX6",
-        "line_item_Q67qaX",
-        "line_item_436GA7",
-        "line_item_RPC4PM",
-        "line_item_zWGnXq",
-        "line_item_gRfAxx"
-      ],
-      "name": "BK Launch Kit",
-      "settings": {
-        "heading": "<p>Your Launch Kit <strong>Includes:</strong></p>",
-        "kit_image": "shopify://shop_images/Group_21401_1.webp",
-        "cta_text": "TRY IT NOW ($89)",
-        "cta_link": "",
-        "accent_color": "#8b2020",
-        "bg_color": "rgba(0,0,0,0.3)",
-        "text_color": "#ffffff",
-        "muted_color": "#808080",
-        "padding_top": 0,
-        "padding_bottom": 80,
-        "padding_top_mb": 0,
-        "padding_bottom_mb": 48
-      }
-    },
     "liftoff_customer_reviews_XQqhTz": {
       "type": "liftoff-customer-reviews",
       "blocks": {
@@ -1020,11 +778,8 @@
     "liftoff_getting_results_LzTkwk",
     "liftoff_crew_videos_g8z47R",
     "liftoff_difference_GpAPyR",
-    "liftoff_progress_N339HE",
-    "liftoff_advisory_board_PQ4cN4",
     "liftoff_timeline_q68Xgh",
     "faq_accordion_LbmJki",
-    "liftoff_launch_kit_8mNCW7",
     "liftoff_customer_reviews_XQqhTz"
   ]
 }
