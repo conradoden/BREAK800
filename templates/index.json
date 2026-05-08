@@ -20,7 +20,7 @@
         "heading_3": "POTENT & NATURAL TESTOSTERONE STACK ON EARTH",
         "description": "8 powerful ingredients packed into one daily male-vitality supplement.",
         "btn_text": "UNLOCK YOUR POWER TODAY →",
-        "btn_link": "shopify://products/birch-chaga-cacao-truffles",
+        "btn_link": "",
         "bottom_text": "Try it for 90 days. Higher T or your money back."
       }
     },
@@ -242,13 +242,145 @@
         "accent_color": "#8b2020"
       }
     },
+    "liftoff_ingredients_amEbac": {
+      "type": "liftoff-ingredients",
+      "blocks": {
+        "ingredient_tEJhWG": {
+          "type": "ingredient",
+          "settings": {
+            "number": "01",
+            "title": "Tongkat Ali",
+            "dosage": "1,000 mg",
+            "description": "Boosts testosterone, enhances libido, improves fertility, and supports muscle growth.",
+            "image": "shopify://shop_images/tongkat_c4701ed9-9395-4ff4-bf78-eda04f7b1e5c.webp"
+          }
+        },
+        "ingredient_jNXGDC": {
+          "type": "ingredient",
+          "settings": {
+            "number": "02",
+            "title": "Zinc",
+            "dosage": "30 mg",
+            "description": "Essential mineral for testosterone production, immune function, and cellular repair.",
+            "image": "shopify://shop_images/zinc_d10e4c95-2ede-49f4-ab23-741e7f652cfe.png"
+          }
+        },
+        "ingredient_bmPUyN": {
+          "type": "ingredient",
+          "settings": {
+            "number": "05",
+            "title": "Shilajit",
+            "dosage": "400 mg",
+            "description": "Fulvic acid-rich compound that boosts energy, stamina, and testosterone levels.",
+            "image": "shopify://shop_images/shilajit_50a582f8-5403-40d8-b415-7a3f573ce372.png"
+          }
+        },
+        "ingredient_i4V488": {
+          "type": "ingredient",
+          "settings": {
+            "number": "04",
+            "title": "Magnesium",
+            "dosage": "675 mg",
+            "description": "Amino acid supporting endurance, muscle recovery, and antioxidant defense.",
+            "image": "shopify://shop_images/taurine_146593c7-0966-490e-b51c-ae55bf4c920f.webp"
+          }
+        },
+        "ingredient_TgYRcC": {
+          "type": "ingredient",
+          "settings": {
+            "number": "05",
+            "title": "Vitamin D",
+            "dosage": "4,000 IU",
+            "description": "Critical for testosterone synthesis, bone health, and immune regulation.",
+            "image": "shopify://shop_images/vitamind_e78128eb-1567-43db-a92a-663797c7ae02.webp"
+          }
+        },
+        "ingredient_WPNpJU": {
+          "type": "ingredient",
+          "settings": {
+            "number": "06",
+            "title": "Boron",
+            "dosage": "4 mg",
+            "description": "Trace mineral that increases free testosterone and supports bone density.",
+            "image": "shopify://shop_images/boron_640a1c07-6f40-4bff-9030-3416d3ebd316.png"
+          }
+        },
+        "trust_badge_U7eeVL": {
+          "type": "trust_badge",
+          "settings": {
+            "text": "Made In A CGMP Facility"
+          }
+        },
+        "trust_badge_zHbxYy": {
+          "type": "trust_badge",
+          "settings": {
+            "text": "Hormone-Free"
+          }
+        },
+        "trust_badge_7n7HL3": {
+          "type": "trust_badge",
+          "settings": {
+            "text": "Non-GMO"
+          }
+        },
+        "trust_badge_t7Xgcr": {
+          "type": "trust_badge",
+          "settings": {
+            "text": "Vegan"
+          }
+        },
+        "trust_badge_qtiiR4": {
+          "type": "trust_badge",
+          "settings": {
+            "text": "Third Party Tested"
+          }
+        },
+        "trust_badge_WCfiCH": {
+          "type": "trust_badge",
+          "settings": {
+            "text": "Made in USA"
+          }
+        }
+      },
+      "block_order": [
+        "ingredient_tEJhWG",
+        "ingredient_jNXGDC",
+        "ingredient_bmPUyN",
+        "ingredient_i4V488",
+        "ingredient_TgYRcC",
+        "ingredient_WPNpJU",
+        "trust_badge_U7eeVL",
+        "trust_badge_zHbxYy",
+        "trust_badge_7n7HL3",
+        "trust_badge_t7Xgcr",
+        "trust_badge_qtiiR4",
+        "trust_badge_WCfiCH"
+      ],
+      "name": "BK Liftoff Ingredients",
+      "settings": {
+        "heading": "8 Ingredients in 1 Powerful Formula",
+        "sub_heading": "CLINICALLY DOSED + EFFECTIVE",
+        "pill_image": "shopify://shop_images/MarsMen_UsVsThem_A1_1x1_1_989dcb2d-6202-4e93-aeca-95017d598e3f.webp",
+        "center_bg_image": "shopify://shop_images/Group_20971_7b351f54-3723-417d-9f46-f4e178b77aaa.svg",
+        "body_text": "Natural Testosterone Support is a unique blend of natural herbs and minerals that are scientifically proven to support healthy testosterone levels and overall well-being. Most testosterone-enhancing supplements do not contain proper dosages. At BREAK800, we utilize clinical doses of each ingredient to support powerful results.",
+        "cta_text": "TRY IT NOW",
+        "cta_link": "",
+        "accent_color": "#8B2020",
+        "text_color": "#F4EFE8",
+        "bg_color": "rgba(0,0,0,0.3)",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mb": 48,
+        "padding_bottom_mb": 48
+      }
+    },
     "decline_of_t_yTNfq8": {
       "type": "decline-of-t",
       "name": "Decline of T",
       "settings": {
         "heading_prefix": "The Decline of T:",
         "heading_highlight": "A Modern Epidemic",
-        "body": "<p><strong>Testosterone levels</strong> have been dropping by 1% every year since 1980. Stress, poor sleep, processed diets, and toxins are destroying natural hormone production.</p><p>The impact? Low testosterone drains energy, strength, and focus—making it harder to perform at your best in life and the gym.</p><p><strong>The good news:</strong> BREAK800 helps you reclaim your edge with natural testosterone support for energy, focus, and strength.</p>",
+        "body": "<p><strong>Testosterone levels</strong> have been dropping by 1% every year since 1980. Stress, poor sleep, processed diets, and toxins are destroying natural hormone production.</p><p>The impact? Low testosterone drains energy, strength, and focus—making it harder to perform at your best in life and the gym.</p><p><strong>The good news:</strong> Mars Men helps you reclaim your edge with natural testosterone support for energy, focus, and strength.</p>",
         "x_ticks": "10,20,30,40,50,60,70,80,90",
         "normal_points": "500,710,690,665,640,620,600,585,575",
         "mars_points": "500,710,690,705,710,715,718,720,720",
@@ -259,7 +391,7 @@
         "normal_band_high": 660,
         "y_label": "TOTAL TESTOSTERONE",
         "x_label": "AGE",
-        "mars_label": "WITH BREAK800",
+        "mars_label": "WITH MARS MEN",
         "band_label": "NORMAL RANGE",
         "bg_color": "rgba(0,0,0,0.3)",
         "text_color": "#ffffff",
@@ -315,7 +447,7 @@
       "name": "Solution Benefits",
       "settings": {
         "heading_prefix": "The Solution?",
-        "heading_highlight": "BREAK800.",
+        "heading_highlight": "Mars Men.",
         "sub_text": "<p>Maintaining balanced testosterone levels is pivotal for contributing to an overall sense of well-being. Encouraging our body's natural hormonal function can help us men:</p>",
         "product_image": "shopify://shop_images/MarsMen_UsVsThem_A1_1x1_1_8cb77f12-150a-43fe-ba1e-2c6c751bd07e.webp",
         "ring_image": "shopify://shop_images/Group_20971_7b351f54-3723-417d-9f46-f4e178b77aaa.svg",
@@ -377,7 +509,7 @@
       "name": "Guarantee CTA Banner",
       "settings": {
         "heading": "BOOST YOUR TESTOSTERONE IN 90 DAYS",
-        "body": "<p>Try BREAK800 risk-free for 90 days. If you're not satisfied, we'll refund you, no questions asked. Reclaim your masculinity, risk-free.</p>",
+        "body": "<p>Try Mars Men risk-free for 90 days. If you're not satisfied, we'll refund you, no questions asked. Reclaim your masculinity, risk-free.</p>",
         "cta_text": "TRY IT NOW",
         "cta_link": "",
         "card_bg_color": "rgba(0,0,0,0)",
@@ -393,21 +525,21 @@
         "faq_xVqQ7y": {
           "type": "faq",
           "settings": {
-            "question": "WHAT IS BREAK800?",
-            "answer": "<p>BREAK800 is a natural testosterone support supplement with 8 clinically dosed ingredients designed to help men optimize their hormonal health.</p>"
+            "question": "WHAT IS MARS MEN?",
+            "answer": "<p>Mars Men is a natural testosterone support supplement with 8 clinically dosed ingredients designed to help men optimize their hormonal health.</p>"
           }
         },
         "faq_gfajq7": {
           "type": "faq",
           "settings": {
-            "question": "WHO IS BREAK800 FOR?",
-            "answer": "<p>BREAK800 is designed for men who want to naturally support their testosterone levels, energy, focus, and overall vitality.</p>"
+            "question": "WHO IS MARS MEN FOR?",
+            "answer": "<p>Mars Men is designed for men who want to naturally support their testosterone levels, energy, focus, and overall vitality.</p>"
           }
         },
         "faq_6eFaad": {
           "type": "faq",
           "settings": {
-            "question": "HOW DO I TAKE BREAK800?",
+            "question": "HOW DO I TAKE MARS MEN?",
             "answer": "<p>Take the recommended daily serving with water, preferably with a meal for optimal absorption.</p>"
           }
         },
@@ -421,22 +553,22 @@
         "faq_34nmt9": {
           "type": "faq",
           "settings": {
-            "question": "CAN BREAK800 HELP INCREASE MY ENERGY?",
-            "answer": "<p>Yes. The ingredients in BREAK800 are specifically chosen to support natural energy production and reduce fatigue.</p>"
+            "question": "CAN MARS MEN HELP INCREASE MY ENERGY?",
+            "answer": "<p>Yes. The ingredients in Mars Men are specifically chosen to support natural energy production and reduce fatigue.</p>"
           }
         },
         "faq_yMT9EX": {
           "type": "faq",
           "settings": {
-            "question": "WILL BREAK800 IMPROVE MY STRENGTH GAINS IN THE GYM?",
+            "question": "WILL MARS MEN IMPROVE MY STRENGTH GAINS IN THE GYM?",
             "answer": "<p>Optimized testosterone levels support muscle growth, recovery, and strength, helping you perform better in the gym.</p>"
           }
         },
         "faq_BdJCX7": {
           "type": "faq",
           "settings": {
-            "question": "DO I NEED TO CYCLE BREAK800?",
-            "answer": "<p>No. BREAK800 uses natural ingredients that are safe for daily, long-term use without cycling.</p>"
+            "question": "DO I NEED TO CYCLE MARS MEN?",
+            "answer": "<p>No. Mars Men uses natural ingredients that are safe for daily, long-term use without cycling.</p>"
           }
         },
         "faq_3zWxjL": {
@@ -450,7 +582,7 @@
           "type": "faq",
           "settings": {
             "question": "WHAT IS YOUR 90-DAY HIGHER-T GUARANTEE?",
-            "answer": "<p>Try BREAK800 risk-free for 90 days. If you're not satisfied, we'll refund you — no questions asked.</p>"
+            "answer": "<p>Try Mars Men risk-free for 90 days. If you're not satisfied, we'll refund you — no questions asked.</p>"
           }
         },
         "faq_E3LHnW": {
@@ -489,6 +621,7 @@
     "featured_in_logos_atjA8n",
     "marquee_trust_bar_KMqJyU",
     "ingredients_grid_ACABbP",
+    "liftoff_ingredients_amEbac",
     "decline_of_t_yTNfq8",
     "solution_benefits_Ygbxt3",
     "how_it_works_timeline_qzFLWM",
