@@ -52,7 +52,7 @@
         "subtitle": "<p>Unblock Your T<br/>Unlock Your Potential</p>",
         "reviews_text": "3,703 Reviews",
         "description": "<p>The most potent and natural stack on earth. It works four ways: produces, frees, protects & optimizes.*</p>",
-        "bullets": "<ul><li>8 Ingredients at Full Clinical Doses</li><li>Zero Fillers or 'Proprietary' Blends</li><li>Made in USA & Third-Party Tested</li><li>90-Day 100% Money-Back Guarantee</li><li>Fast & Free Shipping on First Order</li></ul>",
+        "bullets": "<ul><li>6 Ingredients at Full Clinical Doses</li><li>Zero Fillers or 'Proprietary' Blends</li><li>Made in USA & Third-Party Tested</li><li>90-Day 100% Money-Back Guarantee</li><li>Fast & Free Shipping on First Order</li></ul>",
         "discount_badge_text": "50% OFF FOR LIFE",
         "atc_label": "Try it now",
         "subscription_disclaimer": "<p>By default you will receive a 30 day supply every 30 days. Skip, pause, or cancel anytime. By subscribing, you get discounted pricing and subscriber-only benefits and gifts.</p>",
@@ -442,106 +442,6 @@
         "padding_bottom_mb": 56
       }
     },
-    "liftoff_difference_GpAPyR": {
-      "type": "liftoff-difference",
-      "blocks": {
-        "row_gzKVpJ": {
-          "type": "row",
-          "settings": {
-            "category": "APPROACH",
-            "left_text": "Natural Support",
-            "right_text": "Synthetic Replacement"
-          }
-        },
-        "row_WdfBya": {
-          "type": "row",
-          "settings": {
-            "category": "COMMITMENT",
-            "left_text": "Flexible Use",
-            "right_text": "Lifelong Dependency"
-          }
-        },
-        "row_QXzche": {
-          "type": "row",
-          "settings": {
-            "category": "SIDE EFFECTS",
-            "left_text": "Minimal Risk",
-            "right_text": "Significant Risks"
-          }
-        },
-        "row_9GpTrF": {
-          "type": "row",
-          "settings": {
-            "category": "COST",
-            "left_text": "$59/month",
-            "right_text": "$250+/month"
-          }
-        },
-        "row_qDazqq": {
-          "type": "row",
-          "settings": {
-            "category": "CONVENIENCE",
-            "left_text": "Take at Home",
-            "right_text": "Doctor Visits Required"
-          }
-        },
-        "row_tqMgdq": {
-          "type": "row",
-          "settings": {
-            "category": "BODY'S PRODUCTION",
-            "left_text": "Supports Natural Production",
-            "right_text": "Shuts Down Natural Production"
-          }
-        },
-        "row_pLjaLw": {
-          "type": "row",
-          "settings": {
-            "category": "MONITORING",
-            "left_text": "Optional Testing",
-            "right_text": "Required Blood Work"
-          }
-        },
-        "row_JhRqLK": {
-          "type": "row",
-          "settings": {
-            "category": "REVERSIBILITY",
-            "left_text": "Easily Reversible",
-            "right_text": "Difficult to Stop"
-          }
-        }
-      },
-      "block_order": [
-        "row_gzKVpJ",
-        "row_WdfBya",
-        "row_QXzche",
-        "row_9GpTrF",
-        "row_qDazqq",
-        "row_tqMgdq",
-        "row_pLjaLw",
-        "row_JhRqLK"
-      ],
-      "name": "BK Liftoff Difference",
-      "settings": {
-        "heading": "The BREAK800 Difference",
-        "intro_text": "<p>Natural Testosterone Support is not your typical T Booster. It's a next-generation and natural formula designed to support hormone optimization without the risks and commitment of TRT.</p>",
-        "left_column_title": "BREAK800",
-        "right_column_title": "TRT",
-        "left_header_image": "shopify://shop_images/4x_img.webp",
-        "logo_image": "shopify://shop_images/Group_21747.svg",
-        "right_header_image": "shopify://shop_images/33yPjj.svg",
-        "left_check_icon": "shopify://shop_images/Group_20157.svg",
-        "right_x_icon": "shopify://shop_images/Vector_3232bf30-35c6-4dff-9f80-34afa46aaa62.svg",
-        "cta_text": "Try It Now",
-        "cta_link": "",
-        "accent_color": "#8b2020",
-        "text_color": "#ffffff",
-        "bg_color": "rgba(0,0,0,0.3)",
-        "padding_top": 100,
-        "padding_bottom": 0,
-        "padding_top_mb": 44,
-        "padding_bottom_mb": 0
-      }
-    },
     "liftoff_timeline_q68Xgh": {
       "type": "liftoff-timeline",
       "blocks": {
@@ -712,7 +612,6 @@
     "liftoff_break800_graph_8TKGcq",
     "liftoff_getting_results_LzTkwk",
     "liftoff_crew_videos_g8z47R",
-    "liftoff_difference_GpAPyR",
     "liftoff_timeline_q68Xgh",
     "faq_accordion_LbmJki",
     "liftoff_customer_reviews_XQqhTz"
