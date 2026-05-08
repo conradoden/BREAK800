@@ -22,12 +22,30 @@
     --color-foreground: 255, 255, 255;
 }
 
-.section-header:not(.scrolled-past-header) .header__heading-logo--main {
+.section-header:not(.scrolled-past-header) .header-wrapper .header__heading-link .header__heading-logo--main {
     display: none !important;
 }
 
-.section-header:not(.scrolled-past-header) .header__heading-logo--secondary {
+.section-header:not(.scrolled-past-header) .header-wrapper .header__heading-link .header__heading-logo--secondary {
     display: inline-block !important;
+}
+
+@media screen and (max-width: 749px) {
+    .section-header:not(.scrolled-past-header) .header-wrapper .header__heading-link #HeaderSecondaryDesktopLogo {
+        display: none !important;
+    }
+    .section-header:not(.scrolled-past-header) .header-wrapper .header__heading-link #HeaderSecondaryMobileLogo {
+        display: inline-block !important;
+    }
+}
+
+@media screen and (min-width: 750px) {
+    .section-header:not(.scrolled-past-header) .header-wrapper .header__heading-link #HeaderSecondaryDesktopLogo {
+        display: inline-block !important;
+    }
+    .section-header:not(.scrolled-past-header) .header-wrapper .header__heading-link #HeaderSecondaryMobileLogo {
+        display: none !important;
+    }
 }
 
 /* Cart drawer/slider: theme uses white "text" on white background-1, fix contrast */
