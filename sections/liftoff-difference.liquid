@@ -452,7 +452,11 @@
 
   {%- if s.cta_text != blank -%}
     <div class="liftoff-diff-{{ sid }}__cta-wrap">
-      <a href="{{ s.cta_link | default: '#' }}" class="liftoff-diff-{{ sid }}__cta">
+      <a
+        href="{{ s.cta_link | default: '#' }}"
+        class="liftoff-diff-{{ sid }}__cta"
+        data-liftoff-mars-atc="{{ sid }}"
+      >
         <span>{{ s.cta_text }}</span>
         <svg width="23" height="17" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M2.08398 7.43318C1.45866 7.43318 0.951735 7.94011 0.951735 8.56543C0.951735 9.19075 1.45866 9.69768 2.08398 9.69768L2.08398 7.43318ZM22.2304 9.36605C22.6726 8.92388 22.6726 8.20698 22.2304 7.76481L15.0248 0.559215C14.5826 0.117045 13.8657 0.117045 13.4236 0.559216C12.9814 1.00139 12.9814 1.71829 13.4236 2.16046L19.8285 8.56543L13.4236 14.9704C12.9814 15.4126 12.9814 16.1295 13.4236 16.5716C13.8657 17.0138 14.5826 17.0138 15.0248 16.5716L22.2304 9.36605ZM2.08398 8.56543L2.08398 9.69768L21.4298 9.69768L21.4298 8.56543L21.4298 7.43318L2.08398 7.43318L2.08398 8.56543Z" fill="white"/>
@@ -461,6 +465,22 @@
     </div>
   {%- endif -%}
 </section>
+
+{%- if request.page_type == 'product' -%}
+  <script>
+    (function() {
+      const cta = document.querySelector('[data-liftoff-mars-atc="{{ sid }}"]');
+      if (!cta) return;
+
+      cta.addEventListener('click', function(evt) {
+        const marsButton = document.querySelector('mars-product-form [data-mars-atc]');
+        if (!marsButton) return;
+        evt.preventDefault();
+        marsButton.click();
+      });
+    })();
+  </script>
+{%- endif -%}
 
 {% schema %}
 {

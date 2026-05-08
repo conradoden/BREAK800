@@ -94,20 +94,88 @@
     initGallery() {
       if (!this.gallery) return;
       const main = this.gallery.querySelector('[data-mars-main-img]');
-      const thumbs = this.gallery.querySelectorAll('[data-mars-thumb]');
+      const mainWrap = this.gallery.querySelector('.pdp-mars__gallery-main');
+      const thumbs = Array.from(this.gallery.querySelectorAll('[data-mars-thumb]'));
       if (!main || !thumbs.length) return;
-      thumbs.forEach((t) => {
-        t.addEventListener('click', () => {
-          const src = t.dataset.full || t.querySelector('img')?.src;
-          const srcset = t.dataset.fullSrcset || '';
-          if (src) {
-            main.src = src;
-            if (srcset) main.srcset = srcset;
-          }
-          thumbs.forEach((x) => x.classList.remove('is-active'));
-          t.classList.add('is-active');
-        });
+
+      let activeIndex = Math.max(0, thumbs.findIndex((t) => t.classList.contains('is-active')));
+      if (activeIndex < 0) activeIndex = 0;
+
+      const thumbStrip = this.gallery.querySelector('.pdp-mars__gallery-thumbs');
+
+      /** Keeps thumb visible without scrollIntoView (which can scroll the whole page horizontally). */
+      const scrollThumbIntoStrip = (thumbBtn) => {
+        if (!thumbStrip || !thumbBtn) return;
+        const target =
+          thumbBtn.offsetLeft - thumbStrip.clientWidth / 2 + thumbBtn.offsetWidth / 2;
+        thumbStrip.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+      };
+
+      const setActive = (index) => {
+        if (!thumbs.length) return;
+        const normalized = ((index % thumbs.length) + thumbs.length) % thumbs.length;
+        const t = thumbs[normalized];
+        const src = t.dataset.full || t.querySelector('img')?.src;
+        const srcset = t.dataset.fullSrcset || '';
+        if (src) {
+          main.src = src;
+          if (srcset) main.srcset = srcset;
+        }
+        thumbs.forEach((x) => x.classList.remove('is-active'));
+        t.classList.add('is-active');
+        activeIndex = normalized;
+        scrollThumbIntoStrip(t);
+      };
+
+      thumbs.forEach((t, idx) => {
+        t.addEventListener('click', () => setActive(idx));
       });
+
+      // Mobile swipe support for main image.
+      if (mainWrap) {
+        let startX = 0;
+        let startY = 0;
+        let moved = false;
+        const SWIPE_THRESHOLD = 30;
+
+        mainWrap.addEventListener(
+          'touchstart',
+          (evt) => {
+            const touch = evt.touches && evt.touches[0];
+            if (!touch) return;
+            startX = touch.clientX;
+            startY = touch.clientY;
+            moved = false;
+          },
+          { passive: true }
+        );
+
+        mainWrap.addEventListener(
+          'touchmove',
+          (evt) => {
+            const touch = evt.touches && evt.touches[0];
+            if (!touch) return;
+            const dx = Math.abs(touch.clientX - startX);
+            const dy = Math.abs(touch.clientY - startY);
+            // Treat as horizontal swipe only if horizontal delta dominates.
+            moved = dx > dy && dx > 8;
+          },
+          { passive: true }
+        );
+
+        mainWrap.addEventListener(
+          'touchend',
+          (evt) => {
+            const touch = evt.changedTouches && evt.changedTouches[0];
+            if (!touch || !moved) return;
+            const deltaX = touch.clientX - startX;
+            if (Math.abs(deltaX) < SWIPE_THRESHOLD) return;
+            if (deltaX < 0) setActive(activeIndex + 1);
+            else setActive(activeIndex - 1);
+          },
+          { passive: true }
+        );
+      }
     }
 
     /* ------------------------------- ATC ------------------------------- */
