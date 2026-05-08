@@ -13,13 +13,66 @@
     background: rgb(var(--color-background)) !important;
 }
 
-.section-header:not(.scrolled-past-header) .header-wrapper .header__icon,
-.section-header:not(.scrolled-past-header) .header-wrapper .header__menu-item,
-.section-header:not(.scrolled-past-header) .header-wrapper .header__menu-item--main,
-.section-header:not(.scrolled-past-header) .header-wrapper .list-menu__item,
-.section-header:not(.scrolled-past-header) .header-wrapper .header__text-icon {
+/*
+  After scroll, transparent-header no longer forces icon color; leftover --color-foreground can stay white
+  while the sticky bar gets a light Background 1 → hamburger lines (currentColor spans) disappear.
+*/
+.section-header.scrolled-past-header .header-wrapper .header__icon:not(:is(#menu-drawer *)),
+.section-header.scrolled-past-header .header-wrapper .header__text-icon:not(:is(#menu-drawer *)) {
+    color: rgb(var(--color-base-background-2)) !important;
+    --color-foreground: var(--color-base-background-2) !important;
+}
+
+.section-header:not(.scrolled-past-header) .header-wrapper .header__icon:not(:is(#menu-drawer *)),
+.section-header:not(.scrolled-past-header) .header-wrapper .header__menu-item:not(:is(#menu-drawer *)),
+.section-header:not(.scrolled-past-header) .header-wrapper .header__menu-item--main:not(:is(#menu-drawer *)),
+.section-header:not(.scrolled-past-header) .header-wrapper .list-menu__item:not(:is(#menu-drawer *)),
+.section-header:not(.scrolled-past-header) .header-wrapper .header__text-icon:not(:is(#menu-drawer *)) {
     color: #fff !important;
     --color-foreground: 255, 255, 255;
+}
+
+/*
+  Transparent header forces `color` + `--color-foreground: 255,255,255` on .list-menu__item etc.
+  Those selectors match items inside #menu-drawer too, so `rgb(var(--color-foreground))` stayed white.
+
+  Override like cart-drawer: set a real dark foreground + variable (matches theme Background 2 swatch).
+*/
+.header-wrapper #menu-drawer.menu-drawer {
+    color: rgb(var(--color-base-background-2));
+    --color-foreground: var(--color-base-background-2);
+}
+
+.header-wrapper #menu-drawer .menu-drawer__navigation,
+.header-wrapper #menu-drawer .menu-drawer__navigation-container,
+.header-wrapper #menu-drawer .menu-drawer__inner-container,
+.header-wrapper #menu-drawer .menu-drawer__menu,
+.header-wrapper #menu-drawer .menu-drawer__menu-item,
+.header-wrapper #menu-drawer summary.menu-drawer__menu-item,
+.header-wrapper #menu-drawer .menu-drawer__close-button,
+.header-wrapper #menu-drawer .menu-drawer__close-btn.menu-drawer__close-menu-btn,
+.header-wrapper #menu-drawer .menu-drawer__title,
+.header-wrapper #menu-drawer .menu-drawer__mobile-content,
+.header-wrapper #menu-drawer .header__icon,
+.header-wrapper #menu-drawer .list-menu__item,
+.header-wrapper #menu-drawer .link--text,
+.header-wrapper #menu-drawer .link:not(.button):not(.button--primary),
+.header-wrapper #menu-drawer a.menu-drawer__menu-item,
+.header-wrapper #menu-drawer .menu-drawer__submenu,
+.header-wrapper #menu-drawer .menu-drawer__submenu .menu-drawer__menu-item,
+.header-wrapper #menu-drawer .menu-drawer__submenu .menu-drawer__close-button,
+.header-wrapper #menu-drawer .menu-drawer__inner-submenu {
+    color: rgb(var(--color-base-background-2)) !important;
+    --color-foreground: var(--color-base-background-2) !important;
+}
+
+.header-wrapper #menu-drawer svg,
+.header-wrapper #menu-drawer .icon svg,
+.header-wrapper #menu-drawer .icon-arrow path,
+.header-wrapper #menu-drawer .icon-caret path {
+    color: rgb(var(--color-base-background-2));
+    fill: currentColor !important;
+    stroke: currentColor;
 }
 
 .section-header:not(.scrolled-past-header) .header-wrapper .header__heading-link .header__heading-logo--main {
