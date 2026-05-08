@@ -1,0 +1,787 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF BREAK800 GRAPH
+  ===================================================================================
+  Marketing-style testosterone graph with a declining trend line, rising product line,
+  callout labels (grandpa/dad/you), a "+60%" circle badge, and a "You should be here"
+  marker. Dark background, orange accent. JS-drawn SVG chart with scroll-triggered animation.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (richtext): Main heading with <strong> accent
+  * subtitle (text): Subtitle below heading
+  * decline_points (text): Comma-separated Y values for the decline line
+  * rise_points (text): Comma-separated Y values for the product/rise line
+  * x_ticks (text): Comma-separated week labels
+  * y_min / y_max (number): Chart Y bounds
+  * badge_text / badge_sub (text): Circle badge content (e.g. "+60%" / "INCREASE IN T")
+  * label_1_text / label_1_emoji / label_1_value (text): First callout (grandpa)
+  * label_2_text / label_2_emoji / label_2_value (text): Second callout (dad)
+  * label_3_text / label_3_emoji / label_3_value (text): Third callout (you)
+  * goal_text (text): "You should be here" marker text
+  * accent_color / bg_color / text_color
+  * padding_top / padding_bottom / padding_top_mb / padding_bottom_mb
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Theme Editor → Add Section → Break800 Graph
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+
+<style>
+  .break800-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top_mb }}px 0 {{ s.padding_bottom_mb }}px;
+    color: {{ s.text_color }};
+    overflow: hidden;
+  }
+
+  .break800-{{ sid }}__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* ── Heading ── */
+  .break800-{{ sid }}__heading {
+    font-size: clamp(26px, 4.5vw, 50px);
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.1;
+    margin: 0 auto 6px;
+    text-transform: uppercase;
+    max-width: 900px;
+  }
+  .break800-{{ sid }}__heading strong {
+    color: {{ s.accent_color }};
+  }
+
+  .break800-{{ sid }}__subtitle {
+    text-align: center;
+    font-size: clamp(14px, 2vw, 20px);
+    font-weight: 400;
+    margin: 0 auto 40px;
+    opacity: 0.7;
+    text-transform: lowercase;
+  }
+
+  /* ── Chart wrapper ── */
+  .break800-{{ sid }}__chart-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .break800-{{ sid }}__chart-wrap svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+
+  /* ── Badge (circle overlay) ── */
+  .break800-{{ sid }}__badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(100px, 18vw, 180px);
+    height: clamp(100px, 18vw, 180px);
+    background: {{ s.text_color }};
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    opacity: 0;
+    animation: break800BadgePop-{{ sid }} 0.5s ease-out 1.5s forwards;
+  }
+
+  .break800-{{ sid }}__badge-plus {
+    font-size: clamp(10px, 1.5vw, 16px);
+    font-weight: 900;
+    color: {{ s.accent_color }};
+    line-height: 1;
+  }
+
+  .break800-{{ sid }}__badge-num {
+    font-size: clamp(32px, 6vw, 64px);
+    font-weight: 900;
+    color: {{ s.accent_color }};
+    line-height: 1;
+  }
+
+  .break800-{{ sid }}__badge-sub {
+    font-size: clamp(8px, 1.2vw, 13px);
+    font-weight: 700;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+
+  /* ── Axis labels ── */
+  .break800-{{ sid }}__y-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    fill: {{ s.text_color }};
+    opacity: 0.6;
+  }
+
+  .break800-{{ sid }}__x-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    fill: {{ s.text_color }};
+    opacity: 0.6;
+  }
+
+  .break800-{{ sid }}__tick {
+    font-size: 13px;
+    font-weight: 600;
+    fill: {{ s.text_color }};
+    opacity: 0.7;
+  }
+
+  .break800-{{ sid }}__grid-line {
+    stroke: rgba(255,255,255,0.08);
+    stroke-width: 1;
+  }
+
+  /* ── Axis lines (solid X and Y) ── */
+  .break800-{{ sid }}__axis-line {
+    stroke: rgba(255,255,255,0.35);
+    stroke-width: 2;
+  }
+
+  /* ── Lines ── */
+  .break800-{{ sid }}__line-decline {
+    fill: none;
+    stroke: {{ s.accent_color }};
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    filter: drop-shadow(0 2px 6px rgba(255,86,0,0.4));
+  }
+
+  .break800-{{ sid }}__line-rise {
+    fill: none;
+    stroke: {{ s.rise_color }};
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    filter: drop-shadow(0 2px 6px rgba(220,40,40,0.4));
+  }
+
+  .break800-{{ sid }}[data-animated] .break800-{{ sid }}__line-decline,
+  .break800-{{ sid }}[data-animated] .break800-{{ sid }}__line-rise {
+    animation: break800Draw-{{ sid }} 2s ease-out forwards;
+  }
+
+  .break800-{{ sid }}__dot-decline { fill: {{ s.accent_color }}; }
+  .break800-{{ sid }}__dot-rise { fill: {{ s.rise_color }}; }
+
+  /* ── Callout labels ── */
+  .break800-{{ sid }}__callout {
+    font-size: 13px;
+    font-weight: 700;
+    fill: {{ s.text_color }};
+  }
+  .break800-{{ sid }}__callout-bg {
+    fill: rgba(255,100,100,0.85);
+    rx: 4;
+    ry: 4;
+  }
+  .break800-{{ sid }}__callout-text {
+    font-size: 13px;
+    font-weight: 800;
+    fill: {{ s.text_color }};
+  }
+
+  .break800-{{ sid }}__callout-emoji {
+    font-size: 20px;
+  }
+
+  /* ── Goal marker ── */
+  .break800-{{ sid }}__goal-bg {
+    fill: rgba(255,100,100,0.85);
+    rx: 4;
+    ry: 4;
+  }
+  .break800-{{ sid }}__goal-text {
+    font-size: 11px;
+    font-weight: 700;
+    fill: {{ s.text_color }};
+  }
+  .break800-{{ sid }}__goal-icon {
+    font-size: 28px;
+  }
+
+  /* ── Animations ── */
+  @keyframes break800Draw-{{ sid }} {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes break800BadgePop-{{ sid }} {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .break800-{{ sid }}__line-decline,
+    .break800-{{ sid }}__line-rise {
+      animation: none !important;
+      stroke-dashoffset: 0;
+    }
+    .break800-{{ sid }}__badge {
+      animation: none !important;
+      opacity: 1;
+    }
+  }
+
+  /* ── Desktop ── */
+  @media (min-width: 750px) {
+    .break800-{{ sid }} {
+      padding: {{ s.padding_top }}px 0 {{ s.padding_bottom }}px;
+    }
+    .break800-{{ sid }}__subtitle {
+      margin-bottom: 50px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .break800-{{ sid }}__chart-wrap {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>
+
+<section class="break800-{{ sid }}"
+  data-break800-section
+  data-decline="{{ s.decline_points | default: '500,480,460,440,420,400,380,365,350,340,330,320' }}"
+  data-rise="{{ s.rise_points | default: '500,530,560,590,620,650,680,710,730,750,770,790' }}"
+  data-weeks="{{ s.x_ticks | default: '1,2,3,4,5,6,7,8,9,10,11,12' }}"
+  data-y-min="{{ s.y_min | default: 200 }}"
+  data-y-max="{{ s.y_max | default: 850 }}"
+  data-y-ticks="{{ s.y_ticks | default: '300,400,500,600,700,800' }}"
+  data-y-label="{{ s.y_label | default: 'TOTAL TESTOSTERONE' }}"
+  data-x-label="{{ s.x_label | default: 'WEEKS' }}"
+  data-accent="{{ s.accent_color }}"
+  data-rise-color="{{ s.rise_color }}"
+  data-label1-text="{{ s.label_1_text }}"
+  data-label1-emoji="{{ s.label_1_emoji }}"
+  data-label1-value="{{ s.label_1_value | default: 800 }}"
+  data-label2-text="{{ s.label_2_text }}"
+  data-label2-emoji="{{ s.label_2_emoji }}"
+  data-label2-value="{{ s.label_2_value | default: 600 }}"
+  data-label3-text="{{ s.label_3_text }}"
+  data-label3-emoji="{{ s.label_3_emoji }}"
+  data-label3-value="{{ s.label_3_value | default: 320 }}"
+  data-goal-text="{{ s.goal_text }}"
+  data-section-id="{{ sid }}"
+>
+  <div class="break800-{{ sid }}__container">
+
+    {%- if s.heading != blank -%}
+      <h2 class="break800-{{ sid }}__heading">{{ s.heading }}</h2>
+    {%- endif -%}
+
+    {%- if s.subtitle != blank -%}
+      <p class="break800-{{ sid }}__subtitle">{{ s.subtitle }}</p>
+    {%- endif -%}
+
+    <div class="break800-{{ sid }}__chart-wrap">
+      <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img"
+        aria-label="Testosterone levels graph showing decline and recovery"></svg>
+
+      {%- if s.badge_text != blank -%}
+        <div class="break800-{{ sid }}__badge">
+          <span class="break800-{{ sid }}__badge-plus">+</span>
+          <span class="break800-{{ sid }}__badge-num">{{ s.badge_text }}</span>
+          {%- if s.badge_sub != blank -%}
+            <span class="break800-{{ sid }}__badge-sub">{{ s.badge_sub }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    function drawBreak800(root) {
+      var svg = root.querySelector('svg');
+      if (!svg || svg.childNodes.length > 1) return;
+      var sid = root.dataset.sectionId || '';
+      var W = 800, H = 450;
+      var padL = 85, padR = 60, padT = 40, padB = 60;
+      var plotW = W - padL - padR;
+      var plotH = H - padT - padB;
+
+      var weeks = root.dataset.weeks.split(',').map(Number);
+      var decline = root.dataset.decline.split(',').map(Number);
+      var rise = root.dataset.rise.split(',').map(Number);
+      var yTicks = root.dataset.yTicks.split(',').map(Number);
+      var yMin = +root.dataset.yMin;
+      var yMax = +root.dataset.yMax;
+
+      var xMin = weeks[0], xMax = weeks[weeks.length - 1];
+
+      function xPos(w) { return padL + (w - xMin) / (xMax - xMin) * plotW; }
+      function yPos(v) { return padT + (1 - (v - yMin) / (yMax - yMin)) * plotH; }
+
+      var ns = 'http://www.w3.org/2000/svg';
+      function el(tag, attrs, text) {
+        var n = document.createElementNS(ns, tag);
+        for (var k in attrs) n.setAttribute(k, attrs[k]);
+        if (text != null) n.textContent = text;
+        return n;
+      }
+
+      /* Axis lines (solid X and Y) */
+      svg.appendChild(el('line', {
+        x1: padL, y1: padT, x2: padL, y2: padT + plotH,
+        class: 'break800-' + sid + '__axis-line'
+      }));
+      svg.appendChild(el('line', {
+        x1: padL, y1: padT + plotH, x2: padL + plotW, y2: padT + plotH,
+        class: 'break800-' + sid + '__axis-line'
+      }));
+
+      /* Grid lines */
+      yTicks.forEach(function(v) {
+        var y = yPos(v);
+        svg.appendChild(el('line', {
+          x1: padL, y1: y, x2: padL + plotW, y2: y,
+          class: 'break800-' + sid + '__grid-line'
+        }));
+        svg.appendChild(el('text', {
+          x: padL - 12, y: y + 4, 'text-anchor': 'end',
+          class: 'break800-' + sid + '__tick'
+        }, v));
+      });
+
+      /* X-axis ticks */
+      weeks.forEach(function(w) {
+        svg.appendChild(el('text', {
+          x: xPos(w), y: padT + plotH + 25, 'text-anchor': 'middle',
+          class: 'break800-' + sid + '__tick'
+        }, w));
+      });
+
+      /* Y-axis label */
+      svg.appendChild(el('text', {
+        x: -padT - plotH / 2, y: 16, transform: 'rotate(-90)', 'text-anchor': 'middle',
+        class: 'break800-' + sid + '__y-label'
+      }, root.dataset.yLabel));
+
+      /* X-axis label */
+      svg.appendChild(el('text', {
+        x: padL + plotW / 2, y: H - 8, 'text-anchor': 'middle',
+        class: 'break800-' + sid + '__x-label'
+      }, root.dataset.xLabel));
+
+      /* Build path string */
+      function pathStr(values) {
+        return values.map(function(v, i) {
+          return (i === 0 ? 'M' : 'L') + xPos(weeks[i]).toFixed(1) + ',' + yPos(v).toFixed(1);
+        }).join(' ');
+      }
+
+      /* Decline line */
+      svg.appendChild(el('path', {
+        d: pathStr(decline),
+        class: 'break800-' + sid + '__line-decline'
+      }));
+
+      /* Rise line */
+      svg.appendChild(el('path', {
+        d: pathStr(rise),
+        class: 'break800-' + sid + '__line-rise'
+      }));
+
+      /* Start dot (shared) */
+      svg.appendChild(el('circle', {
+        cx: xPos(weeks[0]), cy: yPos(decline[0]), r: 7,
+        class: 'break800-' + sid + '__dot-decline'
+      }));
+
+      /* End dot - decline */
+      svg.appendChild(el('circle', {
+        cx: xPos(weeks[weeks.length - 1]), cy: yPos(decline[decline.length - 1]), r: 10,
+        class: 'break800-' + sid + '__dot-decline'
+      }));
+
+      /* End dot - rise */
+      svg.appendChild(el('circle', {
+        cx: xPos(weeks[weeks.length - 1]), cy: yPos(rise[rise.length - 1]), r: 6,
+        class: 'break800-' + sid + '__dot-rise'
+      }));
+
+      /* ── Callout labels ── */
+      function addCallout(text, emoji, yVal, align) {
+        if (!text) return;
+        var y = yPos(yVal);
+        var textOnly = text;
+        var textLen = textOnly.length * 8 + 20;
+        if (emoji) textLen += 26;
+        var bx, tx;
+
+        if (align === 'left') {
+          bx = padL + 6;
+          tx = bx + 8;
+        } else {
+          bx = padL + plotW - textLen - 6;
+          tx = bx + 8;
+        }
+
+        svg.appendChild(el('rect', {
+          x: bx, y: y - 15, width: textLen, height: 28,
+          class: 'break800-' + sid + '__callout-bg'
+        }));
+
+        if (emoji) {
+          svg.appendChild(el('text', {
+            x: tx, y: y + 6, 'text-anchor': 'start',
+            class: 'break800-' + sid + '__callout-emoji'
+          }, emoji));
+          svg.appendChild(el('text', {
+            x: tx + 24, y: y + 4, 'text-anchor': 'start',
+            class: 'break800-' + sid + '__callout-text'
+          }, textOnly));
+        } else {
+          svg.appendChild(el('text', {
+            x: tx, y: y + 4, 'text-anchor': 'start',
+            class: 'break800-' + sid + '__callout-text'
+          }, textOnly));
+        }
+      }
+
+      addCallout(root.dataset.label1Text, root.dataset.label1Emoji, +root.dataset.label1Value, 'left');
+      addCallout(root.dataset.label2Text, root.dataset.label2Emoji, +root.dataset.label2Value, 'left');
+      addCallout(root.dataset.label3Text, root.dataset.label3Emoji, +root.dataset.label3Value, 'right');
+
+      /* ── Goal marker ("You should be here") ── */
+      var goalText = root.dataset.goalText;
+      if (goalText) {
+        var gx = xPos(weeks[weeks.length - 1]) - 10;
+        var gy = yPos(+root.dataset.label1Value) - 45;
+        /* Star burst + Palm tree icon */
+        svg.appendChild(el('text', {
+          x: gx - 20, y: gy - 10, 'text-anchor': 'middle',
+          'font-size': '26'
+        }, '✨'));
+        svg.appendChild(el('text', {
+          x: gx, y: gy - 4, 'text-anchor': 'middle',
+          'font-size': '34'
+        }, '🌴'));
+        svg.appendChild(el('text', {
+          x: gx + 20, y: gy - 10, 'text-anchor': 'middle',
+          'font-size': '20'
+        }, '🔥'));
+        /* Label */
+        var gw = goalText.length * 7 + 20;
+        svg.appendChild(el('rect', {
+          x: gx + 32, y: gy - 5, width: gw, height: 24,
+          class: 'break800-' + sid + '__goal-bg'
+        }));
+        svg.appendChild(el('text', {
+          x: gx + 40, y: gy + 12, 'text-anchor': 'start',
+          class: 'break800-' + sid + '__goal-text'
+        }, goalText));
+      }
+    }
+
+    /* Intersection Observer for scroll-triggered animation */
+    function initBreak800() {
+      document.querySelectorAll('[data-break800-section]').forEach(function(section) {
+        drawBreak800(section);
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              section.setAttribute('data-animated', '');
+              observer.disconnect();
+            }
+          });
+        }, { threshold: 0.3 });
+        observer.observe(section);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBreak800);
+    } else {
+      initBreak800();
+    }
+
+    /* Shopify Theme Editor reload */
+    document.addEventListener('shopify:section:load', function(e) {
+      var n = e.target.querySelector('[data-break800-section]');
+      if (n) {
+        n.querySelector('svg').innerHTML = '';
+        n.removeAttribute('data-animated');
+        drawBreak800(n);
+        setTimeout(function() { n.setAttribute('data-animated', ''); }, 100);
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Break800 Graph",
+  "tag": "section",
+  "class": "bk-section-break800-graph",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p><strong>BREAK800</strong> Helps Men Take Back What Was Taken From Us</p>"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "average testosterone levels in men 20-40"
+    },
+    {
+      "type": "header",
+      "content": "Badge (center circle)"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge number",
+      "default": "60%"
+    },
+    {
+      "type": "text",
+      "id": "badge_sub",
+      "label": "Badge subtitle",
+      "default": "INCREASE IN T"
+    },
+    {
+      "type": "header",
+      "content": "Chart Data"
+    },
+    {
+      "type": "text",
+      "id": "decline_points",
+      "label": "Decline line Y values (comma-separated)",
+      "default": "500,480,460,440,420,400,380,365,350,340,330,320",
+      "info": "One value per week. Line goes top-left to bottom-right."
+    },
+    {
+      "type": "text",
+      "id": "rise_points",
+      "label": "Rise line Y values (comma-separated)",
+      "default": "500,530,560,590,620,650,680,710,730,750,770,790",
+      "info": "One value per week. Line goes bottom-left to top-right."
+    },
+    {
+      "type": "text",
+      "id": "x_ticks",
+      "label": "Week labels (comma-separated)",
+      "default": "1,2,3,4,5,6,7,8,9,10,11,12"
+    },
+    {
+      "type": "text",
+      "id": "y_ticks",
+      "label": "Y-axis tick values",
+      "default": "300,400,500,600,700,800"
+    },
+    {
+      "type": "number",
+      "id": "y_min",
+      "label": "Y-axis minimum",
+      "default": 200
+    },
+    {
+      "type": "number",
+      "id": "y_max",
+      "label": "Y-axis maximum",
+      "default": 850
+    },
+    {
+      "type": "text",
+      "id": "y_label",
+      "label": "Y-axis label",
+      "default": "TOTAL TESTOSTERONE"
+    },
+    {
+      "type": "text",
+      "id": "x_label",
+      "label": "X-axis label",
+      "default": "WEEKS"
+    },
+    {
+      "type": "header",
+      "content": "Callout Labels"
+    },
+    {
+      "type": "text",
+      "id": "label_1_text",
+      "label": "Label 1 text",
+      "default": "Your grandpa"
+    },
+    {
+      "type": "text",
+      "id": "label_1_emoji",
+      "label": "Label 1 emoji",
+      "default": "💪🏆"
+    },
+    {
+      "type": "number",
+      "id": "label_1_value",
+      "label": "Label 1 Y position",
+      "default": 800,
+      "info": "The testosterone value where this label appears"
+    },
+    {
+      "type": "text",
+      "id": "label_2_text",
+      "label": "Label 2 text",
+      "default": "Your dad"
+    },
+    {
+      "type": "text",
+      "id": "label_2_emoji",
+      "label": "Label 2 emoji",
+      "default": "�‍🔧💼"
+    },
+    {
+      "type": "number",
+      "id": "label_2_value",
+      "label": "Label 2 Y position",
+      "default": 600
+    },
+    {
+      "type": "text",
+      "id": "label_3_text",
+      "label": "Label 3 text",
+      "default": "You..."
+    },
+    {
+      "type": "text",
+      "id": "label_3_emoji",
+      "label": "Label 3 emoji",
+      "default": "😬📉"
+    },
+    {
+      "type": "number",
+      "id": "label_3_value",
+      "label": "Label 3 Y position",
+      "default": 320
+    },
+    {
+      "type": "header",
+      "content": "Goal Marker"
+    },
+    {
+      "type": "text",
+      "id": "goal_text",
+      "label": "Goal marker text",
+      "default": "*You should be here"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Decline line color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "rise_color",
+      "label": "Rise line color",
+      "default": "#DC2828"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0A0807"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Break800 Graph"
+    }
+  ]
+}
+{% endschema %}

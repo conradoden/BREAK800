@@ -32,6 +32,10 @@
 
     <script src="https://js.shrinetheme.com/js/v2/main.js?version=1" defer="defer" data-defer="true" data-is-rtl="{{ is_rtl }}" data-country-list-function="{{ settings.country_list_function }}" data-country-list="{{ settings.country_list }}" data-country-list-error="{{ settings.country_invalid_error_msg }}" data-animations-type="{{ settings.animations_type }}"></script>
     <script src="{{ 'secondary.js' | asset_url }}" defer="defer" data-defer="true" data-is-rtl="{{ is_rtl }}"></script>
+    {%- if settings.cart_type == 'drawer' -%}
+      <script src="{{ 'cart-icon-drawer.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+    <script src="{{ 'cta-retarget.js' | asset_url }}" defer="defer"></script>
     
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -152,6 +156,9 @@
         --color-base-accent-1: {{ settings.colors_accent_1.red }}, {{ settings.colors_accent_1.green }}, {{ settings.colors_accent_1.blue }};
         --color-base-accent-2: {{ settings.colors_accent_2.red }}, {{ settings.colors_accent_2.green }}, {{ settings.colors_accent_2.blue }};
         --payment-terms-background-color: {{ settings.colors_background_1 }};
+
+        --bk-btn-bg: {{ settings.bk_btn_bg }};
+        --bk-btn-text: {{ settings.bk_btn_text }};
 
         --gradient-base-background-1: {% if settings.gradient_background_1 != blank %}{{ settings.gradient_background_1 }}{% else %}{{ settings.colors_background_1 }}{% endif %};
         --gradient-base-background-2: {% if settings.gradient_background_2 != blank %}{{ settings.gradient_background_2 }}{% else %}{{ settings.colors_background_2 }}{% endif %};

@@ -20,8 +20,6 @@
 {% endcomment %}
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
   .faq-{{ section.id }} {
     background-color: {{ section.settings.bg_color }};
     {%- if section.settings.bg_image != blank -%}
@@ -32,7 +30,6 @@
     {%- endif -%}
     padding: 80px 20px;
     color: {{ section.settings.text_color }};
-    font-family: 'Inter', 'Assistant', sans-serif;
   }
 
   .faq__container-{{ section.id }} {
@@ -118,7 +115,7 @@
     padding: 0 22px 20px;
     font-size: 14px;
     line-height: 1.7;
-    color: rgba(255,255,255,0.7);
+    color: rgba(244,239,232,0.7);
     animation: faqFadeIn-{{ section.id }} 0.3s ease;
   }
 
@@ -138,22 +135,31 @@
   }
 
   .faq__cta-{{ section.id }} {
-    display: inline-block;
-    background: {{ section.settings.accent_color }};
-    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 16px 50px;
     font-size: 15px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 16px 50px;
-    border-radius: 6px;
     text-decoration: none;
-    transition: opacity 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
   }
 
   .faq__cta-{{ section.id }}:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
   }
 
   @media (max-width: 749px) {
@@ -275,13 +281,13 @@
       "type": "color",
       "id": "text_color",
       "label": "Text Color",
-      "default": "#ffffff"
+      "default": "#F4EFE8"
     },
     {
       "type": "color",
       "id": "accent_color",
       "label": "Accent Color",
-      "default": "#e85c2b"
+      "default": "#8B2020"
     }
   ],
   "blocks": [
@@ -293,13 +299,13 @@
           "type": "text",
           "id": "question",
           "label": "Question",
-          "default": "WHAT IS MARS MEN?"
+          "default": "WHAT IS BREAK800?"
         },
         {
           "type": "richtext",
           "id": "answer",
           "label": "Answer",
-          "default": "<p>Mars Men is a natural testosterone support supplement with 8 clinically dosed ingredients designed to help men optimize their hormonal health.</p>"
+          "default": "<p>BREAK800 is a natural testosterone support supplement with 8 clinically dosed ingredients designed to help men optimize their hormonal health.</p>"
         }
       ]
     }
@@ -308,15 +314,15 @@
     {
       "name": "BK FAQ Accordion",
       "blocks": [
-        { "type": "faq", "settings": { "question": "WHAT IS MARS MEN?", "answer": "<p>Mars Men is a natural testosterone support supplement with 8 clinically dosed ingredients designed to help men optimize their hormonal health.</p>" } },
-        { "type": "faq", "settings": { "question": "WHO IS MARS MEN FOR?", "answer": "<p>Mars Men is designed for men who want to naturally support their testosterone levels, energy, focus, and overall vitality.</p>" } },
-        { "type": "faq", "settings": { "question": "HOW DO I TAKE MARS MEN?", "answer": "<p>Take the recommended daily serving with water, preferably with a meal for optimal absorption.</p>" } },
+        { "type": "faq", "settings": { "question": "WHAT IS BREAK800?", "answer": "<p>BREAK800 is a natural testosterone support supplement with 8 clinically dosed ingredients designed to help men optimize their hormonal health.</p>" } },
+        { "type": "faq", "settings": { "question": "WHO IS BREAK800 FOR?", "answer": "<p>BREAK800 is designed for men who want to naturally support their testosterone levels, energy, focus, and overall vitality.</p>" } },
+        { "type": "faq", "settings": { "question": "HOW DO I TAKE BREAK800?", "answer": "<p>Take the recommended daily serving with water, preferably with a meal for optimal absorption.</p>" } },
         { "type": "faq", "settings": { "question": "HOW LONG UNTIL I SEE RESULTS?", "answer": "<p>Most men begin noticing improvements in energy and focus within the first 7 days, with full results by day 90.</p>" } },
-        { "type": "faq", "settings": { "question": "CAN MARS MEN HELP INCREASE MY ENERGY?", "answer": "<p>Yes. The ingredients in Mars Men are specifically chosen to support natural energy production and reduce fatigue.</p>" } },
-        { "type": "faq", "settings": { "question": "WILL MARS MEN IMPROVE MY STRENGTH GAINS IN THE GYM?", "answer": "<p>Optimized testosterone levels support muscle growth, recovery, and strength, helping you perform better in the gym.</p>" } },
-        { "type": "faq", "settings": { "question": "DO I NEED TO CYCLE MARS MEN?", "answer": "<p>No. Mars Men uses natural ingredients that are safe for daily, long-term use without cycling.</p>" } },
+        { "type": "faq", "settings": { "question": "CAN BREAK800 HELP INCREASE MY ENERGY?", "answer": "<p>Yes. The ingredients in BREAK800 are specifically chosen to support natural energy production and reduce fatigue.</p>" } },
+        { "type": "faq", "settings": { "question": "WILL BREAK800 IMPROVE MY STRENGTH GAINS IN THE GYM?", "answer": "<p>Optimized testosterone levels support muscle growth, recovery, and strength, helping you perform better in the gym.</p>" } },
+        { "type": "faq", "settings": { "question": "DO I NEED TO CYCLE BREAK800?", "answer": "<p>No. BREAK800 uses natural ingredients that are safe for daily, long-term use without cycling.</p>" } },
         { "type": "faq", "settings": { "question": "DO I HAVE TO SIGN UP FOR A SUBSCRIPTION?", "answer": "<p>No. You can purchase a one-time order or subscribe for convenience and savings.</p>" } },
-        { "type": "faq", "settings": { "question": "WHAT IS YOUR 90-DAY HIGHER-T GUARANTEE?", "answer": "<p>Try Mars Men risk-free for 90 days. If you're not satisfied, we'll refund you — no questions asked.</p>" } },
+        { "type": "faq", "settings": { "question": "WHAT IS YOUR 90-DAY HIGHER-T GUARANTEE?", "answer": "<p>Try BREAK800 risk-free for 90 days. If you're not satisfied, we'll refund you — no questions asked.</p>" } },
         { "type": "faq", "settings": { "question": "DO YOU ACCEPT RETURNS?", "answer": "<p>Yes. We offer a 90-day money-back guarantee on all orders.</p>" } }
       ]
     }

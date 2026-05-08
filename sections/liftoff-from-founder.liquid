@@ -1,0 +1,314 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF FROM THE FOUNDER
+  ===================================================================================
+  Founder letter section: eyebrow, founder photo, multi-paragraph letter,
+  signature image, name + title.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * eyebrow (text)
+  * founder_name, founder_title
+  * founder_image, signature_image
+  * letter_text (richtext)
+  * accent_color / text_color / bg_color
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff From The Founder
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+
+<style>
+  .liftoff-founder-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top }}px 20px {{ s.padding_bottom }}px;
+    color: {{ s.text_color }};
+  }
+
+  .liftoff-founder-{{ sid }}__container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .liftoff-founder-{{ sid }}__eyebrow {
+    
+    color: {{ s.accent_color }};
+    font-size: clamp(12px, 1.2vw, 15px);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 30px;
+    font-weight: 700;
+  }
+
+  .liftoff-founder-{{ sid }}__card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 50px 40px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .liftoff-founder-{{ sid }}__text-col {
+    text-align: left;
+  }
+
+  .liftoff-founder-{{ sid }}__photo-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .liftoff-founder-{{ sid }}__photo {
+    width: 100%;
+    max-width: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .liftoff-founder-{{ sid }}__photo img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .liftoff-founder-{{ sid }}__founder-info {
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .liftoff-founder-{{ sid }}__founder-info strong {
+    color: {{ s.text_color }};
+    font-weight: 700;
+    display: block;
+    font-size: 15px;
+  }
+
+  .liftoff-founder-{{ sid }}__letter {
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .liftoff-founder-{{ sid }}__letter p {
+    margin: 0 0 16px;
+  }
+
+  .liftoff-founder-{{ sid }}__letter p:last-child {
+    margin-bottom: 0;
+  }
+
+  .liftoff-founder-{{ sid }}__signature {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .liftoff-founder-{{ sid }}__signature img {
+    max-width: 160px;
+    height: auto;
+    filter: brightness(0) invert(1);
+  }
+
+  .liftoff-founder-{{ sid }}__sign-name {
+    
+    font-size: 14px;
+    font-weight: 700;
+    color: {{ s.text_color }};
+  }
+
+  .liftoff-founder-{{ sid }}__sign-title {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  @media (max-width: 768px) {
+    .liftoff-founder-{{ sid }} {
+      padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    }
+
+    .liftoff-founder-{{ sid }}__card {
+      grid-template-columns: 1fr;
+      padding: 30px 20px;
+    }
+
+    .liftoff-founder-{{ sid }}__photo-wrap {
+      order: -1;
+    }
+  }
+</style>
+
+<section class="liftoff-founder-{{ sid }}">
+  <div class="liftoff-founder-{{ sid }}__container">
+
+    {%- if s.eyebrow != blank -%}
+      <p class="liftoff-founder-{{ sid }}__eyebrow">{{ s.eyebrow }}</p>
+    {%- endif -%}
+
+    <div class="liftoff-founder-{{ sid }}__card">
+
+      <div class="liftoff-founder-{{ sid }}__text-col">
+        {%- if s.letter_text != blank -%}
+          <div class="liftoff-founder-{{ sid }}__letter">{{ s.letter_text }}</div>
+        {%- endif -%}
+
+        <div class="liftoff-founder-{{ sid }}__signature">
+          {%- if s.signature_image != blank -%}
+            {{ s.signature_image | image_url: width: 320 | image_tag: loading: 'lazy', alt: s.founder_name | append: ' signature' }}
+          {%- endif -%}
+          {%- if s.founder_name != blank -%}
+            <span class="liftoff-founder-{{ sid }}__sign-name">{{ s.founder_name }}</span>
+          {%- endif -%}
+          {%- if s.founder_title != blank -%}
+            <span class="liftoff-founder-{{ sid }}__sign-title">{{ s.founder_title }}</span>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="liftoff-founder-{{ sid }}__photo-wrap">
+        {%- if s.founder_image != blank -%}
+          <div class="liftoff-founder-{{ sid }}__photo">
+            {{ s.founder_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: s.founder_name }}
+          </div>
+        {%- endif -%}
+        <div class="liftoff-founder-{{ sid }}__founder-info">
+          <strong>{{ s.founder_name }}</strong>
+          {{ s.founder_title }}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BK Liftoff From Founder",
+  "tag": "section",
+  "class": "bk-section-liftoff-founder",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "FROM THE FOUNDER"
+    },
+    {
+      "type": "text",
+      "id": "founder_name",
+      "label": "Founder name",
+      "default": "Benjamin Smith"
+    },
+    {
+      "type": "text",
+      "id": "founder_title",
+      "label": "Founder title",
+      "default": "Co-Founder of BREAK800"
+    },
+    {
+      "type": "image_picker",
+      "id": "founder_image",
+      "label": "Founder photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "signature_image",
+      "label": "Signature image"
+    },
+    {
+      "type": "richtext",
+      "id": "letter_text",
+      "label": "Letter text",
+      "default": "<p>At BREAK800, our mission is clear: to empower men like you to take control of your health in a safe, natural, and effective way. We believe every man deserves access to premium science-backed products at a fair price point to elevate all aspects of life, and it's that belief that inspired the creation of our unique formula — harnessing the potential of natural herbs and evidence-based supplements to support long-term health.</p><p>Our journey hasn't been easy, but the challenges along the way have only fueled our determination. It's that spirit and belief in our product that drives everything we do.</p><p>We are committed to quality. Our rigorous approach extends to ingredient selection, manufacturing, and testing to ensure that our product is safe, effective, and reliable. All of our products are made in tier-1 GMP facilities.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Liftoff From Founder"
+    }
+  ]
+}
+{% endschema %}

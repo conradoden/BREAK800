@@ -1,0 +1,784 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF CUSTOMER REVIEWS
+  ===================================================================================
+  Full-featured customer reviews section replicating a Junip-style reviews widget.
+  Shows: average rating + distribution bars, AI-style summary, photo gallery,
+  and a list of individual text reviews with name, stars, date, title, body.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (text): Section heading. Default: "Customer reviews"
+  * average_rating (text): Average rating number (e.g. "4.75")
+  * total_reviews (text): Total review count (e.g. "3,757 reviews")
+  * bar_5 / bar_4 / bar_3 / bar_2 / bar_1 (range): Percentage for each rating bar
+  * summary_text (textarea): AI-generated summary paragraph
+  * accent_color / bg_color / text_color / card_border_color
+  * Blocks: review (reviewer_name, reviewer_initials, star_count, review_date,
+             review_title, review_text, verified, would_recommend, review_image)
+  * Blocks: gallery_image (image)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Theme Editor → Add Section → Liftoff Customer Reviews
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+
+<style>
+  .reviews-{{ sid }} {
+    background: transparent;
+    padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    color: {{ s.text_color }};
+  }
+  @media (min-width: 768px) {
+    .reviews-{{ sid }} {
+      padding: {{ s.padding_top }}px 16px {{ s.padding_bottom }}px;
+    }
+  }
+
+  .reviews-{{ sid }}__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── Title ── */
+  .reviews-{{ sid }}__title {
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 700;
+    margin: 0 0 24px;
+    color: {{ s.text_color }};
+  }
+
+  /* ── Summary Row ── */
+  .reviews-{{ sid }}__summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .reviews-{{ sid }}__average-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+  }
+
+  .reviews-{{ sid }}__average-number {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .reviews-{{ sid }}__stars {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 6px;
+  }
+
+  .reviews-{{ sid }}__stars svg {
+    width: 18px;
+    height: 18px;
+    fill: {{ s.accent_color }};
+  }
+
+  .reviews-{{ sid }}__count {
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  /* ── Bars ── */
+  .reviews-{{ sid }}__bars {
+    flex: 1;
+    min-width: 200px;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .reviews-{{ sid }}__bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .reviews-{{ sid }}__bar-label {
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 14px;
+    text-align: center;
+  }
+
+  .reviews-{{ sid }}__bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .reviews-{{ sid }}__bar-fill {
+    height: 100%;
+    background: {{ s.bar_color }};
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  /* ── Separator ── */
+  .reviews-{{ sid }}__sep {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: 24px 0;
+  }
+
+  /* ── AI Summary ── */
+  .reviews-{{ sid }}__ai-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .reviews-{{ sid }}__ai-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .reviews-{{ sid }}__ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    opacity: 0.7;
+    background: rgba(255,255,255,0.06);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .reviews-{{ sid }}__ai-badge svg {
+    width: 14px;
+    height: 14px;
+    fill: {{ s.accent_color }};
+  }
+
+  .reviews-{{ sid }}__ai-text {
+    font-size: 14px;
+    line-height: 1.65;
+    opacity: 0.85;
+    margin: 0;
+  }
+
+  /* ── Gallery ── */
+  .reviews-{{ sid }}__gallery {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 16px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+  }
+  .reviews-{{ sid }}__gallery::-webkit-scrollbar { display: none; }
+
+  .reviews-{{ sid }}__gallery-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  /* ── Review List ── */
+  .reviews-{{ sid }}__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reviews-{{ sid }}__item {
+    padding: 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .reviews-{{ sid }}__item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .reviews-{{ sid }}__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .reviews-{{ sid }}__reviewer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .reviews-{{ sid }}__reviewer-name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .reviews-{{ sid }}__verified {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  .reviews-{{ sid }}__verified svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .reviews-{{ sid }}__item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .reviews-{{ sid }}__item-stars {
+    display: flex;
+    gap: 2px;
+  }
+
+  .reviews-{{ sid }}__item-stars svg {
+    width: 16px;
+    height: 16px;
+    fill: {{ s.accent_color }};
+  }
+
+  .reviews-{{ sid }}__item-date {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .reviews-{{ sid }}__item-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .reviews-{{ sid }}__item-body {
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.85;
+    margin: 0;
+  }
+
+  .reviews-{{ sid }}__item-images {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .reviews-{{ sid }}__item-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+
+  .reviews-{{ sid }}__item-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  .reviews-{{ sid }}__recommend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .reviews-{{ sid }}__recommend-icon {
+    color: #e74c3c;
+  }
+
+  .reviews-{{ sid }}__helpful {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .reviews-{{ sid }}__helpful-label {
+    font-size: 12px;
+  }
+
+  .reviews-{{ sid }}__vote {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .reviews-{{ sid }}__vote svg {
+    width: 12px;
+    height: 12px;
+    opacity: 0.7;
+  }
+
+  /* ── See More Button ── */
+  .reviews-{{ sid }}__see-more {
+    display: block;
+    margin: 24px auto 0;
+    padding: 12px 32px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    color: {{ s.text_color }};
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .reviews-{{ sid }}__see-more:hover {
+    background: rgba(255,255,255,0.06);
+  }
+</style>
+
+<section class="reviews-{{ sid }}">
+  <div class="reviews-{{ sid }}__container">
+
+    {%- if s.heading != blank -%}
+      <h2 class="reviews-{{ sid }}__title">{{ s.heading }}</h2>
+    {%- endif -%}
+
+    <!-- Summary -->
+    <div class="reviews-{{ sid }}__summary">
+      <div class="reviews-{{ sid }}__average-wrap">
+        <div class="reviews-{{ sid }}__average-number">{{ s.average_rating }}</div>
+        <div class="reviews-{{ sid }}__stars">
+          {%- assign full_stars = s.average_rating | floor -%}
+          {%- for i in (1..5) -%}
+            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0l2.47 4.94L16 5.82l-4 3.9.94 5.48L8 12.68 3.06 15.2 4 9.72 0 5.82l5.53-.88z"/></svg>
+          {%- endfor -%}
+        </div>
+        <div class="reviews-{{ sid }}__count">{{ s.total_reviews }}</div>
+      </div>
+
+      <div class="reviews-{{ sid }}__bars">
+        <div class="reviews-{{ sid }}__bar-row">
+          <span class="reviews-{{ sid }}__bar-label">5</span>
+          <div class="reviews-{{ sid }}__bar-track">
+            <div class="reviews-{{ sid }}__bar-fill" style="width: {{ s.bar_5 }}%;">  </div>
+          </div>
+        </div>
+        <div class="reviews-{{ sid }}__bar-row">
+          <span class="reviews-{{ sid }}__bar-label">4</span>
+          <div class="reviews-{{ sid }}__bar-track">
+            <div class="reviews-{{ sid }}__bar-fill" style="width: {{ s.bar_4 }}%;">  </div>
+          </div>
+        </div>
+        <div class="reviews-{{ sid }}__bar-row">
+          <span class="reviews-{{ sid }}__bar-label">3</span>
+          <div class="reviews-{{ sid }}__bar-track">
+            <div class="reviews-{{ sid }}__bar-fill" style="width: {{ s.bar_3 }}%;">  </div>
+          </div>
+        </div>
+        <div class="reviews-{{ sid }}__bar-row">
+          <span class="reviews-{{ sid }}__bar-label">2</span>
+          <div class="reviews-{{ sid }}__bar-track">
+            <div class="reviews-{{ sid }}__bar-fill" style="width: {{ s.bar_2 }}%;">  </div>
+          </div>
+        </div>
+        <div class="reviews-{{ sid }}__bar-row">
+          <span class="reviews-{{ sid }}__bar-label">1</span>
+          <div class="reviews-{{ sid }}__bar-track">
+            <div class="reviews-{{ sid }}__bar-fill" style="width: {{ s.bar_1 }}%;">  </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="reviews-{{ sid }}__sep">
+
+    <!-- AI Summary -->
+    {%- if s.summary_text != blank -%}
+      <div class="reviews-{{ sid }}__ai-section">
+        <div class="reviews-{{ sid }}__ai-header">
+          <span class="reviews-{{ sid }}__ai-title">What customers say</span>
+          <span class="reviews-{{ sid }}__ai-badge">
+            <svg viewBox="0 0 14 15" xmlns="http://www.w3.org/2000/svg"><g><path d="m1.76 1.22c.24-.43.85-.43 1.09 0l.19.36c.21.37.51.68.89.89l.36.19c.43.24.43.85 0 1.09l-.36.19c-.37.21-.68.51-.89.89l-.19.36c-.24.43-.85.43-1.09 0l-.19-.36c-.21-.37-.51-.68-.89-.89l-.36-.19c-.43-.24-.43-.85 0-1.09l.36-.19c.37-.21.68-.51.89-.89z"/><path d="m8.96 4.83c-.18-1.16-1.84-1.18-2.05-.03l-.03.16c-.28 1.55-1.51 2.76-3.07 3.01-1.14.19-1.16 1.82-.03 2.04l.1.02c1.52.29 2.71 1.48 3.01 3.01l.03.16c.23 1.2 1.95 1.2 2.18 0l.02-.13c.3-1.54 1.51-2.74 3.06-3.02 1.18-.21 1.11-1.92-.07-2.09-1.62-.24-2.91-1.51-3.16-3.13z"/></g></svg>
+            Auto-generated
+          </span>
+        </div>
+        <p class="reviews-{{ sid }}__ai-text">{{ s.summary_text }}</p>
+      </div>
+      <hr class="reviews-{{ sid }}__sep">
+    {%- endif -%}
+
+    <!-- Photo Gallery -->
+    {%- assign gallery_blocks = section.blocks | where: 'type', 'gallery_image' -%}
+    {%- if gallery_blocks.size > 0 -%}
+      <div class="reviews-{{ sid }}__gallery">
+        {%- for block in gallery_blocks -%}
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 200 | image_tag: loading: 'lazy', class: 'reviews-' | append: sid | append: '__gallery-img', alt: 'Customer photo' }}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <hr class="reviews-{{ sid }}__sep">
+    {%- endif -%}
+
+    <!-- Review List -->
+    {%- assign review_blocks = section.blocks | where: 'type', 'review' -%}
+    {%- if review_blocks.size > 0 -%}
+      <div class="reviews-{{ sid }}__list">
+        {%- for block in review_blocks -%}
+          <div class="reviews-{{ sid }}__item" {{ block.shopify_attributes }}>
+            <!-- Reviewer header -->
+            <div class="reviews-{{ sid }}__item-header">
+              <div class="reviews-{{ sid }}__avatar">{{ block.settings.reviewer_initials }}</div>
+              <div class="reviews-{{ sid }}__reviewer-info">
+                <span class="reviews-{{ sid }}__reviewer-name">{{ block.settings.reviewer_name }}</span>
+                {%- if block.settings.verified -%}
+                  <span class="reviews-{{ sid }}__verified">
+                    <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><path d="m5.95 1.02c.64-.7 1.73-.7 2.37 0l.92 1c.28.3.66.49 1.07.52l1.36.09c.94.07 1.62.92 1.48 1.85l-.21 1.35c-.06.41.03.82.27 1.16l.77 1.12c.54.78.29 1.85-.53 2.31l-1.19.68c-.36.2-.62.54-.74.93l-.4 1.31c-.27.9-1.26 1.38-2.14 1.03l-1.27-.51c-.38-.15-.81-.15-1.19 0l-1.27.51c-.88.35-1.86-.13-2.14-1.03l-.4-1.31c-.12-.39-.39-.73-.74-.93l-1.19-.68c-.82-.47-1.06-1.54-.53-2.31l.77-1.12c.23-.34.33-.76.27-1.16l-.21-1.35c-.15-.93.54-1.79 1.48-1.85l1.36-.09c.41-.03.8-.21 1.07-.52z" fill="{{ s.accent_color }}"/><path d="m4.15 6.86l-.93.89 2.9 3.02 4.89-4.68-.89-.93-3.95 3.79z" fill="{{ s.bg_color }}"/></svg>
+                    Verified buyer
+                  </span>
+                {%- endif -%}
+              </div>
+            </div>
+
+            <!-- Stars + Date -->
+            <div class="reviews-{{ sid }}__item-meta">
+              <div class="reviews-{{ sid }}__item-stars">
+                {%- for i in (1..5) -%}
+                  {%- if i <= block.settings.star_count -%}
+                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0l2.47 4.94L16 5.82l-4 3.9.94 5.48L8 12.68 3.06 15.2 4 9.72 0 5.82l5.53-.88z"/></svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" style="opacity:0.25"><path d="M8 0l2.47 4.94L16 5.82l-4 3.9.94 5.48L8 12.68 3.06 15.2 4 9.72 0 5.82l5.53-.88z"/></svg>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              {%- if block.settings.review_date != blank -%}
+                <span class="reviews-{{ sid }}__item-date">{{ block.settings.review_date }}</span>
+              {%- endif -%}
+            </div>
+
+            <!-- Title + Body -->
+            {%- if block.settings.review_title != blank -%}
+              <h3 class="reviews-{{ sid }}__item-title">{{ block.settings.review_title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.review_text != blank -%}
+              <p class="reviews-{{ sid }}__item-body">{{ block.settings.review_text }}</p>
+            {%- endif -%}
+
+            <!-- Review image -->
+            {%- if block.settings.review_image != blank -%}
+              <div class="reviews-{{ sid }}__item-images">
+                {{ block.settings.review_image | image_url: width: 200 | image_tag: loading: 'lazy', class: 'reviews-' | append: sid | append: '__item-img', alt: block.settings.review_title }}
+              </div>
+            {%- endif -%}
+            {%- if block.settings.review_image_2 != blank -%}
+              <div class="reviews-{{ sid }}__item-images">
+                {{ block.settings.review_image_2 | image_url: width: 200 | image_tag: loading: 'lazy', class: 'reviews-' | append: sid | append: '__item-img', alt: block.settings.review_title }}
+              </div>
+            {%- endif -%}
+
+            <!-- Footer -->
+            <div class="reviews-{{ sid }}__item-footer">
+              {%- if block.settings.would_recommend -%}
+                <span class="reviews-{{ sid }}__recommend">
+                  <span class="reviews-{{ sid }}__recommend-icon">❤</span> Would recommend
+                </span>
+              {%- else -%}
+                <span></span>
+              {%- endif -%}
+              <span class="reviews-{{ sid }}__helpful">
+                <span class="reviews-{{ sid }}__helpful-label">Helpful</span>
+                <span class="reviews-{{ sid }}__vote">
+                  <svg viewBox="-1 -1 16 13" xmlns="http://www.w3.org/2000/svg"><path d="m7 .5-7 10h14z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                  {%- if block.settings.upvotes > 0 -%}{{ block.settings.upvotes }}{%- endif -%}
+                </span>
+                <span class="reviews-{{ sid }}__vote">
+                  <svg viewBox="-1 -1 16 13" xmlns="http://www.w3.org/2000/svg"><path d="m7 10.5-7-10h14z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                  {%- if block.settings.downvotes > 0 -%}{{ block.settings.downvotes }}{%- endif -%}
+                </span>
+              </span>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Reviews",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Summary"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customer reviews"
+    },
+    {
+      "type": "text",
+      "id": "average_rating",
+      "label": "Average Rating",
+      "default": "4.75"
+    },
+    {
+      "type": "text",
+      "id": "total_reviews",
+      "label": "Total Reviews Text",
+      "default": "3,757 reviews"
+    },
+    {
+      "type": "range",
+      "id": "bar_5",
+      "label": "5-Star %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 77
+    },
+    {
+      "type": "range",
+      "id": "bar_4",
+      "label": "4-Star %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 21
+    },
+    {
+      "type": "range",
+      "id": "bar_3",
+      "label": "3-Star %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "bar_2",
+      "label": "2-Star %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "bar_1",
+      "label": "1-Star %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "AI Summary"
+    },
+    {
+      "type": "textarea",
+      "id": "summary_text",
+      "label": "Summary Text",
+      "default": "Reviewers praise BREAK800's Natural Testosterone Support for boosting energy levels, improving gym performance, and enhancing overall well-being. Many users report noticeable results within a month, including increased stamina, muscle gains, and improved mental clarity, with some highlighting the product's natural ingredients and customer service."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Star Color",
+      "default": "#D4A853"
+    },
+    {
+      "type": "color",
+      "id": "bar_color",
+      "label": "Bar Fill Color",
+      "default": "#D4A853"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top (Desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom (Desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding Top (Mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding Bottom (Mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "gallery_image",
+      "name": "Gallery Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    },
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "text",
+          "id": "reviewer_name",
+          "label": "Reviewer Name",
+          "default": "Randy B"
+        },
+        {
+          "type": "text",
+          "id": "reviewer_initials",
+          "label": "Initials",
+          "default": "RB"
+        },
+        {
+          "type": "range",
+          "id": "star_count",
+          "label": "Stars",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "review_date",
+          "label": "Date",
+          "default": "4 months ago"
+        },
+        {
+          "type": "text",
+          "id": "review_title",
+          "label": "Title",
+          "default": "BREAK800 works!"
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review Text",
+          "default": "I saw reviews from other men that stated BREAK800 did not work for them, so I was skeptical. I'm 65 and I thought that my testosterone was going to stay low."
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Verified Buyer",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "would_recommend",
+          "label": "Would Recommend",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "review_image",
+          "label": "Review Image 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "review_image_2",
+          "label": "Review Image 2"
+        },
+        {
+          "type": "number",
+          "id": "upvotes",
+          "label": "Upvotes",
+          "default": 0
+        },
+        {
+          "type": "number",
+          "id": "downvotes",
+          "label": "Downvotes",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Reviews",
+      "blocks": [
+        { "type": "review" }
+      ]
+    }
+  ]
+}
+{% endschema %}

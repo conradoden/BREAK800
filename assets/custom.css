@@ -4,3 +4,86 @@
 .pdp-mars__title {
     color: #F4EFE8;
 }
+
+.section-header .header-wrapper {
+    background: transparent !important;
+}
+
+.section-header.scrolled-past-header .header-wrapper {
+    background: rgb(var(--color-background)) !important;
+}
+
+.section-header:not(.scrolled-past-header) .header-wrapper .header__icon,
+.section-header:not(.scrolled-past-header) .header-wrapper .header__menu-item,
+.section-header:not(.scrolled-past-header) .header-wrapper .header__menu-item--main,
+.section-header:not(.scrolled-past-header) .header-wrapper .list-menu__item,
+.section-header:not(.scrolled-past-header) .header-wrapper .header__text-icon {
+    color: #fff !important;
+    --color-foreground: 255, 255, 255;
+}
+
+.section-header:not(.scrolled-past-header) .header__heading-logo--main {
+    display: none !important;
+}
+
+.section-header:not(.scrolled-past-header) .header__heading-logo--secondary {
+    display: inline-block !important;
+}
+
+/* Cart drawer/slider: theme uses white "text" on white background-1, fix contrast */
+cart-drawer,
+#CartDrawer,
+cart-drawer .drawer__inner,
+#CartDrawer .drawer__inner {
+    color: rgb(var(--color-base-background-2));
+    --color-foreground: var(--color-base-background-2);
+}
+
+cart-drawer .color-background-1,
+#CartDrawer .color-background-1 {
+    --color-foreground: var(--color-base-background-2);
+    --border-color: var(--color-base-background-2);
+}
+
+cart-drawer .text-color-text,
+#CartDrawer .text-color-text {
+    color: rgb(var(--color-base-background-2)) !important;
+    --color-foreground: var(--color-base-background-2);
+}
+
+cart-drawer .drawer__heading,
+cart-drawer .drawer__close,
+cart-drawer .cart-item__name,
+cart-drawer .cart-item__details,
+cart-drawer .cart-item__details a,
+cart-drawer .cart-item__details .product-option,
+cart-drawer .cart-item__totals,
+cart-drawer .cart-item__price-wrapper,
+cart-drawer .cart-drawer__totals,
+cart-drawer .cart-drawer__totals__row,
+cart-drawer .cart-drawer__totals__row__money,
+cart-drawer .cart__empty-text,
+#CartDrawer .drawer__heading,
+#CartDrawer .drawer__close,
+#CartDrawer .cart-item__name,
+#CartDrawer .cart-item__details,
+#CartDrawer .cart-item__details a,
+#CartDrawer .cart-item__details .product-option,
+#CartDrawer .cart-item__totals,
+#CartDrawer .cart-item__price-wrapper,
+#CartDrawer .cart-drawer__totals,
+#CartDrawer .cart-drawer__totals__row,
+#CartDrawer .cart-drawer__totals__row__money,
+#CartDrawer .cart__empty-text {
+    color: rgb(var(--color-base-background-2)) !important;
+}
+
+cart-drawer .drawer__close svg,
+#CartDrawer .drawer__close svg {
+    color: inherit;
+}
+
+cart-drawer .color-background-1 .quantity__input,
+#CartDrawer .color-background-1 .quantity__input {
+    color: rgb(var(--color-base-background-2));
+}

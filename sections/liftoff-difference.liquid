@@ -1,0 +1,657 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF DIFFERENCE (Comparison Table)
+  ===================================================================================
+  "The BREAK800 Difference" — 3-column comparison table layout:
+  Left content area: heading + intro text
+  Right table: category | BREAK800 (orange column) | TRT
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading, intro_text
+  * left_column_title, right_column_title
+  * left_header_image, logo_image, right_header_image
+  * left_check_icon, right_x_icon
+  * cta_text / cta_link
+  * accent_color / text_color / bg_color
+  * Blocks: row (category, left_text, right_text)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff Difference
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+{%- assign rows = section.blocks -%}
+
+<style>
+  .liftoff-diff-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top }}px 16px {{ s.padding_bottom }}px;
+    color: {{ s.text_color }};
+    overflow: hidden;
+  }
+
+  .liftoff-diff-{{ sid }}__container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  /* Left content: heading + intro */
+  .liftoff-diff-{{ sid }}__left {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .liftoff-diff-{{ sid }}__heading {
+    
+    font-size: 30px;
+    line-height: 34px;
+    font-weight: 900;
+    margin: 0 0 28px;
+  }
+
+  .liftoff-diff-{{ sid }}__intro {
+    font-size: 16px;
+    line-height: 1.38;
+    max-width: 315px;
+    margin: 0 auto;
+  }
+
+  .liftoff-diff-{{ sid }}__intro p {
+    margin: 0;
+  }
+
+  /* Table */
+  .liftoff-diff-{{ sid }}__table {
+    flex: 1;
+    width: 100%;
+    color: #fff;
+    padding-top: 10px;
+    overflow: auto;
+  }
+
+  /* 3-column grid */
+  .liftoff-diff-{{ sid }}__grid {
+    display: grid;
+    grid-template-columns: minmax(80px, auto) 128px 126px;
+    min-height: 43px;
+    align-items: stretch;
+    border-top: 1px solid #C0C0C0;
+  }
+
+  .liftoff-diff-{{ sid }}__grid > div {
+    padding: 4px 8px;
+  }
+
+  .liftoff-diff-{{ sid }}__grid--head {
+    border-top: none;
+  }
+
+  .liftoff-diff-{{ sid }}__grid--foot {
+    min-height: 26px;
+  }
+
+  /* Header cells */
+  .liftoff-diff-{{ sid }}__head-empty {
+    /* empty top-left */
+  }
+
+  .liftoff-diff-{{ sid }}__head-left {
+    background: {{ s.accent_color }};
+    display: flex;
+    align-items: center;
+    border-radius: 5px 5px 0 0;
+    padding-bottom: 10px;
+  }
+
+  .liftoff-diff-{{ sid }}__head-left img:first-child {
+    height: auto;
+    width: 100px;
+    object-fit: contain;
+    margin-left: -28px;
+    margin-top: -6px;
+  }
+
+  .liftoff-diff-{{ sid }}__head-left img:last-child {
+    width: 40px;
+    height: auto;
+  }
+
+  .liftoff-diff-{{ sid }}__head-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding-bottom: 10px;
+  }
+
+  .liftoff-diff-{{ sid }}__head-right img {
+    width: 37px;
+    height: 37px;
+    object-fit: contain;
+  }
+
+  .liftoff-diff-{{ sid }}__head-right p {
+    
+    font-size: 16px;
+    font-weight: 900;
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* Category cell */
+  .liftoff-diff-{{ sid }}__cat {
+    
+    font-size: 10px;
+    line-height: 1.1;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    padding-right: 8px;
+  }
+
+  /* Left (orange) cell */
+  .liftoff-diff-{{ sid }}__cell-left {
+    
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 900;
+    background: {{ s.accent_color }};
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+  }
+
+  .liftoff-diff-{{ sid }}__cell-left img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  /* Right cell */
+  .liftoff-diff-{{ sid }}__cell-right {
+    
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+  }
+
+  .liftoff-diff-{{ sid }}__cell-right img {
+    width: 12px;
+    height: 12px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  /* Footer (orange rounded bottom) */
+  .liftoff-diff-{{ sid }}__foot-left {
+    background: {{ s.accent_color }};
+    border-radius: 0 0 5px 5px;
+  }
+
+  /* CTA */
+  .liftoff-diff-{{ sid }}__cta-wrap {
+    text-align: center;
+    margin-top: 53px;
+  }
+
+  .liftoff-diff-{{ sid }}__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 54px;
+    
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+    width: 100%;
+    max-width: 220px;
+  }
+
+  .liftoff-diff-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+
+  .liftoff-diff-{{ sid }}__cta svg {
+    width: 23px;
+    height: 17px;
+  }
+
+  .liftoff-diff-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+
+  /* Desktop (xl) */
+  @media (min-width: 1200px) {
+    .liftoff-diff-{{ sid }}__grid > div {
+      padding: 4px 40px;
+    }
+
+    .liftoff-diff-{{ sid }}__container {
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .liftoff-diff-{{ sid }}__left {
+      max-width: 378px;
+      flex-shrink: 0;
+      text-align: left;
+      margin: 0;
+    }
+
+    .liftoff-diff-{{ sid }}__heading {
+      font-size: 55px;
+      line-height: 51px;
+    }
+
+    .liftoff-diff-{{ sid }}__intro {
+      max-width: 323px;
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .liftoff-diff-{{ sid }}__grid {
+      grid-template-columns: minmax(0, 203px) 1fr 1fr;
+      min-height: 68px;
+    }
+
+    .liftoff-diff-{{ sid }}__cat {
+      font-size: 18px;
+    }
+
+    .liftoff-diff-{{ sid }}__cell-left {
+      font-size: 18px;
+      line-height: 23px;
+      gap: 10px;
+      padding: 4px 46px;
+    }
+
+    .liftoff-diff-{{ sid }}__cell-left img {
+      width: 33.53px;
+      height: 33.53px;
+    }
+
+    .liftoff-diff-{{ sid }}__cell-right {
+      font-size: 18px;
+      line-height: 23px;
+      gap: 10px;
+      padding: 4px 37px;
+    }
+
+    .liftoff-diff-{{ sid }}__cell-right img {
+      width: 16.77px;
+      height: 16.77px;
+    }
+
+    .liftoff-diff-{{ sid }}__head-left {
+      border-radius: 12px 12px 0 0;
+    }
+
+    .liftoff-diff-{{ sid }}__head-left img:first-child {
+      height: 155.65px;
+      width: 168.95px;
+      margin-left: -10px;
+      margin-top: -10px;
+    }
+
+    .liftoff-diff-{{ sid }}__head-left img:last-child {
+      width: 96px;
+    }
+
+    .liftoff-diff-{{ sid }}__head-right img {
+      width: 62px;
+      height: 63px;
+    }
+
+    .liftoff-diff-{{ sid }}__head-right p {
+      font-size: 25px;
+    }
+
+    .liftoff-diff-{{ sid }}__foot-left {
+      border-radius: 0 0 12px 12px;
+    }
+
+    .liftoff-diff-{{ sid }}__cta-wrap {
+      margin-top: 80px;
+    }
+
+    .liftoff-diff-{{ sid }}__cta {
+      max-width: 400px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 899px) {
+    .liftoff-diff-{{ sid }} {
+      padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    }
+  }
+
+  /* xs breakpoint for slightly wider grids */
+  @media (min-width: 480px) and (max-width: 1199px) {
+    .liftoff-diff-{{ sid }}__grid {
+      grid-template-columns: 1.2fr 1fr 1fr;
+    }
+
+    .liftoff-diff-{{ sid }}__cat {
+      font-size: 11px;
+    }
+
+    .liftoff-diff-{{ sid }}__left {
+      max-width: 1002px;
+    }
+
+    .liftoff-diff-{{ sid }}__intro {
+      max-width: 1002px;
+    }
+  }
+</style>
+
+<section class="liftoff-diff-{{ sid }}">
+  <div class="liftoff-diff-{{ sid }}__container">
+
+    {%- comment -%} Left: heading + intro text {%- endcomment -%}
+    <div class="liftoff-diff-{{ sid }}__left">
+      {%- if s.heading != blank -%}
+        <h2 class="liftoff-diff-{{ sid }}__heading">{{ s.heading }}</h2>
+      {%- endif -%}
+
+      {%- if s.intro_text != blank -%}
+        <div class="liftoff-diff-{{ sid }}__intro">{{ s.intro_text }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Right: 3-column comparison table {%- endcomment -%}
+    {%- if rows.size > 0 -%}
+      <div class="liftoff-diff-{{ sid }}__table">
+
+        {%- comment -%} Table head {%- endcomment -%}
+        <div class="liftoff-diff-{{ sid }}__grid liftoff-diff-{{ sid }}__grid--head">
+          <div class="liftoff-diff-{{ sid }}__head-empty">&nbsp;</div>
+          <div class="liftoff-diff-{{ sid }}__head-left">
+            {%- if s.left_header_image != blank -%}
+              {{ s.left_header_image | image_url: width: 524 | image_tag: loading: 'lazy', alt: s.left_column_title | default: 'Product' }}
+            {%- endif -%}
+            {%- if s.logo_image != blank -%}
+              {{ s.logo_image | image_url: width: 96 | image_tag: loading: 'lazy', alt: 'Logo' }}
+            {%- endif -%}
+          </div>
+          <div class="liftoff-diff-{{ sid }}__head-right">
+            {%- if s.right_header_image != blank -%}
+              {{ s.right_header_image | image_url: width: 126 | image_tag: loading: 'lazy', alt: s.right_column_title | default: 'TRT' }}
+            {%- endif -%}
+            <p>{{ s.right_column_title | default: 'TRT' }}</p>
+          </div>
+        </div>
+
+        {%- comment -%} Table rows {%- endcomment -%}
+        {%- for block in rows -%}
+          <div class="liftoff-diff-{{ sid }}__grid" {{ block.shopify_attributes }}>
+            <div class="liftoff-diff-{{ sid }}__cat">
+              {{ block.settings.category }}
+            </div>
+            <div class="liftoff-diff-{{ sid }}__cell-left">
+              {%- if s.left_check_icon != blank -%}
+                {{ s.left_check_icon | image_url: width: 68 | image_tag: loading: 'lazy', alt: '' }}
+              {%- endif -%}
+              {{ block.settings.left_text }}
+            </div>
+            <div class="liftoff-diff-{{ sid }}__cell-right">
+              {%- if s.right_x_icon != blank -%}
+                {{ s.right_x_icon | image_url: width: 34 | image_tag: loading: 'lazy', alt: '' }}
+              {%- endif -%}
+              {{ block.settings.right_text }}
+            </div>
+          </div>
+        {%- endfor -%}
+
+        {%- comment -%} Table footer (rounded bottom on orange col) {%- endcomment -%}
+        <div class="liftoff-diff-{{ sid }}__grid liftoff-diff-{{ sid }}__grid--foot">
+          <div>&nbsp;</div>
+          <div class="liftoff-diff-{{ sid }}__foot-left">&nbsp;</div>
+          <div>&nbsp;</div>
+        </div>
+
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  {%- if s.cta_text != blank -%}
+    <div class="liftoff-diff-{{ sid }}__cta-wrap">
+      <a href="{{ s.cta_link | default: '#' }}" class="liftoff-diff-{{ sid }}__cta">
+        <span>{{ s.cta_text }}</span>
+        <svg width="23" height="17" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M2.08398 7.43318C1.45866 7.43318 0.951735 7.94011 0.951735 8.56543C0.951735 9.19075 1.45866 9.69768 2.08398 9.69768L2.08398 7.43318ZM22.2304 9.36605C22.6726 8.92388 22.6726 8.20698 22.2304 7.76481L15.0248 0.559215C14.5826 0.117045 13.8657 0.117045 13.4236 0.559216C12.9814 1.00139 12.9814 1.71829 13.4236 2.16046L19.8285 8.56543L13.4236 14.9704C12.9814 15.4126 12.9814 16.1295 13.4236 16.5716C13.8657 17.0138 14.5826 17.0138 15.0248 16.5716L22.2304 9.36605ZM2.08398 8.56543L2.08398 9.69768L21.4298 9.69768L21.4298 8.56543L21.4298 7.43318L2.08398 7.43318L2.08398 8.56543Z" fill="white"/>
+        </svg>
+      </a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "BK Liftoff Difference",
+  "tag": "section",
+  "class": "bk-section-liftoff-difference",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The BREAK800 Difference"
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Intro text",
+      "default": "<p>Natural Testosterone Support is not your typical T Booster. It's a next-generation and natural formula designed to support hormone optimization without the risks and commitment of TRT.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Table Headers"
+    },
+    {
+      "type": "text",
+      "id": "left_column_title",
+      "label": "Left column title",
+      "default": "BREAK800"
+    },
+    {
+      "type": "text",
+      "id": "right_column_title",
+      "label": "Right column title",
+      "default": "TRT"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_header_image",
+      "label": "Left header image 1 (e.g. product)"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Left header image 2 (e.g. logo)"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_header_image",
+      "label": "Right header image (e.g. syringe icon)"
+    },
+    {
+      "type": "header",
+      "content": "Row Icons"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_check_icon",
+      "label": "Left column check icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_x_icon",
+      "label": "Right column X icon"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "Try It Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (orange column)",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Comparison Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category",
+          "label": "Category label",
+          "default": "APPROACH",
+          "info": "e.g. APPROACH, COMMITMENT, SIDE EFFECTS, COST"
+        },
+        {
+          "type": "text",
+          "id": "left_text",
+          "label": "BREAK800 (left)",
+          "default": "Natural Support"
+        },
+        {
+          "type": "text",
+          "id": "right_text",
+          "label": "TRT (right)",
+          "default": "Synthetic Replacement"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Liftoff Difference",
+      "blocks": [
+        { "type": "row", "settings": { "category": "APPROACH", "left_text": "Natural Support", "right_text": "Synthetic Replacement" } },
+        { "type": "row", "settings": { "category": "COMMITMENT", "left_text": "Flexible Use", "right_text": "Lifelong Dependency" } },
+        { "type": "row", "settings": { "category": "SIDE EFFECTS", "left_text": "Minimal Risk", "right_text": "Significant Risks" } },
+        { "type": "row", "settings": { "category": "COST", "left_text": "$59/month", "right_text": "$250+/month" } },
+        { "type": "row", "settings": { "category": "CONVENIENCE", "left_text": "Take at Home", "right_text": "Doctor Visits Required" } },
+        { "type": "row", "settings": { "category": "BODY'S PRODUCTION", "left_text": "Supports Natural Production", "right_text": "Shuts Down Natural Production" } },
+        { "type": "row", "settings": { "category": "MONITORING", "left_text": "Optional Testing", "right_text": "Required Blood Work" } },
+        { "type": "row", "settings": { "category": "REVERSIBILITY", "left_text": "Easily Reversible", "right_text": "Difficult to Stop" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

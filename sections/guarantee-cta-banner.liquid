@@ -28,7 +28,7 @@
   .guarantee-{{ section.id }} {
     background: {{ section.settings.bg_color }};
     padding: 70px 20px;
-    color: #ffffff;
+    color: #F4EFE8;
     overflow: hidden;
   }
 
@@ -74,19 +74,19 @@
   }
 
   .guarantee__heading-{{ section.id }} {
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: clamp(32px, 4.2vw, 52px);
     font-weight: 800;
     line-height: 1.05;
     margin: 0 0 24px;
     text-transform: uppercase;
-    color: #ffffff;
+    color: #F4EFE8;
   }
 
   .guarantee__body-{{ section.id }} {
     font-size: 15px;
     line-height: 1.65;
-    color: rgba(255,255,255,0.85);
+    color: rgba(244,239,232,0.85);
     margin: 0 0 32px;
   }
 
@@ -96,10 +96,11 @@
   .guarantee__cta-{{ section.id }} {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    background: {{ section.settings.accent_color }};
-    color: #fff;
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
     font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
@@ -107,12 +108,17 @@
     padding: 18px 60px;
     border-radius: 8px;
     text-decoration: none;
-    transition: opacity 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
   }
 
   .guarantee__cta-{{ section.id }}:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
   }
 
   /* FLOATING BADGE */
@@ -302,8 +308,8 @@
     <div
       class="guarantee__photo-{{ section.id }}"
       role="img"
-      aria-label="{{ section.settings.photo_image.alt | default: 'Mars Men lifestyle' }}"
-    ></div>
+      aria-label="{{ section.settings.photo_image.alt | default: 'BREAK800 lifestyle' }}"
+    >&nbsp;</div>
 
   </div>
 </div>
@@ -328,7 +334,7 @@
       "type": "richtext",
       "id": "body",
       "label": "Body Text",
-      "default": "<p>Try Mars Men risk-free for 90 days. If you're not satisfied, we'll refund you, no questions asked. Reclaim your masculinity, risk-free.</p>"
+      "default": "<p>Try BREAK800 risk-free for 90 days. If you're not satisfied, we'll refund you, no questions asked. Reclaim your masculinity, risk-free.</p>"
     },
     {
       "type": "text",
@@ -376,7 +382,7 @@
       "type": "color",
       "id": "accent_color",
       "label": "CTA Color",
-      "default": "#ff5600"
+      "default": "#8B2020"
     }
   ],
   "presets": [

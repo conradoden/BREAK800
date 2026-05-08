@@ -39,6 +39,23 @@
     ]
   },
   {
+    "name": "BK Button Style",
+    "settings": [
+      {
+        "type": "color",
+        "id": "bk_btn_bg",
+        "label": "Button Background Color",
+        "default": "#8B2020"
+      },
+      {
+        "type": "color",
+        "id": "bk_btn_text",
+        "label": "Button Text Color",
+        "default": "#F4EFE8"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.logo.name",
     "settings": [
       {

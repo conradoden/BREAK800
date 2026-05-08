@@ -43,7 +43,7 @@
   }
 
   .decline-t__heading-{{ section.id }} {
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: clamp(30px, 4.5vw, 48px);
     font-weight: 800;
     text-align: center;
@@ -67,7 +67,7 @@
   .decline-t__text-{{ section.id }} {
     font-size: 16px;
     line-height: 1.7;
-    color: rgba(255,255,255,0.85);
+    color: rgba(244,239,232,0.85);
   }
 
   .decline-t__text-{{ section.id }} p {
@@ -99,7 +99,7 @@
   }
 
   .decline-t__axis-label-{{ section.id }} {
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -109,31 +109,30 @@
 
   .decline-t__tick-{{ section.id }} {
     font-size: 11px;
-    fill: rgba(255,255,255,0.7);
-    font-family: 'Inter', sans-serif;
+    fill: rgba(244,239,232,0.7);
   }
 
   .decline-t__grid-line-{{ section.id }} {
-    stroke: rgba(255,255,255,0.12);
+    stroke: rgba(244,239,232,0.12);
     stroke-width: 1;
   }
 
   .decline-t__band-{{ section.id }} {
-    fill: rgba(255,255,255,0.08);
+    fill: rgba(244,239,232,0.08);
   }
 
   .decline-t__band-label-{{ section.id }} {
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    fill: rgba(255,255,255,0.7);
+    fill: rgba(244,239,232,0.7);
   }
 
   .decline-t__line-normal-{{ section.id }} {
     fill: none;
-    stroke: #ffffff;
+    stroke: #F4EFE8;
     stroke-width: 3;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -153,11 +152,11 @@
     animation: declineDraw-{{ section.id }} 2s ease-out 0.2s forwards;
   }
 
-  .decline-t__dot-normal-{{ section.id }} { fill: #ffffff; }
+  .decline-t__dot-normal-{{ section.id }} { fill: #F4EFE8; }
   .decline-t__dot-mars-{{ section.id }} { fill: {{ section.settings.accent_color }}; }
 
   .decline-t__series-label-{{ section.id }} {
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -223,7 +222,7 @@
         data-y-label="{{ section.settings.y_label | default: 'TOTAL TESTOSTERONE' }}"
         data-x-label="{{ section.settings.x_label | default: 'AGE' }}"
         data-normal-label="{{ section.settings.normal_label | default: 'Normal Range' }}"
-        data-mars-label="{{ section.settings.mars_label | default: 'With Mars Men' }}"
+        data-mars-label="{{ section.settings.mars_label | default: 'With BREAK800' }}"
         data-band-label="{{ section.settings.band_label | default: 'Normal Range' }}"
         data-section-id="{{ section.id }}"
       >
@@ -367,9 +366,9 @@
 
 {% schema %}
 {
-  "name": "BK Decline of T",
+  "name": "Decline of T",
   "tag": "section",
-  "class": "bk-decline-t-section",
+  "class": "decline-t-section",
   "settings": [
     {
       "type": "header",
@@ -395,7 +394,7 @@
       "type": "richtext",
       "id": "body",
       "label": "Body Content",
-      "default": "<p><strong>Testosterone levels</strong> have been dropping by 1% every year since 1980. Stress, poor sleep, processed diets, and toxins are destroying natural hormone production.</p><p>The impact? Low testosterone drains energy, strength, and focus—making it harder to perform at your best in life and the gym.</p><p><strong>The good news:</strong> Mars Men helps you reclaim your edge with natural testosterone support for energy, focus, and strength.</p>"
+      "default": "<p><strong>Testosterone levels</strong> have been dropping by 1% every year since 1980. Stress, poor sleep, processed diets, and toxins are destroying natural hormone production.</p><p>The impact? Low testosterone drains energy, strength, and focus—making it harder to perform at your best in life and the gym.</p><p><strong>The good news:</strong> BREAK800 helps you reclaim your edge with natural testosterone support for energy, focus, and strength.</p>"
     },
     {
       "type": "header",
@@ -416,7 +415,7 @@
     {
       "type": "text",
       "id": "mars_points",
-      "label": "With Mars Men data points (one per age tick)",
+      "label": "With BREAK800 data points (one per age tick)",
       "default": "500,710,690,705,710,715,718,720,720"
     },
     {
@@ -468,8 +467,8 @@
     {
       "type": "text",
       "id": "mars_label",
-      "label": "Mars Men line label",
-      "default": "WITH MARS MEN"
+      "label": "BREAK800 line label",
+      "default": "WITH BREAK800"
     },
     {
       "type": "text",
@@ -491,18 +490,19 @@
       "type": "color",
       "id": "text_color",
       "label": "Text Color",
-      "default": "#ffffff"
+      "default": "#F4EFE8"
     },
     {
+
       "type": "color",
       "id": "accent_color",
       "label": "Accent Color",
-      "default": "#ff5600"
+      "default": "#8B2020"
     }
   ],
   "presets": [
     {
-      "name": "BK Decline of T"
+      "name": "Decline of T"
     }
   ]
 }

@@ -1,0 +1,814 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF PROGRESS (Week Tabs)
+  ===================================================================================
+  Tabbed week-by-week timeline showing supplement progression phases.
+  Tabs: WEEK 1-2, 3-4, 5-6, 7-8, 9-10, 11-12, 13+ BEYOND
+  Each tab shows: phase number, phase title, description, benefits bullet list,
+  and a testosterone line chart on the right.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * footnote (richtext)
+  * cta_text / cta_link
+  * accent_color / text_color / bg_color
+  * Blocks: week_tab (tab_label, phase_number, phase_title, description, benefits, chart_image)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff Progress
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+{%- assign tabs = section.blocks -%}
+
+<style>
+  .liftoff-progress-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top }}px 16px {{ s.padding_bottom }}px;
+    color: {{ s.text_color }};
+  }
+
+  .liftoff-progress-{{ sid }}__container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  /* Dark card wrapper */
+  .liftoff-progress-{{ sid }}__card {
+    background: #191919;
+    border-radius: 22px;
+    padding: 25px 34px 31px;
+    box-shadow: -3px 2px 22.2px 0px rgba(0, 0, 0, 0.2), 5px -3px 18.9px 0px rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+  }
+
+  /* Tab navigation */
+  .liftoff-progress-{{ sid }}__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    gap: 5px;
+    margin-bottom: 31px;
+    list-style: none;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  .liftoff-progress-{{ sid }}__tab-item {
+    height: 73px;
+    border-radius: 9px;
+    flex: 1 1 auto;
+    position: relative;
+  }
+
+  .liftoff-progress-{{ sid }}__tab {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 46px;
+    padding: 0 12px;
+    min-width: 75px;
+    text-transform: uppercase;
+    transition: all .3s ease;
+    background: #333333;
+    color: #fff;
+  }
+
+  .liftoff-progress-{{ sid }}__tab:hover {
+    background: {{ s.accent_color }};
+    color: #fff;
+  }
+
+  .liftoff-progress-{{ sid }}__tab.active {
+    background: {{ s.accent_color }};
+    color: #fff;
+    box-shadow: 0 4px 13px rgba(0, 0, 0, 0.55);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Tab content panels */
+  .liftoff-progress-{{ sid }}__panel {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+    animation: liftoff-progress-fade-{{ sid }} .35s ease;
+  }
+
+  .liftoff-progress-{{ sid }}__panel.active {
+    display: grid;
+  }
+
+  @keyframes liftoff-progress-fade-{{ sid }} {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Left content */
+  .liftoff-progress-{{ sid }}__content {
+    text-align: left;
+  }
+
+  .liftoff-progress-{{ sid }}__content-top {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    margin-left: -10%;
+  }
+
+  .liftoff-progress-{{ sid }}__phase-number {
+    
+    font-size: 80px;
+    font-weight: 900;
+    color: {{ s.accent_color }};
+    line-height: 0.85;
+    margin: 0;
+    flex-shrink: 0;
+    opacity: 0.15;
+  }
+
+  .liftoff-progress-{{ sid }}__phase-title {
+    
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 800;
+    margin: 0 0 18px;
+    line-height: 1.15;
+    color: #fff;
+  }
+
+  .liftoff-progress-{{ sid }}__desc {
+    
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+  }
+
+  .liftoff-progress-{{ sid }}__benefits {
+    margin-top: 0;
+  }
+
+  .liftoff-progress-{{ sid }}__benefits-label {
+    
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: {{ s.accent_color }};
+    margin: 0 0 12px;
+  }
+
+  .liftoff-progress-{{ sid }}__benefits-list {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.9;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .liftoff-progress-{{ sid }}__benefits-list ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+
+  .liftoff-progress-{{ sid }}__benefits-list li {
+    margin-bottom: 4px;
+  }
+
+  /* Right side */
+  .liftoff-progress-{{ sid }}__right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .liftoff-progress-{{ sid }}__panel-image {
+    position: relative;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .liftoff-progress-{{ sid }}__panel-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .liftoff-progress-{{ sid }}__panel-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+  }
+
+  .liftoff-progress-{{ sid }}__panel-overlay img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+  .liftoff-progress-{{ sid }}__chart {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-y-label {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    font-size: 12.67px;
+    text-transform: uppercase;
+    color: {{ s.accent_color }};
+    letter-spacing: 0.43em;
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    gap: 8px;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-inner svg {
+    width: 100%;
+    max-width: 533px;
+    height: auto;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-svg {
+    background: transparent;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-svg .grid-line {
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 1;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-svg .axis-border {
+    stroke: #fff;
+    stroke-width: 1.5;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-svg .axis-label {
+    fill: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-svg .data-line {
+    fill: none;
+    stroke: {{ s.accent_color }};
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-svg .data-dot {
+    fill: {{ s.accent_color }};
+    stroke: {{ s.accent_color }};
+    stroke-width: 2;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-svg .active-label {
+    fill: {{ s.accent_color }};
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .liftoff-progress-{{ sid }}__chart-x-label {
+    font-size: 12.67px;
+    text-transform: uppercase;
+    color: {{ s.accent_color }};
+    letter-spacing: 0.43em;
+    text-align: center;
+    margin: 0;
+  }
+
+  /* Footnote */
+  .liftoff-progress-{{ sid }}__footnote {
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    margin: 20px 0 0;
+    font-style: italic;
+  }
+
+  /* CTA */
+  .liftoff-progress-{{ sid }}__cta-wrap {
+    text-align: center;
+  }
+
+  .liftoff-progress-{{ sid }}__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 54px;
+    
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+  }
+
+  .liftoff-progress-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+
+  .liftoff-progress-{{ sid }}__cta svg {
+    width: 20px;
+    height: 20px;
+  }
+  .liftoff-progress-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+  /* Mobile */
+  @media (max-width: 768px) {
+    .liftoff-progress-{{ sid }} {
+      padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    }
+
+    .liftoff-progress-{{ sid }}__card {
+      border-radius: 14px;
+      padding: 16px 17px 39px;
+    }
+
+    .liftoff-progress-{{ sid }}__tabs {
+      gap: 5px 4px;
+      margin-bottom: 20px;
+    }
+
+    .liftoff-progress-{{ sid }}__tab-item {
+      height: 38px;
+      border-radius: 4px;
+      flex: 1 1 calc(33.33% - 4px);
+      min-width: 0;
+    }
+
+    .liftoff-progress-{{ sid }}__tab {
+      border-radius: 4px;
+      font-size: 11px;
+      line-height: 24px;
+      padding: 0 6px;
+    }
+
+    .liftoff-progress-{{ sid }}__panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .liftoff-progress-{{ sid }}__content { order: 1; margin-bottom: 24px; }
+    .liftoff-progress-{{ sid }}__right { order: 2; }
+    .liftoff-progress-{{ sid }}__panel-image { display: none; }
+
+    .liftoff-progress-{{ sid }}__right {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .liftoff-progress-{{ sid }}__chart {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+      margin-bottom: 16px;
+    }
+
+    .liftoff-progress-{{ sid }}__footnote {
+      text-align: left;
+      font-style: italic;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 16px;
+      margin: 0 0 24px;
+    }
+
+    .liftoff-progress-{{ sid }}__content-top {
+      margin-left: -20%;
+    }
+
+    .liftoff-progress-{{ sid }}__phase-number {
+      font-size: 50px;
+    }
+
+    .liftoff-progress-{{ sid }}__chart-y-label {
+      font-size: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .liftoff-progress-{{ sid }}__chart-x-label {
+      font-size: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .liftoff-progress-{{ sid }}__cta {
+      width: 100%;
+      padding: 18px 32px;
+    }
+  }
+</style>
+
+<section class="liftoff-progress-{{ sid }}" id="liftoff-progress-{{ sid }}">
+  <div class="liftoff-progress-{{ sid }}__container">
+
+    {%- if tabs.size > 0 -%}
+      <div class="liftoff-progress-{{ sid }}__card">
+        {%- comment -%} Tab buttons {%- endcomment -%}
+        <ul class="liftoff-progress-{{ sid }}__tabs" role="tablist">
+          {%- for block in tabs -%}
+            <li class="liftoff-progress-{{ sid }}__tab-item">
+              <button
+                class="liftoff-progress-{{ sid }}__tab{% if forloop.first %} active{% endif %}"
+                role="tab"
+                type="button"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                aria-controls="panel-{{ sid }}-{{ forloop.index0 }}"
+                data-index="{{ forloop.index0 }}"
+              >
+                <span>{{ block.settings.tab_label }}</span>
+              </button>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- comment -%} Tab panels {%- endcomment -%}
+        {%- for block in tabs -%}
+          <div
+            class="liftoff-progress-{{ sid }}__panel{% if forloop.first %} active{% endif %}"
+            id="panel-{{ sid }}-{{ forloop.index0 }}"
+            role="tabpanel"
+            {{ block.shopify_attributes }}
+          >
+            <div class="liftoff-progress-{{ sid }}__content">
+              <div class="liftoff-progress-{{ sid }}__content-top">
+                {%- if block.settings.phase_number != blank -%}
+                  <div class="liftoff-progress-{{ sid }}__phase-number">{{ block.settings.phase_number }}</div>
+                {%- endif -%}
+                <div>
+                  {%- if block.settings.phase_title != blank -%}
+                    <h3 class="liftoff-progress-{{ sid }}__phase-title">{{ block.settings.phase_title }}</h3>
+                  {%- endif -%}
+                  {%- if block.settings.description != blank -%}
+                    <p class="liftoff-progress-{{ sid }}__desc">{{ block.settings.description }}</p>
+                  {%- endif -%}
+                </div>
+              </div>
+              {%- if block.settings.benefits != blank -%}
+                <div class="liftoff-progress-{{ sid }}__benefits">
+                  <p class="liftoff-progress-{{ sid }}__benefits-label">Benefits</p>
+                  <div class="liftoff-progress-{{ sid }}__benefits-list">{{ block.settings.benefits }}</div>
+                </div>
+              {%- endif -%}
+            </div>
+
+            <div class="liftoff-progress-{{ sid }}__right">
+              {%- if block.settings.panel_image != blank -%}
+                <div class="liftoff-progress-{{ sid }}__panel-image">
+                  {{ block.settings.panel_image | image_url: width: 1066 | image_tag: loading: 'lazy', alt: block.settings.phase_title }}
+                  {%- if block.settings.overlay_image != blank -%}
+                    <div class="liftoff-progress-{{ sid }}__panel-overlay">
+                      {{ block.settings.overlay_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              <div class="liftoff-progress-{{ sid }}__chart">
+                <p class="liftoff-progress-{{ sid }}__chart-y-label">Total Testosterone</p>
+                <div class="liftoff-progress-{{ sid }}__chart-inner">
+                  <svg class="liftoff-progress-{{ sid }}__chart-svg" viewBox="0 0 500 280" preserveAspectRatio="xMidYMid meet" data-week-end="{% assign week_ends = '2,4,6,8,10,12,12' | split: ',' %}{% if forloop.index0 < week_ends.size %}{{ week_ends[forloop.index0] }}{% else %}12{% endif %}"></svg>
+                  <p class="liftoff-progress-{{ sid }}__chart-x-label">Weeks</p>
+                </div>
+              </div>
+
+              {%- if s.footnote != blank -%}
+                <div class="liftoff-progress-{{ sid }}__footnote">{{ s.footnote }}</div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+
+      </div>
+    {%- endif -%}
+
+    {%- if s.cta_text != blank -%}
+      <div class="liftoff-progress-{{ sid }}__cta-wrap">
+        <a href="{{ s.cta_link | default: '#' }}" class="liftoff-progress-{{ sid }}__cta">
+          {{ s.cta_text }}
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    var section = document.getElementById('liftoff-progress-{{ sid }}');
+    if (!section) return;
+
+    var tabs = section.querySelectorAll('.liftoff-progress-{{ sid }}__tab');
+    var panels = section.querySelectorAll('.liftoff-progress-{{ sid }}__panel');
+
+    /* Draw charts */
+    var charts = section.querySelectorAll('.liftoff-progress-{{ sid }}__chart-svg');
+    charts.forEach(function(svg) {
+      drawChart(svg);
+    });
+
+    function drawChart(svg) {
+      var weekEnd = parseInt(svg.dataset.weekEnd) || 2;
+
+      /* 7 data points at weeks: 1, 2, 4, 6, 8, 10, 12 */
+      var dataWeeks = [1, 2, 4, 6, 8, 10, 12];
+      var dataValues = [500, 520, 580, 650, 720, 770, 800];
+
+      /* Only show points up to weekEnd */
+      var points = [];
+      var pointWeeks = [];
+      for (var d = 0; d < dataWeeks.length; d++) {
+        if (dataWeeks[d] <= weekEnd) {
+          points.push(dataValues[d]);
+          pointWeeks.push(dataWeeks[d]);
+        }
+      }
+      if (points.length === 0) return;
+
+      var pad = { top: 20, right: 20, bottom: 35, left: 45 };
+      var w = 500 - pad.left - pad.right;
+      var h = 280 - pad.top - pad.bottom;
+
+      var minY = 400;
+      var maxY = 900;
+      var ySteps = [500, 600, 700, 800];
+      var totalWeeks = 12;
+
+      var html = '';
+      var lastVal = points[points.length - 1];
+
+      /* Horizontal grid lines + Y labels */
+      ySteps.forEach(function(val) {
+        var y = pad.top + h - ((val - minY) / (maxY - minY)) * h;
+        html += '<line class="grid-line" x1="' + pad.left + '" y1="' + y + '" x2="' + (pad.left + w) + '" y2="' + y + '" />';
+        var isActive = Math.abs(lastVal - val) < 20;
+        html += '<text class="' + (isActive ? 'active-label' : 'axis-label') + '" x="' + (pad.left - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + val + '</text>';
+      });
+
+      /* X axis labels */
+      for (var i = 1; i <= totalWeeks; i++) {
+        var x = pad.left + ((i - 1) / (totalWeeks - 1)) * w;
+        html += '<text class="axis-label" x="' + x + '" y="' + (pad.top + h + 25) + '" text-anchor="middle">' + i + '</text>';
+      }
+
+      /* Baseline (horizontal line at y=500 across all 12 weeks) */
+      var baseY = pad.top + h - ((500 - minY) / (maxY - minY)) * h;
+      html += '<line class="grid-line" x1="' + pad.left + '" y1="' + baseY + '" x2="' + (pad.left + w) + '" y2="' + baseY + '" />';
+
+      /* Axis borders (white) */
+      html += '<line class="axis-border" x1="' + pad.left + '" y1="' + pad.top + '" x2="' + pad.left + '" y2="' + (pad.top + h) + '" />';
+      html += '<line class="axis-border" x1="' + pad.left + '" y1="' + (pad.top + h) + '" x2="' + (pad.left + w) + '" y2="' + (pad.top + h) + '" />';
+
+      /* Data line + dots */
+      var pathParts = [];
+      var dotsHtml = '';
+      for (var j = 0; j < points.length; j++) {
+        var px = pad.left + ((pointWeeks[j] - 1) / (totalWeeks - 1)) * w;
+        var py = pad.top + h - ((points[j] - minY) / (maxY - minY)) * h;
+        pathParts.push((j === 0 ? 'M' : 'L') + px + ',' + py);
+        dotsHtml += '<circle class="data-dot" cx="' + px + '" cy="' + py + '" r="5" />';
+      }
+      html += '<path class="data-line" d="' + pathParts.join(' ') + '" />';
+      html += dotsHtml;
+
+      svg.innerHTML = html;
+    }
+
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var idx = parseInt(tab.dataset.index);
+
+        tabs.forEach(function(t) {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach(function(p) { p.classList.remove('active'); });
+
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        if (panels[idx]) panels[idx].classList.add('active');
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK Liftoff Progress",
+  "tag": "section",
+  "class": "bk-section-liftoff-progress",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "footnote",
+      "label": "Footnote text",
+      "default": "<p>*These results are based on customer-reported survey feedback from verified purchasers and are not intended to represent clinical or medical outcomes.</p>"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "week_tab",
+      "name": "Week Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Tab label",
+          "default": "WEEK 1-2"
+        },
+        {
+          "type": "text",
+          "id": "phase_number",
+          "label": "Phase number (large display)",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "phase_title",
+          "label": "Phase title",
+          "default": "Adjustment"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Your body is getting used to the new supplement, gradually absorbing and processing its ingredients."
+        },
+        {
+          "type": "richtext",
+          "id": "benefits",
+          "label": "Benefits list",
+          "default": "<ul><li>Minor increases in daily energy, but no drastic changes yet.</li><li>Slight improvements in mood and focus as your system adapts</li><li>Some users may notice early signs of improved sleep quality.</li><li>Your body is laying the foundation for the benefits to come in the following weeks.</li></ul>"
+        },
+        {
+          "type": "image_picker",
+          "id": "panel_image",
+          "label": "Panel background image",
+          "info": "Large image shown above the chart on the right side."
+        },
+        {
+          "type": "image_picker",
+          "id": "overlay_image",
+          "label": "Panel overlay icon",
+          "info": "White icon/SVG displayed centered on top of the panel image."
+        },
+        {
+          "type": "range",
+          "id": "chart_week_end",
+          "label": "Chart weeks shown",
+          "info": "How many weeks of data to display on the chart.",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "default": 2
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Liftoff Progress",
+      "blocks": [
+        { "type": "week_tab", "settings": { "tab_label": "WEEK 1-2", "phase_number": "01", "phase_title": "Adjustment", "description": "Your body is getting used to the new supplement, gradually absorbing and processing its ingredients.", "chart_week_end": 2 } },
+        { "type": "week_tab", "settings": { "tab_label": "WEEK 3-4", "phase_number": "02", "phase_title": "Activation", "description": "The ingredients are starting to take effect, but results will vary depending on lifestyle, diet, and consistency.", "chart_week_end": 4 } },
+        { "type": "week_tab", "settings": { "tab_label": "WEEK 5-6", "phase_number": "03", "phase_title": "Momentum", "description": "Your body has had time to adjust, and the supplement's full benefits are beginning to take shape.", "chart_week_end": 6 } },
+        { "type": "week_tab", "settings": { "tab_label": "WEEK 7-8", "phase_number": "04", "phase_title": "Alpha", "description": "Testosterone production is now more optimized, and results should feel more consistent.", "chart_week_end": 8 } },
+        { "type": "week_tab", "settings": { "tab_label": "WEEK 9-10", "phase_number": "05", "phase_title": "Refinement", "description": "By now, you should have built consistency with your routine, and the supplement is supporting your progress.", "chart_week_end": 10 } },
+        { "type": "week_tab", "settings": { "tab_label": "WEEK 11-12", "phase_number": "06", "phase_title": "Sustainable Growth", "description": "You've built a strong foundation, and now it's about sustaining and maximizing the results over the long term.", "chart_week_end": 12 } },
+        { "type": "week_tab", "settings": { "tab_label": "WEEK 13 + BEYOND", "phase_number": "07", "phase_title": "Optimization", "description": "The foundation is set, and long-term benefits depend on continued consistency with supplementation, training, and nutrition.", "chart_week_end": 12 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

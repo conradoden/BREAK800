@@ -1,0 +1,502 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF LAUNCH KIT
+  ===================================================================================
+  Two-column section: product bundle image on left, pricing list on right with CTA.
+  Each line item shows name, optional subtitle, original price (struck), and sale/free label.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (richtext): Section heading with <strong> accent
+  * kit_image (image_picker): Bundle product image
+  * cta_text / cta_link
+  * accent_color / bg_color / text_color / muted_color
+  * Blocks: line_item (title, subtitle, original_price, sale_price, is_free)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Theme Editor → Add Section → Liftoff Launch Kit
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+{%- assign items = section.blocks -%}
+
+<style>
+  .liftoff-lk-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top_mb }}px 0 {{ s.padding_bottom_mb }}px;
+    color: {{ s.text_color }};
+    overflow: hidden;
+  }
+
+  .liftoff-lk-{{ sid }}__container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .liftoff-lk-{{ sid }}__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── Heading ── */
+  .liftoff-lk-{{ sid }}__heading {
+    font-size: clamp(30px, 4.5vw, 55px);
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.05;
+    margin: 0 auto 22px;
+    text-transform: uppercase;
+    max-width: 1066px;
+  }
+  .liftoff-lk-{{ sid }}__heading strong {
+    color: {{ s.accent_color }};
+  }
+
+  /* ── Layout ── */
+  .liftoff-lk-{{ sid }}__layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Image ── */
+  .liftoff-lk-{{ sid }}__image-wrap {
+    flex: 1;
+    align-self: center;
+    position: relative;
+  }
+  .liftoff-lk-{{ sid }}__image-wrap img {
+    width: 110%;
+    height: auto;
+    position: relative;
+    left: -5%;
+    max-width: none;
+  }
+
+  /* ── List ── */
+  .liftoff-lk-{{ sid }}__list-wrap {
+    flex: 1;
+    padding-top: 25px;
+  }
+
+  .liftoff-lk-{{ sid }}__list {
+    list-style: none;
+    margin: 0 0 40px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .liftoff-lk-{{ sid }}__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .liftoff-lk-{{ sid }}__item-name {
+    font-weight: 900;
+    font-size: 17.58px;
+    line-height: 1.13;
+    color: {{ s.text_color }};
+  }
+  .liftoff-lk-{{ sid }}__item-name p {
+    margin: 8px 0;
+    display: inline;
+  }
+  .liftoff-lk-{{ sid }}__item-name strong {
+    color: {{ s.accent_color }};
+  }
+
+  .liftoff-lk-{{ sid }}__item-sub {
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 1.13;
+  }
+
+  .liftoff-lk-{{ sid }}__item-prices {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .liftoff-lk-{{ sid }}__price-old {
+    color: {{ s.muted_color }};
+    text-decoration: line-through;
+    font-size: 17.58px;
+    font-weight: 400;
+    line-height: 1.13;
+  }
+
+  .liftoff-lk-{{ sid }}__price-new {
+    font-size: 17.58px;
+    font-weight: 900;
+    line-height: 1.13;
+    color: {{ s.text_color }};
+  }
+
+  .liftoff-lk-{{ sid }}__price-free {
+    font-size: 17.58px;
+    font-weight: 900;
+    line-height: 1.13;
+    color: {{ s.accent_color }};
+    text-transform: uppercase;
+  }
+
+  /* ── CTA ── */
+  .liftoff-lk-{{ sid }}__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 40px;
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+    width: 100%;
+    max-width: 266px;
+    margin: 0 auto;
+  }
+  .liftoff-lk-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+  .liftoff-lk-{{ sid }}__cta svg {
+    width: 23px;
+    height: 17px;
+    flex-shrink: 0;
+  }
+  .liftoff-lk-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+
+  /* ── Desktop ── */
+  @media (min-width: 750px) {
+    .liftoff-lk-{{ sid }} {
+      padding: {{ s.padding_top }}px 0 {{ s.padding_bottom }}px;
+    }
+    .liftoff-lk-{{ sid }}__container {
+      padding: 0 16px;
+    }
+    .liftoff-lk-{{ sid }}__heading {
+      margin-bottom: 62px;
+    }
+    .liftoff-lk-{{ sid }}__layout {
+      flex-direction: row;
+    }
+    .liftoff-lk-{{ sid }}__item {
+      gap: 20px;
+    }
+    .liftoff-lk-{{ sid }}__list-wrap {
+      padding: 0;
+    }
+    .liftoff-lk-{{ sid }}__cta {
+      max-width: 362px;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .liftoff-lk-{{ sid }}__item-name {
+      font-size: 25px;
+    }
+    .liftoff-lk-{{ sid }}__item-sub {
+      font-size: 15px;
+    }
+    .liftoff-lk-{{ sid }}__price-old,
+    .liftoff-lk-{{ sid }}__price-new,
+    .liftoff-lk-{{ sid }}__price-free {
+      font-size: 25px;
+    }
+    .liftoff-lk-{{ sid }}__item-prices {
+      gap: 8px;
+    }
+    .liftoff-lk-{{ sid }}__list-wrap {
+      padding-top: 42px;
+    }
+    .liftoff-lk-{{ sid }}__list {
+      margin-bottom: 48px;
+    }
+  }
+</style>
+
+<section class="liftoff-lk-{{ sid }}">
+  <div class="liftoff-lk-{{ sid }}__container">
+    <div class="liftoff-lk-{{ sid }}__inner">
+
+      {%- if s.heading != blank -%}
+        <h2 class="liftoff-lk-{{ sid }}__heading">{{ s.heading }}</h2>
+      {%- endif -%}
+
+      <div class="liftoff-lk-{{ sid }}__layout">
+
+        {%- if s.kit_image != blank -%}
+          <div class="liftoff-lk-{{ sid }}__image-wrap">
+            {{ s.kit_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: 'Launch kit products' }}
+          </div>
+        {%- endif -%}
+
+        <div class="liftoff-lk-{{ sid }}__list-wrap">
+          {%- if items.size > 0 -%}
+            <ul class="liftoff-lk-{{ sid }}__list">
+              {%- for block in items -%}
+                <li class="liftoff-lk-{{ sid }}__item" {{ block.shopify_attributes }}>
+                  <span class="liftoff-lk-{{ sid }}__item-name">
+                    {{ block.settings.title }}
+                    {%- if block.settings.subtitle != blank -%}
+                      <span class="liftoff-lk-{{ sid }}__item-sub">{{ block.settings.subtitle }}</span>
+                    {%- endif -%}
+                  </span>
+                  <span class="liftoff-lk-{{ sid }}__item-prices">
+                    {%- if block.settings.original_price != blank -%}
+                      <span class="liftoff-lk-{{ sid }}__price-old">{{ block.settings.original_price }}</span>
+                    {%- endif -%}
+                    {%- if block.settings.is_free -%}
+                      <span class="liftoff-lk-{{ sid }}__price-free">FREE</span>
+                    {%- elsif block.settings.sale_price != blank -%}
+                      <span class="liftoff-lk-{{ sid }}__price-new">{{ block.settings.sale_price }}</span>
+                    {%- endif -%}
+                  </span>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          {%- if s.cta_text != blank -%}
+            <a href="{{ s.cta_link | default: '#' }}" class="liftoff-lk-{{ sid }}__cta">
+              <span>{{ s.cta_text }}</span>
+              <svg viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M2.08398 7.43318C1.45866 7.43318 0.951735 7.94011 0.951735 8.56543C0.951735 9.19075 1.45866 9.69768 2.08398 9.69768L2.08398 7.43318ZM22.2304 9.36605C22.6726 8.92388 22.6726 8.20698 22.2304 7.76481L15.0248 0.559215C14.5826 0.117045 13.8657 0.117045 13.4236 0.559216C12.9814 1.00139 12.9814 1.71829 13.4236 2.16046L19.8285 8.56543L13.4236 14.9704C12.9814 15.4126 12.9814 16.1295 13.4236 16.5716C13.8657 17.0138 14.5826 17.0138 15.0248 16.5716L22.2304 9.36605ZM2.08398 8.56543L2.08398 9.69768L21.4298 9.69768L21.4298 8.56543L21.4298 7.43318L2.08398 7.43318L2.08398 8.56543Z" fill="white"/>
+              </svg>
+            </a>
+          {%- endif -%}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BK Launch Kit",
+  "tag": "section",
+  "class": "bk-section-launch-kit",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Your Launch Kit <strong>Includes:</strong></p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "kit_image",
+      "label": "Kit product image"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "TRY IT NOW ($89)"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0A0807"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Strikethrough price color",
+      "default": "#808080"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "line_item",
+      "name": "Line Item",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "title",
+          "label": "Item name",
+          "default": "<p>Item Name</p>"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle (optional)",
+          "info": "Small text after the name, e.g. (30 Day Program)"
+        },
+        {
+          "type": "text",
+          "id": "original_price",
+          "label": "Original price",
+          "default": "$100"
+        },
+        {
+          "type": "text",
+          "id": "sale_price",
+          "label": "Sale price",
+          "info": "Leave blank if item is free"
+        },
+        {
+          "type": "checkbox",
+          "id": "is_free",
+          "label": "Show as FREE",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Launch Kit",
+      "blocks": [
+        {
+          "type": "line_item",
+          "settings": {
+            "title": "<p>BREAK800 Natural T Support</p>",
+            "original_price": "$178",
+            "sale_price": "$89/mo",
+            "is_free": false
+          }
+        },
+        {
+          "type": "line_item",
+          "settings": {
+            "title": "<p>BREAK800 Travel Tin</p>",
+            "original_price": "$14",
+            "is_free": true
+          }
+        },
+        {
+          "type": "line_item",
+          "settings": {
+            "title": "<p>Galactic Testosterone Guide</p>",
+            "original_price": "$28",
+            "is_free": true
+          }
+        },
+        {
+          "type": "line_item",
+          "settings": {
+            "title": "<p>Ladder Workout App</p>",
+            "subtitle": "(30 Day Program)",
+            "original_price": "$42",
+            "is_free": true
+          }
+        },
+        {
+          "type": "line_item",
+          "settings": {
+            "title": "<p>Shipping On First Order</p>",
+            "original_price": "$14",
+            "is_free": true
+          }
+        },
+        {
+          "type": "line_item",
+          "settings": {
+            "title": "<p><strong>Chance to Win</strong> Apple Watch Ultra 3.0</p>",
+            "original_price": "$1082",
+            "is_free": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

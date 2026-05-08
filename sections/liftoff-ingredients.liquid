@@ -1,0 +1,805 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF INGREDIENTS (Interactive)
+  ===================================================================================
+  "8 Ingredients in 1 Powerful Formula" — 3-column layout:
+  Left stack (4 cards) | Center pill + active ingredient info | Right stack (4 cards)
+
+  All 8 cards visible. Clicking a card highlights it and updates the center area
+  with ingredient number, name, description, and dosage.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (text), sub_heading (text)
+  * pill_image (image_picker), center_bg_image (image_picker)
+  * body_text (textarea)
+  * cta_text / cta_link
+  * accent_color / text_color / bg_color
+  * Blocks: ingredient (image, title, dosage, description, number)
+  *         trust_badge (icon, text)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff Ingredients
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+{%- assign ingredients = section.blocks | where: "type", "ingredient" -%}
+{%- assign badges = section.blocks | where: "type", "trust_badge" -%}
+
+<style>
+  .liftoff-ing-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top }}px 20px {{ s.padding_bottom }}px;
+    color: {{ s.text_color }};
+    overflow: hidden;
+  }
+
+  .liftoff-ing-{{ sid }}__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .liftoff-ing-{{ sid }}__heading {
+    
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800;
+    margin: 0 0 12px;
+    line-height: 1.1;
+  }
+
+  .liftoff-ing-{{ sid }}__sub {
+    display: inline-block;
+    font-size: clamp(11px, 1vw, 14px);
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: {{ s.accent_color }};
+    margin: 0 0 50px;
+  }
+
+  /* 3-column grid */
+  .liftoff-ing-{{ sid }}__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  /* Card stacks (left and right) */
+  .liftoff-ing-{{ sid }}__stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Individual ingredient card */
+  .liftoff-ing-{{ sid }}__card {
+    position: relative;
+    border-radius: 12px;
+    overflow: visible;
+    background-color: #1a1a1a;
+    background-size: cover;
+    background-position: center;
+    padding: 18px 18px 18px 18px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color .25s ease, box-shadow .25s ease, transform .2s ease;
+    isolation: isolate;
+  }
+
+  .liftoff-ing-{{ sid }}__card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    z-index: 0;
+    transition: background .25s ease;
+  }
+
+  .liftoff-ing-{{ sid }}__card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(139, 32, 32, 0.4);
+  }
+
+  .liftoff-ing-{{ sid }}__card.active {
+    border-color: {{ s.accent_color }};
+    box-shadow: 0 0 20px -4px rgba(139, 32, 32, 0.5);
+  }
+
+  .liftoff-ing-{{ sid }}__card-title {
+    position: relative;
+    z-index: 1;
+    
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    color: #fff;
+    line-height: 1.1;
+  }
+
+  .liftoff-ing-{{ sid }}__card-dosage {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    width: fit-content;
+  }
+
+  /* Center column */
+  .liftoff-ing-{{ sid }}__center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 440px;
+  }
+
+  .liftoff-ing-{{ sid }}__number {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 2px;
+  }
+
+  .liftoff-ing-{{ sid }}__active-title {
+    
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .liftoff-ing-{{ sid }}__pill-wrap {
+    position: relative;
+    width: 140px;
+    height: 220px;
+    margin: 10px 0;
+  }
+
+  .liftoff-ing-{{ sid }}__pill-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 10;
+  }
+
+  .liftoff-ing-{{ sid }}__pill-bg {
+    position: absolute;
+    inset: -80px;
+    z-index: 0;
+  }
+
+  .liftoff-ing-{{ sid }}__pill-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.7;
+  }
+
+  .liftoff-ing-{{ sid }}__active-desc {
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 320px;
+    margin: 0;
+  }
+
+  .liftoff-ing-{{ sid }}__active-dosage {
+    
+    font-size: clamp(24px, 2.5vw, 34px);
+    font-weight: 800;
+    color: {{ s.accent_color }};
+    margin: 8px 0 0;
+  }
+
+  /* Connector line (decorative SVG) */
+  .liftoff-ing-{{ sid }}__line-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .liftoff-ing-{{ sid }}__line-svg polyline {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.5);
+    stroke-width: 2;
+    transition: all .3s ease;
+  }
+
+  /* Trust badges */
+  .liftoff-ing-{{ sid }}__badges {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin: 30px 0;
+    padding: 0;
+  }
+
+  .liftoff-ing-{{ sid }}__badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: left;
+  }
+
+  .liftoff-ing-{{ sid }}__badge img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+
+
+  /* Body text */
+  .liftoff-ing-{{ sid }}__body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    max-width: 800px;
+    margin: 24px auto 0;
+  }
+
+  /* CTA */
+  .liftoff-ing-{{ sid }}__cta-wrap {
+    margin-top: 30px;
+  }
+
+  .liftoff-ing-{{ sid }}__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 54px;
+    
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+  }
+
+  .liftoff-ing-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+
+  .liftoff-ing-{{ sid }}__cta svg {
+    width: 20px;
+    height: 20px;
+  }
+  .liftoff-ing-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+  /* Mobile */
+  @media (max-width: 900px) {
+    .liftoff-ing-{{ sid }} {
+      padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    }
+
+    .liftoff-ing-{{ sid }}__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .liftoff-ing-{{ sid }}__stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .liftoff-ing-{{ sid }}__stack:first-child {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    .liftoff-ing-{{ sid }}__stack:last-child {
+      grid-row: 2;
+      grid-column: 1;
+    }
+
+    .liftoff-ing-{{ sid }}__center {
+      grid-row: 1 / 3;
+      grid-column: 2;
+      min-height: auto;
+    }
+
+    .liftoff-ing-{{ sid }}__card {
+      min-height: 60px;
+      padding: 12px;
+    }
+
+    .liftoff-ing-{{ sid }}__card-title {
+      font-size: 14px;
+    }
+
+    .liftoff-ing-{{ sid }}__card-dosage {
+      font-size: 9px;
+      padding: 3px 8px;
+    }
+
+    .liftoff-ing-{{ sid }}__pill-wrap {
+      width: 90px;
+      height: 140px;
+    }
+
+    .liftoff-ing-{{ sid }}__active-title {
+      font-size: 22px;
+    }
+
+    .liftoff-ing-{{ sid }}__active-desc {
+      font-size: 13px;
+    }
+
+    .liftoff-ing-{{ sid }}__active-dosage {
+      font-size: 20px;
+    }
+
+    .liftoff-ing-{{ sid }}__connector {
+      display: none !important;
+    }
+
+    .liftoff-ing-{{ sid }}__line-svg {
+      z-index: 2;
+    }
+
+    .liftoff-ing-{{ sid }}__badges {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      justify-items: start;
+    }
+
+    .liftoff-ing-{{ sid }}__cta {
+      width: 100%;
+      padding: 18px 32px;
+    }
+  }
+</style>
+
+<section class="liftoff-ing-{{ sid }}" id="liftoff-ing-{{ sid }}">
+  <div class="liftoff-ing-{{ sid }}__container">
+
+    {%- if s.heading != blank -%}
+      <h2 class="liftoff-ing-{{ sid }}__heading">{{ s.heading }}</h2>
+    {%- endif -%}
+
+    {%- if s.sub_heading != blank -%}
+      <span class="liftoff-ing-{{ sid }}__sub">{{ s.sub_heading }}</span>
+    {%- endif -%}
+
+    {%- assign half = ingredients.size | divided_by: 2 -%}
+    <div class="liftoff-ing-{{ sid }}__grid">
+      {%- comment -%} Left stack (first half of ingredients) {%- endcomment -%}
+      <div class="liftoff-ing-{{ sid }}__stack">
+        {%- for block in ingredients -%}
+          {%- if forloop.index <= half -%}
+            <div
+              class="liftoff-ing-{{ sid }}__card{% if forloop.first %} active{% endif %}"
+              data-index="{{ forloop.index0 }}"
+              data-number="{{ block.settings.number | default: forloop.index | prepend: '0' | slice: -2, 2 }}"
+              data-title="{{ block.settings.title | escape }}"
+              data-desc="{{ block.settings.description | escape }}"
+              data-dosage="{{ block.settings.dosage | escape }}"
+              style="background-image: url('{{ block.settings.image | image_url: width: 600 }}')"
+              {{ block.shopify_attributes }}
+            >
+              <span class="liftoff-ing-{{ sid }}__card-title">{{ block.settings.title }}</span>
+              <span class="liftoff-ing-{{ sid }}__card-dosage">{{ block.settings.dosage }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} Center: pill + active info {%- endcomment -%}
+      <div class="liftoff-ing-{{ sid }}__center">
+        <span class="liftoff-ing-{{ sid }}__number" data-role="number">
+          {%- if ingredients.size > 0 -%}
+            {{ ingredients[0].settings.number | default: '01' }}
+          {%- endif -%}
+        </span>
+
+        <h3 class="liftoff-ing-{{ sid }}__active-title" data-role="title">
+          {%- if ingredients.size > 0 -%}
+            {{ ingredients[0].settings.title }}
+          {%- endif -%}
+        </h3>
+
+        <div class="liftoff-ing-{{ sid }}__pill-wrap">
+          {%- if s.center_bg_image != blank -%}
+            <div class="liftoff-ing-{{ sid }}__pill-bg">
+              {{ s.center_bg_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: '' }}
+            </div>
+          {%- endif -%}
+          {%- if s.pill_image != blank -%}
+            {{ s.pill_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: 'Supplement capsule' }}
+          {%- endif -%}
+        </div>
+
+        <p class="liftoff-ing-{{ sid }}__active-desc" data-role="desc">
+          {%- if ingredients.size > 0 -%}
+            {{ ingredients[0].settings.description }}
+          {%- endif -%}
+        </p>
+
+        <span class="liftoff-ing-{{ sid }}__active-dosage" data-role="dosage">
+          {%- if ingredients.size > 0 -%}
+            {{ ingredients[0].settings.dosage }}
+          {%- endif -%}
+        </span>
+      </div>
+
+      {%- comment -%} Right stack (second half of ingredients) {%- endcomment -%}
+      <div class="liftoff-ing-{{ sid }}__stack">
+        {%- for block in ingredients -%}
+          {%- if forloop.index > half -%}
+            <div
+              class="liftoff-ing-{{ sid }}__card"
+              data-index="{{ forloop.index0 }}"
+              data-number="{{ block.settings.number | default: forloop.index | prepend: '0' | slice: -2, 2 }}"
+              data-title="{{ block.settings.title | escape }}"
+              data-desc="{{ block.settings.description | escape }}"
+              data-dosage="{{ block.settings.dosage | escape }}"
+              style="background-image: url('{{ block.settings.image | image_url: width: 600 }}')"
+              {{ block.shopify_attributes }}
+            >
+              <span class="liftoff-ing-{{ sid }}__card-title">{{ block.settings.title }}</span>
+              <span class="liftoff-ing-{{ sid }}__card-dosage">{{ block.settings.dosage }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} SVG connector line {%- endcomment -%}
+      <svg class="liftoff-ing-{{ sid }}__line-svg" data-role="connector-svg">
+        <polyline points="0,0 0,0 0,0" />
+      </svg>
+    </div>
+
+    {%- if badges.size > 0 -%}
+      <div class="liftoff-ing-{{ sid }}__badges">
+        {%- for block in badges -%}
+          <div class="liftoff-ing-{{ sid }}__badge" {{ block.shopify_attributes }}>
+            {%- if block.settings.icon != blank -%}
+              {{ block.settings.icon | image_url: width: 40 | image_tag: loading: 'lazy', alt: block.settings.text }}
+            {%- endif -%}
+            <span>{{ block.settings.text }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+
+
+    {%- if s.body_text != blank -%}
+      <p class="liftoff-ing-{{ sid }}__body">{{ s.body_text }}</p>
+    {%- endif -%}
+
+    {%- if s.cta_text != blank -%}
+      <div class="liftoff-ing-{{ sid }}__cta-wrap">
+        <a href="{{ s.cta_link | default: '#' }}" class="liftoff-ing-{{ sid }}__cta">
+          {{ s.cta_text }}
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    var section = document.getElementById('liftoff-ing-{{ sid }}');
+    if (!section) return;
+
+    var cards = section.querySelectorAll('.liftoff-ing-{{ sid }}__card');
+    var numberEl = section.querySelector('[data-role="number"]');
+    var titleEl = section.querySelector('[data-role="title"]');
+    var descEl = section.querySelector('[data-role="desc"]');
+    var dosageEl = section.querySelector('[data-role="dosage"]');
+    var svgEl = section.querySelector('[data-role="connector-svg"]');
+    var svgPolyline = svgEl ? svgEl.querySelector('polyline') : null;
+    var pillWrap = section.querySelector('.liftoff-ing-{{ sid }}__pill-wrap');
+    var grid = section.querySelector('.liftoff-ing-{{ sid }}__grid');
+
+    function updateLine(card) {
+      if (!svgPolyline || !pillWrap || !grid) return;
+      var gridRect = grid.getBoundingClientRect();
+      var cardRect = card.getBoundingClientRect();
+      var pillRect = pillWrap.getBoundingClientRect();
+
+      var cardCenterY = cardRect.top + cardRect.height / 2 - gridRect.top;
+      var pillCenterY = pillRect.top + pillRect.height / 2 - gridRect.top;
+
+      var isLeft = cardRect.right < pillRect.left;
+
+      /* Start: edge of card */
+      var startX = isLeft
+        ? cardRect.right - gridRect.left
+        : cardRect.left - gridRect.left;
+      var startY = cardCenterY;
+
+      /* Mid: horizontal segment ~30px then angle */
+      var midX = isLeft
+        ? startX + 30
+        : startX - 30;
+      var midY = startY;
+
+      /* End: behind the pill (center of pill wrap) */
+      var endX = isLeft
+        ? pillRect.left + pillRect.width / 2 - gridRect.left
+        : pillRect.left + pillRect.width / 2 - gridRect.left;
+      var endY = pillCenterY;
+
+      svgPolyline.setAttribute('points', startX + ',' + startY + ' ' + midX + ',' + midY + ' ' + endX + ',' + endY);
+    }
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        cards.forEach(function(c) { c.classList.remove('active'); });
+        card.classList.add('active');
+
+        if (numberEl) numberEl.textContent = card.dataset.number;
+        if (titleEl) titleEl.textContent = card.dataset.title;
+        if (descEl) descEl.textContent = card.dataset.desc;
+        if (dosageEl) dosageEl.textContent = card.dataset.dosage;
+
+        updateLine(card);
+      });
+    });
+
+    // Draw initial line
+    var activeCard = section.querySelector('.liftoff-ing-{{ sid }}__card.active');
+    if (activeCard) {
+      setTimeout(function() { updateLine(activeCard); }, 100);
+    }
+
+    // Update on resize
+    window.addEventListener('resize', function() {
+      var ac = section.querySelector('.liftoff-ing-{{ sid }}__card.active');
+      if (ac) updateLine(ac);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK Liftoff Ingredients",
+  "tag": "section",
+  "class": "bk-section-liftoff-ingredients",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "8 Ingredients in 1 Powerful Formula"
+    },
+    {
+      "type": "text",
+      "id": "sub_heading",
+      "label": "Sub-heading badge",
+      "default": "CLINICALLY DOSED + EFFECTIVE"
+    },
+    {
+      "type": "image_picker",
+      "id": "pill_image",
+      "label": "Center pill/capsule image"
+    },
+    {
+      "type": "image_picker",
+      "id": "center_bg_image",
+      "label": "Center background image (rings/orbital SVG)"
+    },
+
+    {
+      "type": "header",
+      "content": "Body Text"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Description paragraph",
+      "default": "Natural Testosterone Support is a unique blend of natural herbs and minerals that are scientifically proven to support healthy testosterone levels and overall well-being. Most testosterone-enhancing supplements do not contain proper dosages. At BREAK800, we utilize clinical doses of each ingredient to support powerful results."
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "01",
+          "info": "e.g. 01, 02, 03..."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Tongkat Ali"
+        },
+        {
+          "type": "text",
+          "id": "dosage",
+          "label": "Dosage",
+          "default": "1,000 mg"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Boosts testosterone, enhances libido, improves fertility, and supports muscle growth."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card background image"
+        }
+      ]
+    },
+    {
+      "type": "trust_badge",
+      "name": "Trust Badge",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Made in CGMP Facility"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Liftoff Ingredients",
+      "blocks": [
+        { "type": "ingredient", "settings": { "number": "01", "title": "Tongkat Ali", "dosage": "1,000 mg", "description": "Boosts testosterone, enhances libido, improves fertility, and supports muscle growth." } },
+        { "type": "ingredient", "settings": { "number": "02", "title": "Zinc", "dosage": "30 mg", "description": "Essential mineral for testosterone production, immune function, and cellular repair." } },
+        { "type": "ingredient", "settings": { "number": "03", "title": "K1 & K2", "dosage": "100 mcg", "description": "Supports calcium metabolism, cardiovascular health, and testosterone optimization." } },
+        { "type": "ingredient", "settings": { "number": "04", "title": "Fenugreek", "dosage": "675 mg", "description": "Enhances free testosterone, supports libido, and aids in strength performance." } },
+        { "type": "ingredient", "settings": { "number": "05", "title": "Shilajit", "dosage": "400 mg", "description": "Fulvic acid-rich compound that boosts energy, stamina, and testosterone levels." } },
+        { "type": "ingredient", "settings": { "number": "06", "title": "Taurine", "dosage": "675 mg", "description": "Amino acid supporting endurance, muscle recovery, and antioxidant defense." } },
+        { "type": "ingredient", "settings": { "number": "07", "title": "Vitamin D", "dosage": "4,000 IU", "description": "Critical for testosterone synthesis, bone health, and immune regulation." } },
+        { "type": "ingredient", "settings": { "number": "08", "title": "Boron", "dosage": "4 mg", "description": "Trace mineral that increases free testosterone and supports bone density." } },
+        { "type": "trust_badge", "settings": { "text": "Made In A CGMP Facility" } },
+        { "type": "trust_badge", "settings": { "text": "Hormone-Free" } },
+        { "type": "trust_badge", "settings": { "text": "Non-GMO" } },
+        { "type": "trust_badge", "settings": { "text": "Vegan" } },
+        { "type": "trust_badge", "settings": { "text": "Third Party Tested" } },
+        { "type": "trust_badge", "settings": { "text": "Made in USA" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

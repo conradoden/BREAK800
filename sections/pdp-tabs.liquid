@@ -1,0 +1,906 @@
+{% comment %}
+  ===================================================================================
+  PDP TABS
+  ===================================================================================
+  Tabbed content section with 3 tabs: What to Expect, FAQs, and Reviews.
+  Uses Alpine.js for tab switching and accordion expand/collapse.
+
+  - Tab 1: Timeline milestones (Day 7, 30, 90) with icons and bullet lists
+  - Tab 2: FAQ accordions with question/answer pairs
+  - Tab 3: Review accordions with stars, title, body, reviewer name + verified badge
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * tab1_heading (text): Heading above the timeline
+  * tab1_label / tab2_label / tab3_label: Tab button text
+  * reviews_link (url): "Read More" button destination
+  * pt_dsk / pb_dsk / pt_mob / pb_mob: Spacing
+  * Blocks: timeline_item | faq_item | review_item
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → PDP Tabs
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --pt-dsk: {{ section.settings.pt_dsk }}px;
+    --pb-dsk: {{ section.settings.pb_dsk }}px;
+    --pt-mob: {{ section.settings.pt_mob }}px;
+    --pb-mob: {{ section.settings.pb_mob }}px;
+  }
+
+  .pdp-tabs-{{ section.id }} {
+    width: 100%;
+    max-width: 1220px;
+    padding: 0 16px;
+    overflow: hidden;
+    margin: 0 auto;
+    padding-bottom: var(--pb-mob);
+    padding-top: var(--pt-mob);
+    position: relative;
+    z-index: 0;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs-{{ section.id }} {
+      padding-bottom: var(--pb-dsk);
+      padding-top: var(--pt-dsk);
+    }
+  }
+
+  /* Tab buttons */
+  .pdp-tabs__list-{{ section.id }} {
+    display: flex;
+    justify-content: stretch;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 0;
+    background: #5c5c5c;
+    border-radius: 19px 19px 0 0;
+  }
+
+  .pdp-tabs__tab-{{ section.id }} {
+    flex: 1 1 auto;
+    background: #5c5c5c;
+    border-radius: 14px 14px 0 0;
+    position: relative;
+    z-index: 0;
+    margin-left: -4px;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
+  }
+
+  .pdp-tabs__tab-{{ section.id }}:first-child {
+    margin-left: 0;
+  }
+
+  .pdp-tabs__tab-{{ section.id }}.is-active {
+    z-index: 10 !important;
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-tabs__tab-{{ section.id }} {
+      border-radius: 19px 19px 0 0;
+      margin-left: -8px;
+    }
+    .pdp-tabs__tab-{{ section.id }}:first-child {
+      margin-left: 0;
+    }
+  }
+
+  .pdp-tabs__tab-btn-{{ section.id }} {
+    display: inline-block;
+    width: 100%;
+    padding: 10px 14px 24px;
+    border-radius: 14px 14px 0 0;
+    
+    color: #F4EFE8;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 22px;
+    text-align: center;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .pdp-tabs__tab-btn-{{ section.id }}:hover,
+  .pdp-tabs__tab-btn-{{ section.id }}.is-active {
+    background: #2d2d2d;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs__tab-btn-{{ section.id }} {
+      padding: 12px 32px 24px;
+      font-size: 20px;
+      line-height: 22px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-tabs__tab-btn-{{ section.id }} {
+      border-radius: 19px 19px 0 0;
+    }
+  }
+
+  /* Tab content panel */
+  .pdp-tabs__content-{{ section.id }} {
+    background: #2d2d2d;
+    color: #F4EFE8;
+    border-radius: 0 0 19px 19px;
+    border-top-right-radius: 19px;
+    margin-top: -20px;
+    position: relative;
+    z-index: 3;
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-tabs__content-{{ section.id }} {
+      margin-top: -14px;
+    }
+  }
+
+  .pdp-tabs__panel-{{ section.id }} {
+    padding: 28px 12px;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs__panel-{{ section.id }} {
+      padding: 28px 28px 54px;
+    }
+  }
+
+  /* Timeline (What to Expect) */
+  .pdp-tabs__timeline-heading-{{ section.id }} {
+    
+    font-size: 20px;
+    line-height: 1.19;
+    position: relative;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    font-weight: 800;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs__timeline-heading-{{ section.id }} {
+      font-size: 24px;
+    }
+  }
+
+  .pdp-tabs__timeline-heading-{{ section.id }}::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: #8B2020;
+  }
+
+  .pdp-tabs__timeline-heading-{{ section.id }}::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #8B2020;
+    bottom: -4px;
+    left: 0;
+    z-index: 1;
+  }
+
+  .pdp-tabs__timeline-dot-end-{{ section.id }} {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #8B2020;
+    bottom: -4px;
+    right: 0;
+    z-index: 1;
+  }
+
+  .pdp-tabs__timeline-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs__timeline-grid-{{ section.id }} {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+  }
+
+  .pdp-tabs__timeline-item-{{ section.id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pdp-tabs__timeline-header-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pdp-tabs__timeline-icon-{{ section.id }} {
+    height: 36px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-tabs__timeline-icon-{{ section.id }} {
+      height: 49px;
+    }
+  }
+
+  .pdp-tabs__timeline-title-{{ section.id }} {
+    
+    font-size: 18px;
+    line-height: 20px;
+    color: #F4EFE8;
+    margin: 0;
+  }
+
+  .pdp-tabs__timeline-title-{{ section.id }} strong {
+    color: #8B2020;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-tabs__timeline-title-{{ section.id }} {
+      font-size: 24px;
+      line-height: 24px;
+    }
+  }
+
+  .pdp-tabs__timeline-body-{{ section.id }} {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .pdp-tabs__timeline-body-{{ section.id }} ul {
+    list-style: disc;
+    padding-left: 24px;
+    margin: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-tabs__timeline-body-{{ section.id }} {
+      font-size: 17px;
+    }
+  }
+
+  /* Accordion (FAQ + Reviews) */
+  .pdp-tabs__accordion-{{ section.id }} {
+    background: #3a3a3a;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pdp-tabs__accordion-{{ section.id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs__accordion-{{ section.id }} {
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 14px;
+    }
+  }
+
+  .pdp-tabs__accordion-trigger-{{ section.id }} {
+    display: flex;
+    gap: 16px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 31px;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    color: #F4EFE8;
+    
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: 700;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs__accordion-trigger-{{ section.id }} {
+      font-size: 18px;
+    }
+  }
+
+  .pdp-tabs__accordion-trigger-{{ section.id }} .stars {
+    color: #8B2020;
+    margin-right: 8px;
+  }
+
+  .pdp-tabs__accordion-chevron-{{ section.id }} {
+    display: inline-block;
+    min-width: 12px;
+    width: 12px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    .pdp-tabs__accordion-chevron-{{ section.id }} {
+      width: 16px;
+      min-width: 16px;
+    }
+  }
+
+  .pdp-tabs__accordion-chevron-{{ section.id }}.is-open {
+    transform: rotate(180deg);
+  }
+
+  .pdp-tabs__accordion-chevron-{{ section.id }} svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .pdp-tabs__accordion-body-{{ section.id }} {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+  }
+
+  .pdp-tabs__accordion-body-{{ section.id }}.is-open {
+    max-height: 1000px;
+  }
+
+  .pdp-tabs__accordion-body-inner-{{ section.id }} {
+    padding-top: 16px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-tabs__accordion-body-inner-{{ section.id }} {
+      font-size: 25px;
+      line-height: 33px;
+    }
+  }
+
+  .pdp-tabs__accordion-body-inner-{{ section.id }} strong {
+    
+    font-weight: 700;
+  }
+
+  /* Review meta */
+  .pdp-tabs__review-meta-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .pdp-tabs__review-name-{{ section.id }} {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: #F4EFE8;
+  }
+
+  @media (min-width: 1280px) {
+    .pdp-tabs__review-name-{{ section.id }} {
+      font-size: 25px;
+      line-height: 33px;
+    }
+  }
+
+  .pdp-tabs__verified-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pdp-tabs__verified-{{ section.id }} svg {
+    height: 20px;
+    width: auto;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs__verified-{{ section.id }} svg {
+      height: 23px;
+    }
+  }
+
+  .pdp-tabs__verified-badge-{{ section.id }} {
+    padding: 5px 20px;
+    border-radius: 999px;
+    border: 1px solid #8B2020;
+    font-size: 12px;
+    line-height: 12px;
+    color: #8B2020;
+    white-space: nowrap;
+  }
+
+  /* Read More CTA */
+  .pdp-tabs__read-more-{{ section.id }} {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .pdp-tabs__read-more-btn-{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 234px;
+    padding: 14px 32px;
+    border-radius: 999px;
+    border: 2px solid #F4EFE8;
+    background: transparent;
+    color: #F4EFE8;
+    
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .pdp-tabs__read-more-btn-{{ section.id }}:hover {
+    background: #F4EFE8;
+    color: #1a1a1a;
+  }
+
+  .pdp-tabs__read-more-btn-{{ section.id }}:hover svg path {
+    fill: #1a1a1a;
+  }
+
+  .pdp-tabs__read-more-btn-{{ section.id }} svg {
+    width: 23px;
+    height: 17px;
+  }
+
+  /* FAQ panel less bottom padding */
+  .pdp-tabs__panel-faq-{{ section.id }} {
+    padding-bottom: 18px;
+  }
+
+  @media (min-width: 768px) {
+    .pdp-tabs__panel-faq-{{ section.id }} {
+      padding-bottom: 32px;
+    }
+  }
+</style>
+
+{%- assign timeline_blocks = section.blocks | where: "type", "timeline_item" -%}
+{%- assign faq_blocks = section.blocks | where: "type", "faq_item" -%}
+{%- assign review_blocks = section.blocks | where: "type", "review_item" -%}
+
+<div class="pdp-tabs-{{ section.id }}" id="pdp-tabs-{{ section.id }}">
+  {%- comment -%} Tab Buttons {%- endcomment -%}
+  <ul class="pdp-tabs__list-{{ section.id }}">
+    <li class="pdp-tabs__tab-{{ section.id }} is-active" style="z-index: 4;" data-tab-li="tab1">
+      <button
+        class="pdp-tabs__tab-btn-{{ section.id }} is-active"
+        data-tab-btn="tab1"
+        type="button"
+      >
+        {{ section.settings.tab1_label | default: 'What to Expect' }}
+      </button>
+    </li>
+    <li class="pdp-tabs__tab-{{ section.id }}" style="z-index: 3;" data-tab-li="tab2">
+      <button
+        class="pdp-tabs__tab-btn-{{ section.id }}"
+        data-tab-btn="tab2"
+        type="button"
+      >
+        <span class="hidden lg:inline">{{ section.settings.tab2_label | default: 'Frequently Asked Questions' }}</span>
+        <span class="inline lg:hidden">{{ section.settings.tab2_label_short | default: 'FAQs' }}</span>
+      </button>
+    </li>
+    <li class="pdp-tabs__tab-{{ section.id }}" style="z-index: 2;" data-tab-li="tab3">
+      <button
+        class="pdp-tabs__tab-btn-{{ section.id }}"
+        data-tab-btn="tab3"
+        type="button"
+      >
+        {{ section.settings.tab3_label | default: 'Reviews' }}
+      </button>
+    </li>
+  </ul>
+
+  {%- comment -%} Tab Content {%- endcomment -%}
+  <div class="pdp-tabs__content-{{ section.id }}">
+
+    {%- comment -%} TAB 1: What to Expect {%- endcomment -%}
+    <div class="pdp-tabs__panel-{{ section.id }}" data-tab-panel="tab1">
+      {%- if section.settings.tab1_heading != blank -%}
+        <div class="pdp-tabs__timeline-heading-{{ section.id }}">
+          {{ section.settings.tab1_heading }}
+          <span class="pdp-tabs__timeline-dot-end-{{ section.id }}"></span>
+        </div>
+      {%- endif -%}
+
+      {%- if timeline_blocks.size > 0 -%}
+        <ul class="pdp-tabs__timeline-grid-{{ section.id }}">
+          {%- for block in timeline_blocks -%}
+            <li class="pdp-tabs__timeline-item-{{ section.id }}" {{ block.shopify_attributes }}>
+              <div class="pdp-tabs__timeline-header-{{ section.id }}">
+                {%- if block.settings.icon != blank -%}
+                  <img
+                    class="pdp-tabs__timeline-icon-{{ section.id }}"
+                    src="{{ block.settings.icon | image_url: height: 49 }}"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  >
+                {%- endif -%}
+                <div class="pdp-tabs__timeline-title-{{ section.id }}">
+                  {{ block.settings.title }}
+                </div>
+              </div>
+              {%- if block.settings.body != blank -%}
+                <div class="pdp-tabs__timeline-body-{{ section.id }}">
+                  {{ block.settings.body }}
+                </div>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} TAB 2: FAQs {%- endcomment -%}
+    <div class="pdp-tabs__panel-{{ section.id }} pdp-tabs__panel-faq-{{ section.id }}" data-tab-panel="tab2" style="display: none;">
+      {%- for block in faq_blocks -%}
+        <div
+          class="pdp-tabs__accordion-{{ section.id }}"
+          {{ block.shopify_attributes }}
+        >
+          <button
+            class="pdp-tabs__accordion-trigger-{{ section.id }}"
+            data-accordion-trigger
+            type="button"
+            aria-expanded="false"
+          >
+            <span>{{ block.settings.question }}</span>
+            <span class="pdp-tabs__accordion-chevron-{{ section.id }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="13" viewBox="0 0 20 13" fill="none">
+                <path d="M2 2L10 10L18 2" stroke="white" stroke-width="4"/>
+              </svg>
+            </span>
+          </button>
+          <div class="pdp-tabs__accordion-body-{{ section.id }}">
+            <div class="pdp-tabs__accordion-body-inner-{{ section.id }}">
+              {{ block.settings.answer }}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} TAB 3: Reviews {%- endcomment -%}
+    <div class="pdp-tabs__panel-{{ section.id }}" data-tab-panel="tab3" style="display: none;">
+      {%- for block in review_blocks -%}
+        <div
+          class="pdp-tabs__accordion-{{ section.id }}"
+          {{ block.shopify_attributes }}
+        >
+          <button
+            class="pdp-tabs__accordion-trigger-{{ section.id }}"
+            data-accordion-trigger
+            type="button"
+            aria-expanded="false"
+          >
+            <span>
+              <span class="stars">★★★★★</span>
+              "{{ block.settings.title }}"
+            </span>
+            <span class="pdp-tabs__accordion-chevron-{{ section.id }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="13" viewBox="0 0 20 13" fill="none">
+                <path d="M2 2L10 10L18 2" stroke="white" stroke-width="4"/>
+              </svg>
+            </span>
+          </button>
+          <div class="pdp-tabs__accordion-body-{{ section.id }}">
+            <div class="pdp-tabs__accordion-body-inner-{{ section.id }}">
+              {%- if block.settings.body != blank -%}
+                <p><strong>"{{ block.settings.body }}"</strong></p>
+              {%- endif -%}
+            </div>
+            {%- if block.settings.reviewer != blank -%}
+              <div class="pdp-tabs__review-meta-{{ section.id }}">
+                <span class="pdp-tabs__review-name-{{ section.id }}">– {{ block.settings.reviewer }}</span>
+                <div class="pdp-tabs__verified-{{ section.id }}">
+                  <svg width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.37431 22.7494C6.7899 22.0415 4.50197 20.5206 2.84891 18.4116C1.19584 16.3027 0.265438 13.7177 0.195312 11.039V3.05504L9.37431 0.240967L18.5533 3.05504V11.039C18.4832 13.7177 17.5528 16.3027 15.8997 18.4116C14.2467 20.5206 11.9587 22.0415 9.37431 22.7494Z" fill="#8B2020"/>
+                    <path d="M7.8908 12.5368L5.22741 10.0885L3.89624 11.3126L6.55964 13.7609L7.8908 14.9851L9.22199 13.7609L14.5478 8.8633L13.2166 7.63916L7.8908 12.5368Z" fill="white"/>
+                  </svg>
+                  <span class="pdp-tabs__verified-badge-{{ section.id }}">Verified buyer</span>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+
+      {%- if section.settings.reviews_link != blank -%}
+        <div class="pdp-tabs__read-more-{{ section.id }}">
+          <a href="{{ section.settings.reviews_link }}" class="pdp-tabs__read-more-btn-{{ section.id }}">
+            <span>READ MORE</span>
+            <svg width="23" height="17" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.08398 7.43318C1.45866 7.43318 0.951735 7.94011 0.951735 8.56543C0.951735 9.19075 1.45866 9.69768 2.08398 9.69768L2.08398 7.43318ZM22.2304 9.36605C22.6726 8.92388 22.6726 8.20698 22.2304 7.76481L15.0248 0.559215C14.5826 0.117045 13.8657 0.117045 13.4236 0.559216C12.9814 1.00139 12.9814 1.71829 13.4236 2.16046L19.8285 8.56543L13.4236 14.9704C12.9814 15.4126 12.9814 16.1295 13.4236 16.5716C13.8657 17.0138 14.5826 17.0138 15.0248 16.5716L22.2304 9.36605ZM2.08398 8.56543L2.08398 9.69768L21.4298 9.69768L21.4298 8.56543L21.4298 7.43318L2.08398 7.43318L2.08398 8.56543Z" fill="white"/>
+            </svg>
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (function() {
+    var container = document.getElementById('pdp-tabs-{{ section.id }}');
+    if (!container) return;
+
+    // Tab switching
+    var buttons = container.querySelectorAll('[data-tab-btn]');
+    var panels = container.querySelectorAll('[data-tab-panel]');
+    var tabLis = container.querySelectorAll('[data-tab-li]');
+
+    buttons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = btn.getAttribute('data-tab-btn');
+
+        // Update buttons
+        buttons.forEach(function(b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+
+        // Update tab li
+        tabLis.forEach(function(li) { li.classList.remove('is-active'); });
+        var activeLi = container.querySelector('[data-tab-li="' + target + '"]');
+        if (activeLi) activeLi.classList.add('is-active');
+
+        // Update panels
+        panels.forEach(function(p) {
+          if (p.getAttribute('data-tab-panel') === target) {
+            p.style.display = 'block';
+          } else {
+            p.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Accordion
+    var triggers = container.querySelectorAll('[data-accordion-trigger]');
+    triggers.forEach(function(trigger) {
+      trigger.addEventListener('click', function() {
+        var body = trigger.nextElementSibling;
+        var chevron = trigger.querySelector('[class*="chevron"]');
+        var isOpen = body.classList.contains('is-open');
+
+        if (isOpen) {
+          body.classList.remove('is-open');
+          if (chevron) chevron.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+        } else {
+          body.classList.add('is-open');
+          if (chevron) chevron.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK PDP Tabs",
+  "tag": "section",
+  "class": "pdp-tabs-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tab Labels"
+    },
+    {
+      "type": "text",
+      "id": "tab1_label",
+      "label": "Tab 1 Label",
+      "default": "What to Expect"
+    },
+    {
+      "type": "text",
+      "id": "tab2_label",
+      "label": "Tab 2 Label (Desktop)",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "tab2_label_short",
+      "label": "Tab 2 Label (Mobile)",
+      "default": "FAQs"
+    },
+    {
+      "type": "text",
+      "id": "tab3_label",
+      "label": "Tab 3 Label",
+      "default": "Reviews"
+    },
+    {
+      "type": "header",
+      "content": "What to Expect"
+    },
+    {
+      "type": "text",
+      "id": "tab1_heading",
+      "label": "Timeline Heading",
+      "default": "What Happens After You Boost Testosterone With BREAK800"
+    },
+    {
+      "type": "header",
+      "content": "Reviews"
+    },
+    {
+      "type": "url",
+      "id": "reviews_link",
+      "label": "Read More Link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "pt_dsk",
+      "label": "Padding Top (Desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pb_dsk",
+      "label": "Padding Bottom (Desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pt_mob",
+      "label": "Padding Top (Mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pb_mob",
+      "label": "Padding Bottom (Mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "timeline_item",
+      "name": "Timeline Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "richtext",
+          "id": "title",
+          "label": "Title",
+          "default": "<p><strong>DAY 7</strong> Ignition</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Body",
+          "default": "<ul><li>Tongkat Ali blocks stress hormones</li><li>Shilajit feeds starving testosterone cells</li><li>Workouts feel intense again</li><li>Start to feel that all-day energy</li></ul>"
+        }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How long until I see results?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Within the first week, most men experience increases in energy, improved sleep quality, and heightened mental focus.</p>"
+        }
+      ]
+    },
+    {
+      "type": "review_item",
+      "name": "Review Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Review Headline",
+          "default": "Better than TRT. Lab confirmed."
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Review Body",
+          "default": "I got off TRT months ago to do something more natural. This boosted my total T by 225% since being off TRT."
+        },
+        {
+          "type": "text",
+          "id": "reviewer",
+          "label": "Reviewer Name",
+          "default": "Zach R."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK PDP Tabs",
+      "blocks": [
+        { "type": "timeline_item", "settings": { "title": "<p><strong>DAY 7<\/strong> Ignition<\/p>", "body": "<ul><li>Tongkat Ali blocks stress hormones<\/li><li>Shilajit feeds starving testosterone cells<\/li><li>Workouts feel intense again<\/li><li>Start to feel that all-day energy<\/li><\/ul>" } },
+        { "type": "timeline_item", "settings": { "title": "<p><strong>DAY 30<\/strong> Spark<\/p>", "body": "<ul><li>Boron helps free stuck T<\/li><li>Zinc provides T-making materials<\/li><li>Body looks leaner, stronger, more masculine<\/li><li>People ask what you're doing differently<\/li><\/ul>" } },
+        { "type": "timeline_item", "settings": { "title": "<p><strong>DAY 90<\/strong> Liftoff<\/p>", "body": "<ul><li>All 8 ingredients working like a tuned engine<\/li><li>T-production optimized fully<\/li><li>Not temporary, this is your new normal<\/li><li>Welcome to the man you're supposed to be<\/li><\/ul>" } },
+        { "type": "faq_item", "settings": { "question": "How long until I see results?", "answer": "<p>Within the first week, most men experienced out of this world increases in energy, improved sleep quality, and heightened mental focus. Within four weeks, a massive increase in strength, vitality, and power becomes noticeable. By the eighth week, the full spectrum of benefits become apparent.<\/p>" } },
+        { "type": "faq_item", "settings": { "question": "Can BREAK800 help increase my energy?", "answer": "<p>BREAK800 supports healthy male sex hormones, such as testosterone, which are critical for living a vital, energized life.<\/p>" } },
+        { "type": "faq_item", "settings": { "question": "Will BREAK800 improve my strength gains in the gym?", "answer": "<p>Increases in testosterone support efforts in the gym. Many customers report total testosterone reading increases of nearly 300 points, which can support lean body mass and building muscle in the gym.<\/p>" } },
+        { "type": "faq_item", "settings": { "question": "What is your 90-Day Higher-T Guarantee? Do you accept returns?", "answer": "<p>If for any reason you are not over the moon with your purchase, you can request a refund within 90 days of delivery of your first order. We'll refund you for the full cost of the product no questions asked.<\/p>" } },
+        { "type": "faq_item", "settings": { "question": "Do I need to cycle BREAK800?", "answer": "<p>No you don't need to cycle BREAK800. If you want to do a \"Reset Week\" every 3-4 months, this won't hurt though.<\/p>" } },
+        { "type": "faq_item", "settings": { "question": "Who is BREAK800 for?", "answer": "<p>BREAK800 is for men over the age of 18 looking to support their testosterone in a safe, natural, and effective way.<\/p>" } },
+        { "type": "faq_item", "settings": { "question": "Do you ship to Canada, and will I have to pay extra customs duties or fees?", "answer": "<p>Yes, we ship to Canada! The price you see at checkout is the final amount you'll pay — we don't charge any extra duties or hidden fees.<\/p>" } },
+        { "type": "review_item", "settings": { "title": "Better than TRT. Lab confirmed.", "body": "I got off TRT months ago to do something more natural. This boosted my total T by 225% since being off TRT. My levels went back down to 330ng/dl after cycling off; now I am up to 742ng/dl. I just confirmed with labs as of 4/16. This is higher than my total T has been on actual TRT. Amazing!", "reviewer": "Zach R." } },
+        { "type": "review_item", "settings": { "title": "Improvement in just a week", "body": "I'm 55, and this supplement has been a game-changer. More energy, better focus, and I just feel stronger overall. I noticed the difference within days—highly recommend it!", "reviewer": "C.H." } },
+        { "type": "review_item", "settings": { "title": "Dropped 15lbs", "body": "I love it, dropped 15lbs, retaining good muscle mass, and the Mrs. Likes it too. I look forward to buying my third bottle!", "reviewer": "Jackson A." } },
+        { "type": "review_item", "settings": { "title": "Real results and noticeable change", "body": "After 3 months of taking BREAK800, I feel like a new man. I've noticed way more energy and no need for the afternoon nap. Stronger in the gym and better overall strength and stamina.", "reviewer": "Jason W." } },
+        { "type": "review_item", "settings": { "title": "This stuff works! My test results prove it!", "body": "I tested my testosterone and was around a 320. I tried 2 other T boosting supplements but they didn't do much. After taking this it all changed, 475 after 45 days. I highly recommend this product for anyone suffering from low testosterone.", "reviewer": "George H." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

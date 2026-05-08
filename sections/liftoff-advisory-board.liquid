@@ -1,0 +1,504 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF ADVISORY BOARD
+  ===================================================================================
+  "Meet Our Medical Advisory Board" — 3 doctor cards in a row (desktop),
+  swipeable carousel on mobile. Radial gradient overlay behind cards.
+  Each card: circular photo, name, two-line title, bio paragraph.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (text)
+  * cta_text / cta_link
+  * accent_color / text_color / bg_color
+  * Blocks: doctor (image, name, title, bio)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff Advisory Board
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+{%- assign doctors = section.blocks -%}
+
+<style>
+  .liftoff-board-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top }}px 16px {{ s.padding_bottom }}px;
+    color: {{ s.text_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Radial gradient overlay */
+  .liftoff-board-{{ sid }}__gradient {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2160px;
+    height: 1310px;
+    border-radius: 100%;
+    background: radial-gradient(closest-side, {{ s.accent_color }} 0, transparent);
+    opacity: 0.3;
+    mix-blend-mode: lighten;
+    pointer-events: none;
+  }
+
+  .liftoff-board-{{ sid }}__container {
+    max-width: 990px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+  }
+
+  .liftoff-board-{{ sid }}__heading {
+    
+    font-size: clamp(30px, 4vw, 55px);
+    font-weight: 900;
+    margin: 0 0 32px;
+    line-height: 1.04;
+    max-width: 315px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Grid for desktop */
+  .liftoff-board-{{ sid }}__grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 28px;
+  }
+
+  .liftoff-board-{{ sid }}__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+  }
+
+  .liftoff-board-{{ sid }}__photo {
+    width: 185px;
+    height: auto;
+    margin: 0 auto 30px;
+  }
+
+  .liftoff-board-{{ sid }}__photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .liftoff-board-{{ sid }}__name {
+    font-size: 26.46px;
+    font-weight: 900;
+    margin: 0 0 10px;
+    line-height: 1.32;
+    color: #fff;
+    text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.65), 0px 0px 15.5px rgba(0, 0, 0, 0.65);
+  }
+
+  .liftoff-board-{{ sid }}__title {
+    font-size: 15.76px;
+    line-height: 20px;
+    color: {{ s.accent_color }};
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 16px;
+    font-weight: 500;
+    text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.65), 0px 0px 15.5px rgba(0, 0, 0, 0.65);
+  }
+
+  .liftoff-board-{{ sid }}__bio {
+    
+    font-size: 16px;
+    line-height: 1.48;
+    color: #fff;
+    margin: 0;
+    max-width: 296px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 700;
+  }
+
+  /* CTA */
+  .liftoff-board-{{ sid }}__cta-wrap {
+    margin-top: 40px;
+  }
+
+  .liftoff-board-{{ sid }}__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 54px;
+    
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+  }
+
+  .liftoff-board-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+
+  .liftoff-board-{{ sid }}__cta svg {
+    width: 20px;
+    height: 20px;
+  }
+  .liftoff-board-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+  /* Mobile nav */
+  .liftoff-board-{{ sid }}__nav {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .liftoff-board-{{ sid }}__nav-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+    line-height: 0;
+    transition: color .2s ease;
+  }
+
+  .liftoff-board-{{ sid }}__nav-btn:disabled {
+    color: #555;
+    cursor: default;
+  }
+
+  .liftoff-board-{{ sid }}__nav-btn svg {
+    width: 34px;
+    height: 34px;
+  }
+
+  .liftoff-board-{{ sid }}__nav-label {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 30px;
+  }
+
+  @media (min-width: 1000px) {
+    .liftoff-board-{{ sid }}__heading {
+      max-width: 1000px;
+    }
+  }
+
+  @media (max-width: 999px) {
+    .liftoff-board-{{ sid }} {
+      padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    }
+
+    .liftoff-board-{{ sid }}__grid {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 16px;
+      padding-bottom: 4px;
+    }
+
+    .liftoff-board-{{ sid }}__grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .liftoff-board-{{ sid }}__card {
+      min-width: 240px;
+      max-width: 240px;
+      flex: 0 0 240px;
+      scroll-snap-align: center;
+    }
+
+    .liftoff-board-{{ sid }}__nav {
+      display: flex;
+    }
+
+    .liftoff-board-{{ sid }}__cta {
+      width: 100%;
+      padding: 18px 32px;
+    }
+  }
+</style>
+
+<section class="liftoff-board-{{ sid }}" id="liftoff-board-{{ sid }}">
+  <div class="liftoff-board-{{ sid }}__gradient"></div>
+  <div class="liftoff-board-{{ sid }}__container">
+
+    {%- if s.heading != blank -%}
+      <h2 class="liftoff-board-{{ sid }}__heading">{{ s.heading }}</h2>
+    {%- endif -%}
+
+    {%- if doctors.size > 0 -%}
+      <div class="liftoff-board-{{ sid }}__grid" id="board-grid-{{ sid }}">
+        {%- for block in doctors -%}
+          <div class="liftoff-board-{{ sid }}__card" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <div class="liftoff-board-{{ sid }}__photo">
+                {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: block.settings.name }}
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.name != blank -%}
+              <h3 class="liftoff-board-{{ sid }}__name">{{ block.settings.name }}</h3>
+            {%- endif -%}
+
+            {%- if block.settings.title != blank -%}
+              <p class="liftoff-board-{{ sid }}__title">{{ block.settings.title }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.bio != blank -%}
+              <p class="liftoff-board-{{ sid }}__bio">{{ block.settings.bio }}</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="liftoff-board-{{ sid }}__nav" id="board-nav-{{ sid }}">
+        <button class="liftoff-board-{{ sid }}__nav-btn" data-dir="prev" disabled aria-label="Previous">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.3015 18.1361C31.8907 18.1361 32.3683 17.6585 32.3683 17.0693C32.3683 16.4802 31.8907 16.0025 31.3015 16.0025L31.3015 18.1361ZM9.2113 16.315C8.79469 16.7316 8.79469 17.4071 9.2113 17.8237L16.0003 24.6127C16.4169 25.0293 17.0924 25.0293 17.509 24.6127C17.9256 24.1961 17.9256 23.5206 17.509 23.104L11.4743 17.0693L17.509 11.0346C17.9256 10.618 17.9256 9.94257 17.509 9.52596C17.0924 9.10935 16.4169 9.10935 16.0003 9.52596L9.2113 16.315ZM31.3015 17.0693L31.3015 16.0025L9.96564 16.0025L9.96564 17.0693L9.96564 18.1361L31.3015 18.1361L31.3015 17.0693Z" fill="currentColor"/>
+            <circle cx="16.722" cy="16.7132" r="15.6463" transform="rotate(-180 16.722 16.7132)" stroke="currentColor" stroke-width="2.13359"/>
+          </svg>
+        </button>
+        <span class="liftoff-board-{{ sid }}__nav-label">Swipe to see more</span>
+        <button class="liftoff-board-{{ sid }}__nav-btn" data-dir="next" aria-label="Next">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.1438 15.2906C1.55462 15.2906 1.07701 15.7682 1.07701 16.3574C1.07701 16.9466 1.55462 17.4242 2.1438 17.4242V15.2906ZM24.234 17.1118C24.6506 16.6952 24.6506 16.0197 24.234 15.6031L17.445 8.81405C17.0284 8.39744 16.3529 8.39744 15.9363 8.81405C15.5197 9.23066 15.5197 9.90612 15.9363 10.3227L21.971 16.3574L15.9363 22.3921C15.5197 22.8087 15.5197 23.4842 15.9363 23.9008C16.3529 24.3174 17.0284 24.3174 17.445 23.9008L24.234 17.1118ZM2.1438 16.3574V17.4242H23.4797V16.3574V15.2906L2.1438 15.2906V16.3574Z" fill="currentColor"/>
+            <circle cx="16.7234" cy="16.7131" r="15.6463" stroke="currentColor" stroke-width="2.13359"/>
+          </svg>
+        </button>
+      </div>
+    {%- endif -%}
+
+    {%- if s.cta_text != blank -%}
+      <div class="liftoff-board-{{ sid }}__cta-wrap">
+        <a href="{{ s.cta_link | default: '#' }}" class="liftoff-board-{{ sid }}__cta">
+          {{ s.cta_text }}
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    var grid = document.getElementById('board-grid-{{ sid }}');
+    var nav = document.getElementById('board-nav-{{ sid }}');
+    if (!grid || !nav) return;
+
+    var prevBtn = nav.querySelector('[data-dir="prev"]');
+    var nextBtn = nav.querySelector('[data-dir="next"]');
+    var cards = Array.prototype.slice.call(grid.children);
+    var currentIndex = 0;
+
+    function getCardWidth() {
+      if (!cards.length) return 0;
+      return cards[0].offsetWidth + 16; /* card width + gap */
+    }
+
+    function scrollToIndex(idx) {
+      if (idx < 0) idx = 0;
+      if (idx >= cards.length) idx = cards.length - 1;
+      currentIndex = idx;
+      grid.scrollTo({ left: idx * getCardWidth(), behavior: 'smooth' });
+      updateBtns();
+    }
+
+    function updateBtns() {
+      prevBtn.disabled = currentIndex <= 0;
+      nextBtn.disabled = currentIndex >= cards.length - 1;
+    }
+
+    /* Sync currentIndex when user swipes manually */
+    var scrollTimer;
+    grid.addEventListener('scroll', function() {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() {
+        var cardW = getCardWidth();
+        if (cardW > 0) {
+          currentIndex = Math.round(grid.scrollLeft / cardW);
+          updateBtns();
+        }
+      }, 100);
+    });
+
+    prevBtn.addEventListener('click', function() { scrollToIndex(currentIndex - 1); });
+    nextBtn.addEventListener('click', function() { scrollToIndex(currentIndex + 1); });
+
+    /* Ensure starts at first slide */
+    grid.scrollLeft = 0;
+    updateBtns();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK Liftoff Advisory Board",
+  "tag": "section",
+  "class": "bk-section-liftoff-board",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Meet Our Medical Advisory Board"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 68
+    }
+  ],
+  "blocks": [
+    {
+      "type": "doctor",
+      "name": "Doctor",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Photo"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Dr. Latt Mansor"
+        },
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Title / Credentials (supports line breaks)",
+          "default": "Research Lead at\nH.V.M.N. Biography"
+        },
+        {
+          "type": "textarea",
+          "id": "bio",
+          "label": "Bio",
+          "default": "Dr. Latt Mansor holds a PhD in Physiology, Anatomy and Genetics from the University of Oxford, where his research focused on the metabolism of the type 2 diabetic heart in hypoxia. He is a world expert in physiology and metabolism, and consults with elite sport, military, clinical and research organizations."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Liftoff Advisory Board",
+      "blocks": [
+        { "type": "doctor", "settings": { "name": "Dr. Latt Mansor", "title": "Research Lead at\nH.V.M.N. Biography", "bio": "Dr. Latt Mansor holds a PhD in Physiology, Anatomy and Genetics from the University of Oxford, where his research focused on the metabolism of the type 2 diabetic heart in hypoxia. He is a world expert in physiology and metabolism, and consults with elite sport, military, clinical and research organizations." } },
+        { "type": "doctor", "settings": { "name": "Dr. Jesse Ropat", "title": "Biochemist in\nHuman Kinetics", "bio": "Dr. Jesse Ropat is a licensed pharmacist with a deep interest in natural medicine and over a decade of clinical experience. His background in biochemistry and human kinetics, combined with published research on natural compounds in cancer care, has shaped a holistic, evidence-based approach to health." } },
+        { "type": "doctor", "settings": { "name": "Dr. Jeff Vogel", "title": "Board-Certified\nMedicine Physician", "bio": "Jeffrey E. Vogel, MD, MPH is a board-certified occupational and preventive medicine physician with deep expertise in men's health and hormone optimization. He serves as Medical Director for multiple testosterone and longevity clinics, overseeing advanced treatment protocols for performance, vitality, and metabolic health." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

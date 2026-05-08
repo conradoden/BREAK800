@@ -62,7 +62,7 @@
   }
 
   .contact-form-{{ uid }}__eyebrow {
-    
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
     color: {{ s.accent_color }};
     font-size: clamp(14px, 1.4vw, 18px);
     letter-spacing: 0.08em;
@@ -72,7 +72,7 @@
   }
 
   .contact-form-{{ uid }}__heading {
-    
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
     font-size: clamp(40px, 6vw, 72px);
     font-weight: 800;
     text-transform: uppercase;
@@ -83,7 +83,7 @@
   }
 
   .contact-form-{{ uid }}__sub {
-    
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
     font-size: clamp(14px, 1.3vw, 16px);
     line-height: 1.55;
     margin: 0 auto 40px;
@@ -120,7 +120,7 @@
     border: 1.5px solid {{ s.accent_color }};
     border-radius: 10px;
     padding: 22px 22px 10px;
-    
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
     font-size: 15px;
     letter-spacing: 0.04em;
     outline: none;
@@ -144,7 +144,7 @@
     position: absolute;
     top: 14px;
     left: 22px;
-    
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
     color: {{ s.text_color }};
     font-size: 13px;
     text-transform: uppercase;
@@ -179,28 +179,25 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    background: var(--bk-btn-bg);
-    color: var(--bk-btn-text);
-    border: 2px solid var(--bk-btn-bg);
+    background: {{ s.accent_color }};
+    color: #fff;
+    border: none;
     outline: none;
     border-radius: 8px;
     padding: 22px 70px;
-    
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
     font-size: clamp(16px, 1.4vw, 20px);
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
-    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    box-shadow: 0 10px 25px -10px rgba(255, 86, 0, 0.6);
   }
 
   .contact-form-{{ uid }}__submit:hover {
-    background: transparent;
-    border-color: var(--bk-btn-bg);
-    color: var(--bk-btn-bg);
-    box-shadow: none;
     transform: translateY(-2px);
+    box-shadow: 0 16px 32px -12px rgba(255, 86, 0, 0.75);
     outline: none;
   }
 
@@ -218,7 +215,7 @@
     border-radius: 10px;
     padding: 14px 18px;
     margin: 0 0 24px;
-    
+    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
     font-size: 14px;
     text-align: left;
   }
@@ -347,7 +344,7 @@
 {
   "name": "BK Contact Form",
   "tag": "section",
-  "class": "bk-contact-form",
+  "class": "bk-section-contact-form",
   "settings": [
     {
       "type": "header",

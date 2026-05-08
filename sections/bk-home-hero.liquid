@@ -197,11 +197,23 @@
     justify-content: center;
     padding: 14px 22px;
     border-radius: 12px;
-    background: #ff5600;
-    color: #ffffff;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
     font-weight: 800;
     text-transform: uppercase;
     text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+  }
+
+  #shopify-section-{{ section.id }} .bk-home-hero-btn:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
   }
 
   #shopify-section-{{ section.id }} .bk-home-hero-bottom-text {
@@ -274,7 +286,7 @@
       "type": "text",
       "id": "heading_1",
       "label": "Heading text 1",
-      "default": "MARS MEN®"
+      "default": "BREAK800®"
     },
     {
       "type": "text",

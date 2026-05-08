@@ -1,0 +1,579 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF CREW VIDEOS
+  ===================================================================================
+  "Hear What The Break800 Crew Has To Say…" — 3 video cards in a row (desktop),
+  swipeable carousel on mobile. Each card: embedded video, bold label, description line.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (richtext): Section heading with optional <strong> accent
+  * accent_color / text_color / bg_color
+  * Blocks: video (video_url, label, description)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff Crew Videos
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+{%- assign videos = section.blocks -%}
+
+<style>
+  .liftoff-cv-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    color: {{ s.text_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liftoff-cv-{{ sid }}__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+  }
+
+  /* ── Heading ── */
+  .liftoff-cv-{{ sid }}__heading {
+    font-size: clamp(28px, 4.5vw, 55px);
+    font-weight: 900;
+    margin: 0 0 32px;
+    line-height: 1.05;
+    text-transform: uppercase;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .liftoff-cv-{{ sid }}__heading strong {
+    color: {{ s.accent_color }};
+  }
+
+  /* ── Grid ── */
+  .liftoff-cv-{{ sid }}__grid {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  /* ── Card ── */
+  .liftoff-cv-{{ sid }}__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    max-width: 380px;
+  }
+
+  /* ── Video embed ── */
+  .liftoff-cv-{{ sid }}__video-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: #000;
+  }
+  .liftoff-cv-{{ sid }}__video-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* ── Thumbnail fallback (when no video URL) ── */
+  .liftoff-cv-{{ sid }}__thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .liftoff-cv-{{ sid }}__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .liftoff-cv-{{ sid }}__play-icon {
+    width: 56px;
+    height: 56px;
+    opacity: 0.8;
+  }
+
+  /* ── Label ── */
+  .liftoff-cv-{{ sid }}__label {
+    font-size: 18px;
+    font-weight: 900;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+    color: {{ s.text_color }};
+  }
+
+  /* ── Description ── */
+  .liftoff-cv-{{ sid }}__desc {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: {{ s.text_color }};
+    margin: 0 0 4px;
+  }
+  .liftoff-cv-{{ sid }}__subdesc {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: {{ s.muted_color }};
+    margin: 0;
+  }
+
+  /* ── Mobile nav ── */
+  .liftoff-cv-{{ sid }}__nav {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .liftoff-cv-{{ sid }}__nav-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+    line-height: 0;
+    transition: color .2s ease;
+  }
+
+  .liftoff-cv-{{ sid }}__nav-btn:disabled {
+    color: #555;
+    cursor: default;
+  }
+
+  .liftoff-cv-{{ sid }}__nav-btn svg {
+    width: 34px;
+    height: 34px;
+  }
+
+  .liftoff-cv-{{ sid }}__nav-label {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 30px;
+  }
+
+  /* ── CTA ── */
+  .liftoff-cv-{{ sid }}__cta-wrap {
+    margin-top: 40px;
+  }
+
+  .liftoff-cv-{{ sid }}__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 54px;
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+  }
+
+  .liftoff-cv-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+
+  .liftoff-cv-{{ sid }}__cta svg {
+    width: 20px;
+    height: 20px;
+  }
+  .liftoff-cv-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+
+  /* ── Desktop ── */
+  @media (min-width: 750px) {
+    .liftoff-cv-{{ sid }} {
+      padding: {{ s.padding_top }}px 16px {{ s.padding_bottom }}px;
+    }
+    .liftoff-cv-{{ sid }}__heading {
+      margin-bottom: 48px;
+    }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 749px) {
+    .liftoff-cv-{{ sid }}__grid {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 16px;
+      padding-bottom: 4px;
+    }
+
+    .liftoff-cv-{{ sid }}__grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .liftoff-cv-{{ sid }}__card {
+      min-width: 280px;
+      max-width: 280px;
+      flex: 0 0 280px;
+      scroll-snap-align: center;
+    }
+
+    .liftoff-cv-{{ sid }}__nav {
+      display: flex;
+    }
+
+    .liftoff-cv-{{ sid }}__cta {
+      width: 100%;
+      padding: 18px 32px;
+    }
+  }
+</style>
+
+<section class="liftoff-cv-{{ sid }}" id="liftoff-cv-{{ sid }}">
+  <div class="liftoff-cv-{{ sid }}__container">
+
+    {%- if s.heading != blank -%}
+      <h2 class="liftoff-cv-{{ sid }}__heading">{{ s.heading }}</h2>
+    {%- endif -%}
+
+    {%- if videos.size > 0 -%}
+      <div class="liftoff-cv-{{ sid }}__grid" id="cv-grid-{{ sid }}">
+        {%- for block in videos -%}
+          <div class="liftoff-cv-{{ sid }}__card" {{ block.shopify_attributes }}>
+
+            {%- if block.settings.video_url != blank -%}
+              <div class="liftoff-cv-{{ sid }}__video-wrap">
+                {%- assign vurl = block.settings.video_url -%}
+                {%- if vurl contains 'youtube.com' or vurl contains 'youtu.be' -%}
+                  {%- if vurl contains 'youtu.be/' -%}
+                    {%- assign yt_id = vurl | split: 'youtu.be/' | last | split: '?' | first -%}
+                  {%- else -%}
+                    {%- assign yt_id = vurl | split: 'v=' | last | split: '&' | first -%}
+                  {%- endif -%}
+                  <iframe
+                    src="https://www.youtube.com/embed/{{ yt_id }}"
+                    title="{{ block.settings.label | default: 'Video' }}"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    loading="lazy"
+                  ></iframe>
+                {%- elsif vurl contains 'vimeo.com' -%}
+                  {%- assign vimeo_id = vurl | split: 'vimeo.com/' | last | split: '?' | first -%}
+                  <iframe
+                    src="https://player.vimeo.com/video/{{ vimeo_id }}"
+                    title="{{ block.settings.label | default: 'Video' }}"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowfullscreen
+                    loading="lazy"
+                  ></iframe>
+                {%- endif -%}
+              </div>
+            {%- elsif block.settings.thumbnail != blank -%}
+              <div class="liftoff-cv-{{ sid }}__thumb">
+                {{ block.settings.thumbnail | image_url: width: 600 | image_tag: loading: 'lazy', alt: block.settings.label }}
+              </div>
+            {%- else -%}
+              <div class="liftoff-cv-{{ sid }}__thumb">
+                <svg class="liftoff-cv-{{ sid }}__play-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="32" cy="32" r="30" stroke="white" stroke-width="3"/>
+                  <path d="M26 20L46 32L26 44V20Z" fill="white"/>
+                </svg>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.label != blank -%}
+              <h3 class="liftoff-cv-{{ sid }}__label">{{ block.settings.label }}</h3>
+            {%- endif -%}
+
+            {%- if block.settings.description != blank -%}
+              <p class="liftoff-cv-{{ sid }}__desc">{{ block.settings.description }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.subdescription != blank -%}
+              <p class="liftoff-cv-{{ sid }}__subdesc">({{ block.settings.subdescription }})</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="liftoff-cv-{{ sid }}__nav" id="cv-nav-{{ sid }}">
+        <button class="liftoff-cv-{{ sid }}__nav-btn" data-dir="prev" disabled aria-label="Previous">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.3015 18.1361C31.8907 18.1361 32.3683 17.6585 32.3683 17.0693C32.3683 16.4802 31.8907 16.0025 31.3015 16.0025L31.3015 18.1361ZM9.2113 16.315C8.79469 16.7316 8.79469 17.4071 9.2113 17.8237L16.0003 24.6127C16.4169 25.0293 17.0924 25.0293 17.509 24.6127C17.9256 24.1961 17.9256 23.5206 17.509 23.104L11.4743 17.0693L17.509 11.0346C17.9256 10.618 17.9256 9.94257 17.509 9.52596C17.0924 9.10935 16.4169 9.10935 16.0003 9.52596L9.2113 16.315ZM31.3015 17.0693L31.3015 16.0025L9.96564 16.0025L9.96564 17.0693L9.96564 18.1361L31.3015 18.1361L31.3015 17.0693Z" fill="currentColor"/>
+            <circle cx="16.722" cy="16.7132" r="15.6463" transform="rotate(-180 16.722 16.7132)" stroke="currentColor" stroke-width="2.13359"/>
+          </svg>
+        </button>
+        <span class="liftoff-cv-{{ sid }}__nav-label">Swipe to see more</span>
+        <button class="liftoff-cv-{{ sid }}__nav-btn" data-dir="next" aria-label="Next">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.1438 15.2906C1.55462 15.2906 1.07701 15.7682 1.07701 16.3574C1.07701 16.9466 1.55462 17.4242 2.1438 17.4242V15.2906ZM24.234 17.1118C24.6506 16.6952 24.6506 16.0197 24.234 15.6031L17.445 8.81405C17.0284 8.39744 16.3529 8.39744 15.9363 8.81405C15.5197 9.23066 15.5197 9.90612 15.9363 10.3227L21.971 16.3574L15.9363 22.3921C15.5197 22.8087 15.5197 23.4842 15.9363 23.9008C16.3529 24.3174 17.0284 24.3174 17.445 23.9008L24.234 17.1118ZM2.1438 16.3574V17.4242H23.4797V16.3574V15.2906L2.1438 15.2906V16.3574Z" fill="currentColor"/>
+            <circle cx="16.7234" cy="16.7131" r="15.6463" stroke="currentColor" stroke-width="2.13359"/>
+          </svg>
+        </button>
+      </div>
+    {%- endif -%}
+
+    {%- if s.cta_text != blank -%}
+      <div class="liftoff-cv-{{ sid }}__cta-wrap">
+        <a href="{{ s.cta_link | default: '#' }}" class="liftoff-cv-{{ sid }}__cta">
+          {{ s.cta_text }}
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    var grid = document.getElementById('cv-grid-{{ sid }}');
+    var nav = document.getElementById('cv-nav-{{ sid }}');
+    if (!grid || !nav) return;
+
+    var prevBtn = nav.querySelector('[data-dir="prev"]');
+    var nextBtn = nav.querySelector('[data-dir="next"]');
+    var cards = Array.prototype.slice.call(grid.children);
+    var currentIndex = 0;
+
+    function getCardWidth() {
+      if (!cards.length) return 0;
+      return cards[0].offsetWidth + 16;
+    }
+
+    function scrollToIndex(idx) {
+      if (idx < 0) idx = 0;
+      if (idx >= cards.length) idx = cards.length - 1;
+      currentIndex = idx;
+      grid.scrollTo({ left: idx * getCardWidth(), behavior: 'smooth' });
+      updateBtns();
+    }
+
+    function updateBtns() {
+      prevBtn.disabled = currentIndex <= 0;
+      nextBtn.disabled = currentIndex >= cards.length - 1;
+    }
+
+    var scrollTimer;
+    grid.addEventListener('scroll', function() {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() {
+        var cardW = getCardWidth();
+        if (cardW > 0) {
+          currentIndex = Math.round(grid.scrollLeft / cardW);
+          updateBtns();
+        }
+      }, 100);
+    });
+
+    prevBtn.addEventListener('click', function() { scrollToIndex(currentIndex - 1); });
+    nextBtn.addEventListener('click', function() { scrollToIndex(currentIndex + 1); });
+
+    grid.scrollLeft = 0;
+    updateBtns();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK Crew Videos",
+  "tag": "section",
+  "class": "bk-section-crew-videos",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Hear what the <strong>Break800 crew</strong> has to say…</p>"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text color",
+      "default": "#999999"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "Video URL",
+          "info": "YouTube or Vimeo URL"
+        },
+        {
+          "type": "image_picker",
+          "id": "thumbnail",
+          "label": "Thumbnail (optional)",
+          "info": "Shown when no video URL is provided"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "VID 1:"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "Decline in T over time"
+        },
+        {
+          "type": "text",
+          "id": "subdescription",
+          "label": "Sub-description",
+          "info": "Shown in parentheses below description",
+          "default": "what has happened"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Crew Videos",
+      "blocks": [
+        {
+          "type": "video",
+          "settings": {
+            "label": "VID 1:",
+            "description": "Decline in T over time",
+            "subdescription": "what has happened"
+          }
+        },
+        {
+          "type": "video",
+          "settings": {
+            "label": "VID 2:",
+            "description": "Decline in T over time",
+            "subdescription": "WHY it happened"
+          }
+        },
+        {
+          "type": "video",
+          "settings": {
+            "label": "VID 3:",
+            "description": "Decline in T over time",
+            "subdescription": "HOW to change it"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

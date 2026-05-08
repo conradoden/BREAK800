@@ -1,0 +1,588 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF GETTING RESULTS
+  ===================================================================================
+  Testimonials bento grid with before/after image and review cards.
+  Desktop: 4-column grid with image spanning 2 cols + 2 rows, review cards filling the rest.
+  Mobile: Image on top, reviews in a fade swiper.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (richtext): Section heading with <strong> accent
+  * before_after_image (image_picker): Before/after comparison image
+  * accent_color / bg_color / card_bg_color / text_color / star_color
+  * Blocks: review_card (reviewer_name, review_title, review_text, star_count)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Theme Editor → Add Section → Liftoff Getting Results
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+{%- assign cards = section.blocks -%}
+
+<style>
+  .liftoff-gr-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top }}px 16px {{ s.padding_bottom }}px;
+    color: {{ s.text_color }};
+  }
+
+  .liftoff-gr-{{ sid }}__container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 4px;
+  }
+
+  /* ── Heading ── */
+  .liftoff-gr-{{ sid }}__heading {
+    font-size: clamp(30px, 4.5vw, 55px);
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.05;
+    margin: 0 auto 32px;
+    max-width: 313px;
+  }
+  .liftoff-gr-{{ sid }}__heading strong {
+    color: {{ s.accent_color }};
+  }
+
+  /* ── Desktop Grid ── */
+  .liftoff-gr-{{ sid }}__grid {
+    display: none;
+    max-width: 1200px;
+    margin: 0 auto;
+    grid-template-columns: 26.6fr 26.6fr 23fr 36fr;
+    gap: 26px;
+  }
+
+  /* ── Image cell ── */
+  .liftoff-gr-{{ sid }}__image-cell {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 450px;
+    border-radius: 23px;
+    overflow: hidden;
+    position: relative;
+  }
+  .liftoff-gr-{{ sid }}__image-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 23px;
+  }
+
+  /* ── Review Card ── */
+  .liftoff-gr-{{ sid }}__card {
+    background: {{ s.card_bg_color }};
+    padding: 22px 22px 32px;
+    border-radius: 21px;
+  }
+
+  .liftoff-gr-{{ sid }}__card--1 { grid-column: span 2; order: 1; }
+  .liftoff-gr-{{ sid }}__card--2 { grid-column: span 2; order: 2; }
+  .liftoff-gr-{{ sid }}__card--3 { grid-column: span 3; order: 3; }
+  .liftoff-gr-{{ sid }}__card--4 { grid-column: span 1; order: 4; }
+
+  /* ── Reviewer header ── */
+  .liftoff-gr-{{ sid }}__reviewer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .liftoff-gr-{{ sid }}__reviewer-name {
+    font-size: 17px;
+    line-height: 26px;
+    color: #fff;
+  }
+
+  /* Verified badge */
+  .liftoff-gr-{{ sid }}__verified {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .liftoff-gr-{{ sid }}__verified-icon {
+    width: auto;
+    height: 23px;
+    flex-shrink: 0;
+  }
+  .liftoff-gr-{{ sid }}__verified-label {
+    display: inline-block;
+    padding: 5px 20px;
+    border-radius: 9999px;
+    border: 1px solid {{ s.accent_color }};
+    font-size: 12px;
+    line-height: 12px;
+    color: {{ s.accent_color }};
+  }
+
+  /* ── Stars ── */
+  .liftoff-gr-{{ sid }}__stars {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+  .liftoff-gr-{{ sid }}__stars svg {
+    height: 19px;
+    width: auto;
+    color: {{ s.star_color }};
+  }
+
+  /* ── Review text ── */
+  .liftoff-gr-{{ sid }}__review-text {
+    font-size: 17px;
+    line-height: 25px;
+    color: #fff;
+  }
+  .liftoff-gr-{{ sid }}__review-text p {
+    margin: 0;
+  }
+  .liftoff-gr-{{ sid }}__review-text p:last-child {
+    margin-bottom: 0;
+  }
+  .liftoff-gr-{{ sid }}__review-text strong {
+    font-weight: 700;
+  }
+
+  /* ── Mobile Slider ── */
+  .liftoff-gr-{{ sid }}__mobile {
+    margin-top: 20px;
+  }
+  .liftoff-gr-{{ sid }}__mobile-image {
+    border-radius: 14px;
+    overflow: hidden;
+    max-width: 350px;
+    margin: 0 auto 20px;
+  }
+  .liftoff-gr-{{ sid }}__mobile-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+
+  .liftoff-gr-{{ sid }}__slider {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+  .liftoff-gr-{{ sid }}__slides {
+    display: flex;
+    flex-wrap: nowrap;
+    transition: transform 0.4s ease;
+    width: 100%;
+  }
+  .liftoff-gr-{{ sid }}__slide {
+    width: 100%;
+    min-width: 100%;
+    flex-shrink: 0;
+    padding: 0 4px;
+    box-sizing: border-box;
+  }
+  .liftoff-gr-{{ sid }}__slide .liftoff-gr-{{ sid }}__card {
+    height: 100%;
+  }
+
+  /* ── Slider nav ── */
+  .liftoff-gr-{{ sid }}__slider-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .liftoff-gr-{{ sid }}__slider-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #fff;
+    transition: color 0.3s ease;
+  }
+  .liftoff-gr-{{ sid }}__slider-btn:disabled {
+    color: #555;
+    cursor: default;
+  }
+  .liftoff-gr-{{ sid }}__slider-btn svg {
+    height: 34px;
+    width: auto;
+  }
+  .liftoff-gr-{{ sid }}__slider-label {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: center;
+  }
+
+  /* ── Desktop overrides ── */
+  @media (min-width: 990px) {
+    .liftoff-gr-{{ sid }} {
+      padding: {{ s.padding_top }}px 20px {{ s.padding_bottom }}px;
+    }
+    .liftoff-gr-{{ sid }}__heading {
+      max-width: 1066px;
+      margin-bottom: 62px;
+    }
+    .liftoff-gr-{{ sid }}__grid {
+      display: grid;
+    }
+    .liftoff-gr-{{ sid }}__mobile {
+      display: none;
+    }
+    .liftoff-gr-{{ sid }}__card {
+      padding: 24px 32px 32px;
+    }
+    .liftoff-gr-{{ sid }}__reviewer-name {
+      font-size: 19px;
+      line-height: 28px;
+    }
+    .liftoff-gr-{{ sid }}__review-text {
+      font-size: 19px;
+      line-height: 28px;
+    }
+    .liftoff-gr-{{ sid }}__image-cell {
+      min-height: 558px;
+    }
+  }
+
+  @media (min-width: 750px) and (max-width: 989px) {
+    .liftoff-gr-{{ sid }}__mobile-image {
+      max-width: 450px;
+      min-height: 450px;
+    }
+    .liftoff-gr-{{ sid }}__mobile-image img {
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+</style>
+
+{%- capture star_svg -%}
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M15.2531 19.4987C15.0193 19.4987 14.7875 19.4271 14.588 19.2846L9.89096 15.9165L5.19495 19.2846C5.00062 19.4245 4.7668 19.4995 4.52675 19.4986C4.28671 19.4978 4.05393 19.4213 3.85961 19.28C3.66632 19.1395 3.52167 18.9414 3.44695 18.7139C3.37223 18.4866 3.37109 18.2414 3.44373 18.0133L5.19495 12.3602L0.541018 9.0805C0.348148 8.93814 0.204842 8.73875 0.131476 8.5105C0.0581106 8.28227 0.0584244 8.03674 0.132206 7.80867C0.206714 7.58114 0.350745 7.38276 0.54403 7.24156C0.737316 7.10036 0.970191 7.02348 1.20951 7.02179L6.97401 7.01312L8.80918 1.50033C8.88504 1.27321 9.03053 1.0757 9.22485 0.935734C9.41918 0.795768 9.65195 0.720459 9.892 0.720459C10.131 0.720459 10.3638 0.795768 10.5581 0.935734C10.7524 1.0757 10.8979 1.27321 10.9738 1.50033L12.7778 7.01312L18.5722 7.02179C18.8112 7.02314 19.045 7.09997 19.2383 7.24139C19.4316 7.3828 19.576 7.5816 19.6498 7.80953C19.7236 8.03747 19.7246 8.28296 19.6509 8.51111C19.5771 8.73927 19.4337 8.9385 19.2404 9.0805L14.587 12.3602L16.338 18.0133C16.4107 18.2413 16.4097 18.4865 16.3349 18.7139C16.2611 18.9413 16.1166 19.1394 15.9223 19.28C15.728 19.4225 15.4931 19.499 15.2531 19.4987Z" fill="currentColor"/>
+</svg>
+{%- endcapture -%}
+
+{%- capture verified_badge -%}
+<div class="liftoff-gr-{{ sid }}__verified">
+  <svg class="liftoff-gr-{{ sid }}__verified-icon" width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M9.37431 22.7494C6.7899 22.0415 4.50197 20.5206 2.84891 18.4116C1.19584 16.3027 0.265438 13.7177 0.195312 11.039V3.05504L9.37431 0.240967L18.5533 3.05504V11.039C18.4832 13.7177 17.5528 16.3027 15.8997 18.4116C14.2467 20.5206 11.9587 22.0415 9.37431 22.7494Z" fill="{{ s.accent_color }}"/>
+    <path d="M7.8908 12.5368L5.22741 10.0885L3.89624 11.3126L6.55964 13.7609L7.8908 14.9851L9.22199 13.7609L14.5478 8.8633L13.2166 7.63916L7.8908 12.5368Z" fill="white"/>
+  </svg>
+  <span class="liftoff-gr-{{ sid }}__verified-label">Verified buyer</span>
+</div>
+{%- endcapture -%}
+
+<section class="liftoff-gr-{{ sid }}">
+  <div class="liftoff-gr-{{ sid }}__container">
+
+    {%- if s.heading != blank -%}
+      <h2 class="liftoff-gr-{{ sid }}__heading">{{ s.heading }}</h2>
+    {%- endif -%}
+
+    {%- comment -%} Desktop Grid {%- endcomment -%}
+    <div class="liftoff-gr-{{ sid }}__grid">
+
+      {%- if s.before_after_image != blank -%}
+        <div class="liftoff-gr-{{ sid }}__image-cell">
+          {{ s.before_after_image | image_url: width: 1000 | image_tag: loading: 'lazy', alt: s.image_alt | default: 'Before and after results' }}
+        </div>
+      {%- endif -%}
+
+      {%- for block in cards -%}
+        <div class="liftoff-gr-{{ sid }}__card liftoff-gr-{{ sid }}__card--{{ forloop.index }}"
+             {{ block.shopify_attributes }}>
+
+          <div class="liftoff-gr-{{ sid }}__reviewer">
+            <span class="liftoff-gr-{{ sid }}__reviewer-name">{{ block.settings.reviewer_name }}</span>
+            {{ verified_badge }}
+          </div>
+
+          <div class="liftoff-gr-{{ sid }}__stars">
+            {%- assign star_count = block.settings.star_count | default: 5 -%}
+            {%- for i in (1..star_count) -%}
+              {{ star_svg }}
+            {%- endfor -%}
+          </div>
+
+          <div class="liftoff-gr-{{ sid }}__review-text">
+            {{ block.settings.review_text }}
+          </div>
+        </div>
+      {%- endfor -%}
+
+    </div>
+
+    {%- comment -%} Mobile Layout {%- endcomment -%}
+    <div class="liftoff-gr-{{ sid }}__mobile">
+
+      {%- if s.before_after_image != blank -%}
+        <div class="liftoff-gr-{{ sid }}__mobile-image">
+          {{ s.before_after_image | image_url: width: 700 | image_tag: loading: 'lazy', alt: s.image_alt | default: 'Before and after results' }}
+        </div>
+      {%- endif -%}
+
+      {%- if cards.size > 0 -%}
+        <div class="liftoff-gr-{{ sid }}__slider" data-gr-slider="{{ sid }}">
+          <div class="liftoff-gr-{{ sid }}__slides" data-gr-slides>
+            {%- for block in cards -%}
+              <div class="liftoff-gr-{{ sid }}__slide" {{ block.shopify_attributes }}>
+                <div class="liftoff-gr-{{ sid }}__card">
+
+                  <div class="liftoff-gr-{{ sid }}__reviewer">
+                    <span class="liftoff-gr-{{ sid }}__reviewer-name">{{ block.settings.reviewer_name }}</span>
+                    {{ verified_badge }}
+                  </div>
+
+                  <div class="liftoff-gr-{{ sid }}__stars">
+                    {%- assign star_count = block.settings.star_count | default: 5 -%}
+                    {%- for i in (1..star_count) -%}
+                      {{ star_svg }}
+                    {%- endfor -%}
+                  </div>
+
+                  <div class="liftoff-gr-{{ sid }}__review-text">
+                    {{ block.settings.review_text }}
+                  </div>
+
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+          <div class="liftoff-gr-{{ sid }}__slider-nav">
+            <button class="liftoff-gr-{{ sid }}__slider-btn" data-gr-prev aria-label="Previous review">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M31.3015 18.1361C31.8907 18.1361 32.3683 17.6585 32.3683 17.0693C32.3683 16.4802 31.8907 16.0025 31.3015 16.0025L31.3015 18.1361ZM9.2113 16.315C8.79469 16.7316 8.79469 17.4071 9.2113 17.8237L16.0003 24.6127C16.4169 25.0293 17.0924 25.0293 17.509 24.6127C17.9256 24.1961 17.9256 23.5206 17.509 23.104L11.4743 17.0693L17.509 11.0346C17.9256 10.618 17.9256 9.94257 17.509 9.52596C17.0924 9.10935 16.4169 9.10935 16.0003 9.52596L9.2113 16.315ZM31.3015 17.0693L31.3015 16.0025L9.96564 16.0025L9.96564 17.0693L9.96564 18.1361L31.3015 18.1361L31.3015 17.0693Z" fill="currentColor"/>
+                <circle cx="16.722" cy="16.7132" r="15.6463" transform="rotate(-180 16.722 16.7132)" stroke="currentColor" stroke-width="2.13359"/>
+              </svg>
+            </button>
+            <span class="liftoff-gr-{{ sid }}__slider-label">Swipe to see more</span>
+            <button class="liftoff-gr-{{ sid }}__slider-btn" data-gr-next aria-label="Next review">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.1438 15.2906C1.55462 15.2906 1.07701 15.7682 1.07701 16.3574C1.07701 16.9466 1.55462 17.4242 2.1438 17.4242V15.2906ZM24.234 17.1118C24.6506 16.6952 24.6506 16.0197 24.234 15.6031L17.445 8.81405C17.0284 8.39744 16.3529 8.39744 15.9363 8.81405C15.5197 9.23066 15.5197 9.90612 15.9363 10.3227L21.971 16.3574L15.9363 22.3921C15.5197 22.8087 15.5197 23.4842 15.9363 23.9008C16.3529 24.3174 17.0284 24.3174 17.445 23.9008L24.234 17.1118ZM2.1438 16.3574V17.4242H23.4797V16.3574V15.2906L2.1438 15.2906V16.3574Z" fill="currentColor"/>
+                <circle cx="16.7234" cy="16.7131" r="15.6463" stroke="currentColor" stroke-width="2.13359"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      {%- endif -%}
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    var sid = '{{ sid }}';
+    var slider = document.querySelector('[data-gr-slider="' + sid + '"]');
+    if (!slider) return;
+
+    var slides = slider.querySelector('[data-gr-slides]');
+    var prevBtn = slider.querySelector('[data-gr-prev]');
+    var nextBtn = slider.querySelector('[data-gr-next]');
+    var totalSlides = slides.children.length;
+    var current = 0;
+
+    function update() {
+      slides.style.transform = 'translateX(-' + (current * 100) + '%)';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === totalSlides - 1;
+    }
+
+    prevBtn.addEventListener('click', function() {
+      if (current > 0) { current--; update(); }
+    });
+
+    nextBtn.addEventListener('click', function() {
+      if (current < totalSlides - 1) { current++; update(); }
+    });
+
+    /* Touch/swipe support */
+    var startX = 0;
+    var diffX = 0;
+
+    slides.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    slides.addEventListener('touchmove', function(e) {
+      diffX = e.touches[0].clientX - startX;
+    }, { passive: true });
+
+    slides.addEventListener('touchend', function() {
+      if (Math.abs(diffX) > 50) {
+        if (diffX < 0 && current < totalSlides - 1) { current++; }
+        else if (diffX > 0 && current > 0) { current--; }
+        update();
+      }
+      diffX = 0;
+    });
+
+    update();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK Getting Results",
+  "tag": "section",
+  "class": "bk-section-getting-results",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>See How 429,576+ Men Over 30 are Burning Fat, Building Strength, <strong>and\u00a0Getting Results That Show</strong></p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "before_after_image",
+      "label": "Before / After image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Before and after transformation results"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0A0807"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background",
+      "default": "#3A332D"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review_card",
+      "name": "Review Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "reviewer_name",
+          "label": "Reviewer name",
+          "default": "John D."
+        },
+        {
+          "type": "range",
+          "id": "star_count",
+          "label": "Star rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "richtext",
+          "id": "review_text",
+          "label": "Review text",
+          "default": "<p><strong>Great product!</strong><br>This has been an amazing experience.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Getting Results",
+      "blocks": [
+        {
+          "type": "review_card",
+          "settings": {
+            "reviewer_name": "Zach R.",
+            "star_count": 5,
+            "review_text": "<p><strong>Better than TRT. Lab confirmed.</strong><br>\u201cI got off TRT months ago to do something more natural. This boosted my total T by 225% since being off TRT. My levels went back down to 330ng/dl after cycling off; now I am up to 742ng/dl. I just confirmed with labs as of 4/16. This is higher than my total T has been on actual TRT. Amazing!\u201d</p>"
+          }
+        },
+        {
+          "type": "review_card",
+          "settings": {
+            "reviewer_name": "Jay S.",
+            "star_count": 5,
+            "review_text": "<p><strong>Was a skeptic but not now after 30 days\u201d</strong><br>I was able to drop almost 20lbs in 30 days. My energy levels throughout the day were up. I wasn\u2019t crashing in the evenings after I got home from work.\u201d</p>"
+          }
+        },
+        {
+          "type": "review_card",
+          "settings": {
+            "reviewer_name": "Joshua D.",
+            "star_count": 5,
+            "review_text": "<p><strong>This boosted my Testosterone more than 3X\u201d</strong><br>To be honest, I was skeptical when I saw the ad for this supplement while doom scrolling on instagram like many of us do. I wrote this off for months - it wasn\u2019t until my wife and I had started getting worried about our fertility and starting a family that I more seriously looked into BREAK800. I got my testosterone checked out and to my shock it was a paltry 254 ng/dl. After ~1.5 months of taking the supplement, my testosterone sky rocketed from 254 ng/dl to 861 ng/dl! Needless to say, I\u2019m a big believer in this product and will be a customer for life.\u201d</p>"
+          }
+        },
+        {
+          "type": "review_card",
+          "settings": {
+            "reviewer_name": "Shane W.",
+            "star_count": 5,
+            "review_text": "<p><strong>Energized with mental focus</strong><br>\u201cAfter three weeks I have noticed a serious increase in my overall energy and mental clarity. There are no more afternoons where I struggle with energy. My brain and mind are sharp and clear.\u201d</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

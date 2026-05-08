@@ -39,7 +39,7 @@
   }
 
   .ingredients-grid__heading-{{ section.id }} {
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: clamp(30px, 4.2vw, 46px);
     font-weight: 800;
     margin: 0 0 14px;
@@ -49,7 +49,6 @@
 
   .ingredients-grid__sub-heading-{{ section.id }} {
     display: block;
-    font-family: 'bc_sklonarmedium', 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 3px;
@@ -59,14 +58,16 @@
   }
 
   .ingredients-grid__cards-{{ section.id }} {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 18px;
     margin-bottom: 36px;
   }
 
   .ingredients-grid__card-{{ section.id }} {
     position: relative;
+    width: calc(25% - 14px);
     aspect-ratio: 1.25 / 1;
     border-radius: 14px;
     overflow: hidden;
@@ -93,7 +94,7 @@
   .ingredients-grid__card-title-{{ section.id }} {
     position: relative;
     z-index: 1;
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: 26px;
     font-weight: 800;
     margin: 0 0 8px;
@@ -118,7 +119,7 @@
     z-index: 2;
     background: #ffffff;
     color: #111111;
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -219,10 +220,11 @@
   .ingredients-grid__cta-{{ section.id }} {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    background: {{ section.settings.accent_color }};
-    color: #fff;
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
     font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
@@ -230,19 +232,23 @@
     padding: 18px 56px;
     border-radius: 8px;
     text-decoration: none;
-    transition: opacity 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
     margin-top: 10px;
   }
 
   .ingredients-grid__cta-{{ section.id }}:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
   }
 
   @media (max-width: 999px) {
-    .ingredients-grid__cards-{{ section.id }} {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+    .ingredients-grid__card-{{ section.id }} {
+      width: calc(50% - 10px);
     }
   }
 
@@ -258,8 +264,10 @@
       letter-spacing: 2px;
       margin-bottom: 24px;
     }
+    .ingredients-grid__card-{{ section.id }} {
+      width: calc(50% - 6px);
+    }
     .ingredients-grid__cards-{{ section.id }} {
-      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
     .ingredients-grid__card-{{ section.id }} {
@@ -423,9 +431,9 @@
 
 {% schema %}
 {
-  "name": "BK Ingredients Grid",
+  "name": "Ingredients Grid",
   "tag": "section",
-  "class": "bk-ingredients-grid-section",
+  "class": "ingredients-grid-section",
   "settings": [
     {
       "type": "header",
@@ -569,7 +577,7 @@
   ],
   "presets": [
     {
-      "name": "BK Ingredients Grid",
+      "name": "Ingredients Grid",
       "blocks": [
         { "type": "ingredient", "settings": { "title": "Tongkat Ali", "dosage": "1,000 mg", "description": "Boosts testosterone, enhances libido, improves fertility, and supports muscle growth." } },
         { "type": "ingredient", "settings": { "title": "Shilajit", "dosage": "400 mg", "description": "Improves fertility and boosts testosterone levels." } },

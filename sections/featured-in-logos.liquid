@@ -39,7 +39,7 @@
 
   .featured-in__heading-{{ section.id }} {
     color: {{ section.settings.text_color }};
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: {{ heading_size }}px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -124,12 +124,12 @@
 
 <div class="featured-in-{{ section.id }}">
   {%- if section.settings.heading != blank -%}
-    <p class="featured-in__heading-{{ section.id }}">
+    <h3 class="featured-in__heading-{{ section.id }}">
       {{ section.settings.heading }}
       {%- if section.settings.show_arrow -%}
         <span class="featured-in__arrow-{{ section.id }}" aria-hidden="true">&darr;</span>
       {%- endif -%}
-    </p>
+    </h3>
   {%- endif -%}
 
   <div class="featured-in__row-{{ section.id }}">
@@ -172,9 +172,9 @@
 
 {% schema %}
 {
-  "name": "BK Featured In Logos",
+  "name": "Featured In Logos",
   "tag": "section",
-  "class": "bk-featured-in-section",
+  "class": "featured-in-section",
   "max_blocks": 6,
   "settings": [
     {
@@ -258,13 +258,13 @@
       "type": "color",
       "id": "text_color",
       "label": "Text & Logo Color",
-      "default": "#ffffff"
+      "default": "#F4EFE8"
     },
     {
       "type": "color",
       "id": "arrow_color",
       "label": "Arrow Accent Color",
-      "default": "#ff5600",
+      "default": "#8B2020",
       "visible_if": "{{ section.settings.show_arrow }}"
     }
   ],
@@ -288,7 +288,7 @@
   ],
   "presets": [
     {
-      "name": "BK Featured In Logos",
+      "name": "Featured In Logos",
       "blocks": [
         { "type": "logo" },
         { "type": "logo" },

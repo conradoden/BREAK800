@@ -1,0 +1,733 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF TIMELINE
+  ===================================================================================
+  Vertical scroll-animated timeline showing supplement progression milestones.
+  Alternating left/right layout with icons, time labels, and description cards.
+  Items reveal on scroll down and hide when scrolled back up.
+  Vertical line grows to track the last visible milestone.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading (text)
+  * accent_color / text_color / bg_color / card_bg_color / card_border_color
+  * cta_text / cta_link
+  * Blocks: timeline_item (time_label, icon, description)
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff Timeline
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+{%- assign items = section.blocks -%}
+
+<style>
+  /* ── Base ── */
+  .liftoff-tl-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top }}px 20px {{ s.padding_bottom }}px;
+    color: {{ s.text_color }};
+  }
+
+  .liftoff-tl-{{ sid }}__container {
+    max-width: 1030px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Heading ── */
+  .liftoff-tl-{{ sid }}__heading {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    text-align: center;
+    margin: 0 0 50px;
+    line-height: 1.15;
+  }
+
+  /* ── Timeline wrapper ── */
+  .liftoff-tl-{{ sid }}__timeline {
+    --tl-fill: 0px;
+    position: relative;
+    width: 100%;
+    padding: 0;
+  }
+
+  /* Vertical track (always full height of timeline) */
+  .liftoff-tl-{{ sid }}__track {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+
+  /* Active fill line driven by --tl-fill */
+  .liftoff-tl-{{ sid }}__track-fill {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 5px;
+    height: var(--tl-fill);
+    transform: translateX(-50%);
+    background: {{ s.accent_color }};
+    border-radius: 3px;
+    z-index: 1;
+    will-change: height;
+    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px {{ s.accent_color }}, 0 0 20px rgba(139, 32, 32, 0.3);
+  }
+
+  /* ── Row ── */
+  .liftoff-tl-{{ sid }}__row {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 60px;
+  }
+  .liftoff-tl-{{ sid }}__row:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Normal: label left, card right */
+  .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__label-side {
+    width: 44%;
+    text-align: right;
+    padding-right: 50px;
+  }
+  .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__card-side {
+    width: 44%;
+    margin-left: auto;
+    padding-left: 50px;
+  }
+
+  /* Reverse: card left, label right */
+  .liftoff-tl-{{ sid }}__row--reverse {
+    flex-direction: row-reverse;
+  }
+  .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__label-side {
+    width: 44%;
+    text-align: left;
+    padding-left: 50px;
+  }
+  .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__card-side {
+    width: 44%;
+    margin-right: auto;
+    padding-right: 50px;
+  }
+
+  /* ── Center dot ── */
+  .liftoff-tl-{{ sid }}__dot {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 48px;
+    height: 48px;
+    margin-left: -24px;
+    border-radius: 50%;
+    background: {{ s.accent_color }};
+    border: 10px solid {{ s.dot_border_color }};
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* hidden by default */
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .liftoff-tl-{{ sid }}__dot.is-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Checkmark inside dot */
+  .liftoff-tl-{{ sid }}__dot svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ── Time label ── */
+  .liftoff-tl-{{ sid }}__time {
+    font-size: clamp(28px, 3.5vw, 45px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: {{ s.text_color }};
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__time {
+    justify-content: flex-end;
+  }
+  .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__time {
+    justify-content: flex-start;
+  }
+
+  .liftoff-tl-{{ sid }}__time-icon {
+    width: 30px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .liftoff-tl-{{ sid }}__time-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* ── Card ── */
+  .liftoff-tl-{{ sid }}__card {
+    background: {{ s.card_bg_color }};
+    border: 3px solid {{ s.card_border_color }};
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    /* hidden by default */
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .liftoff-tl-{{ sid }}__card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Arrow pointer on card (left/right) */
+  .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__card::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: 18px;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-right: 12px solid {{ s.card_border_color }};
+  }
+  .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__card::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 18px;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-right: 12px solid {{ s.card_bg_color }};
+  }
+  .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__card::before {
+    content: '';
+    position: absolute;
+    right: -14px;
+    top: 18px;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 12px solid {{ s.card_border_color }};
+  }
+  .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__card::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 18px;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 12px solid {{ s.card_bg_color }};
+  }
+
+  .liftoff-tl-{{ sid }}__card-icon {
+    margin-bottom: 10px;
+  }
+  .liftoff-tl-{{ sid }}__card-icon img {
+    width: 39px;
+    height: 39px;
+    object-fit: contain;
+  }
+
+  .liftoff-tl-{{ sid }}__card p {
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0;
+    color: {{ s.text_color }};
+  }
+
+  /* ── CTA ── */
+  .liftoff-tl-{{ sid }}__cta-wrap {
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .liftoff-tl-{{ sid }}__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 54px;
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+  }
+
+  .liftoff-tl-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+
+  .liftoff-tl-{{ sid }}__cta svg {
+    width: 20px;
+    height: 20px;
+  }
+  .liftoff-tl-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .liftoff-tl-{{ sid }} {
+      padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    }
+
+    .liftoff-tl-{{ sid }}__heading {
+      margin-bottom: 30px;
+    }
+
+    /* Move track to left rail */
+    .liftoff-tl-{{ sid }}__track,
+    .liftoff-tl-{{ sid }}__track-fill {
+      left: 20px;
+      transform: translateX(-50%);
+      width: 4px;
+    }
+
+    .liftoff-tl-{{ sid }}__dot {
+      left: 20px;
+      width: 34px;
+      height: 34px;
+      margin-left: -17px;
+      border-width: 7px;
+      top: 4px;
+    }
+    .liftoff-tl-{{ sid }}__dot svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* All rows become single-column, content to the right of the left rail */
+    .liftoff-tl-{{ sid }}__row,
+    .liftoff-tl-{{ sid }}__row.liftoff-tl-{{ sid }}__row--reverse {
+      flex-direction: column;
+      padding-left: 50px;
+      margin-bottom: 36px;
+    }
+
+    .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__label-side,
+    .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__label-side {
+      width: 100%;
+      text-align: left;
+      padding: 0;
+      margin-bottom: 10px;
+    }
+
+    .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__time,
+    .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__time {
+      justify-content: flex-start;
+      font-size: 22px;
+      gap: 8px;
+    }
+
+    .liftoff-tl-{{ sid }}__time-icon {
+      width: 22px;
+      height: 24px;
+    }
+
+    .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__card-side,
+    .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__card-side {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Remove arrows on mobile */
+    .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__card::before,
+    .liftoff-tl-{{ sid }}__row--normal .liftoff-tl-{{ sid }}__card::after,
+    .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__card::before,
+    .liftoff-tl-{{ sid }}__row--reverse .liftoff-tl-{{ sid }}__card::after {
+      display: none;
+    }
+
+    .liftoff-tl-{{ sid }}__card {
+      padding: 16px;
+    }
+
+    .liftoff-tl-{{ sid }}__card p {
+      font-size: 14px;
+    }
+
+    .liftoff-tl-{{ sid }}__cta {
+      width: 100%;
+      padding: 18px 32px;
+    }
+  }
+</style>
+
+<section class="liftoff-tl-{{ sid }}" id="liftoff-tl-{{ sid }}">
+  <div class="liftoff-tl-{{ sid }}__container">
+
+    {%- if s.heading != blank -%}
+      <h2 class="liftoff-tl-{{ sid }}__heading">{{ s.heading }}</h2>
+    {%- endif -%}
+
+    {%- if items.size > 0 -%}
+      <div class="liftoff-tl-{{ sid }}__timeline" data-liftoff-timeline="{{ sid }}">
+        {%- comment -%} Background track {%- endcomment -%}
+        <div class="liftoff-tl-{{ sid }}__track">     </div>
+        {%- comment -%} Active fill line {%- endcomment -%}
+        <div class="liftoff-tl-{{ sid }}__track-fill" data-tl-fill>     </div>
+
+        {%- for block in items -%}
+          {%- assign is_even = forloop.index | modulo: 2 -%}
+          {%- assign row_class = 'normal' -%}
+          {%- if is_even == 0 -%}
+            {%- assign row_class = 'reverse' -%}
+          {%- endif -%}
+
+          <div class="liftoff-tl-{{ sid }}__row liftoff-tl-{{ sid }}__row--{{ row_class }}"
+               data-tl-row
+               {{ block.shopify_attributes }}>
+
+            {%- comment -%} Center dot with checkmark {%- endcomment -%}
+            <div class="liftoff-tl-{{ sid }}__dot" data-tl-dot>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="4 12 10 18 20 6"/>
+              </svg>
+            </div>
+
+            {%- comment -%} Time label side {%- endcomment -%}
+            <div class="liftoff-tl-{{ sid }}__label-side">
+              <div class="liftoff-tl-{{ sid }}__time">
+                {%- if s.time_icon != blank -%}
+                  <span class="liftoff-tl-{{ sid }}__time-icon">
+                    {{ s.time_icon | image_url: width: 60 | image_tag: loading: 'lazy', alt: '' }}
+                  </span>
+                {%- endif -%}
+                <span>{{ block.settings.time_label }}</span>
+              </div>
+            </div>
+
+            {%- comment -%} Card side {%- endcomment -%}
+            <div class="liftoff-tl-{{ sid }}__card-side">
+              <div class="liftoff-tl-{{ sid }}__card" data-tl-card>
+                {%- if block.settings.icon != blank -%}
+                  <div class="liftoff-tl-{{ sid }}__card-icon">
+                    {{ block.settings.icon | image_url: width: 78 | image_tag: loading: 'lazy', alt: '' }}
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.description != blank -%}
+                  <p>{{ block.settings.description }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if s.cta_text != blank -%}
+      <div class="liftoff-tl-{{ sid }}__cta-wrap">
+        <a href="{{ s.cta_link | default: '#' }}" class="liftoff-tl-{{ sid }}__cta">
+          {{ s.cta_text }}
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    var sid = '{{ sid }}';
+    var wrapper = document.querySelector('[data-liftoff-timeline="' + sid + '"]');
+    if (!wrapper) return;
+
+    var rows = wrapper.querySelectorAll('[data-tl-row]');
+    var triggerRatio = 0.78;
+    var ticking = false;
+
+    function handleScroll() {
+      var wrapperRect = wrapper.getBoundingClientRect();
+      var triggerPoint = window.innerHeight * triggerRatio;
+      var lastVisibleDotCenter = 0;
+
+      /* --- Reveal / hide rows & track the last visible dot --- */
+      rows.forEach(function(row) {
+        var rect = row.getBoundingClientRect();
+        var dot = row.querySelector('[data-tl-dot]');
+        var card = row.querySelector('[data-tl-card]');
+
+        if (rect.top < triggerPoint) {
+          if (dot) {
+            dot.classList.add('is-visible');
+            /* Calculate this dot's center relative to wrapper */
+            var dotRect = dot.getBoundingClientRect();
+            var dotCenter = dotRect.top - wrapperRect.top + dot.offsetHeight / 2;
+            if (dotCenter > lastVisibleDotCenter) {
+              lastVisibleDotCenter = dotCenter;
+            }
+          }
+          if (card) card.classList.add('is-visible');
+        } else {
+          if (dot) dot.classList.remove('is-visible');
+          if (card) card.classList.remove('is-visible');
+        }
+      });
+
+      /* --- Update fill line to reach the last visible dot --- */
+      wrapper.style.setProperty('--tl-fill', lastVisibleDotCenter + 'px');
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(function() {
+          handleScroll();
+          ticking = false;
+        });
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    /* Initial check */
+    handleScroll();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "BK Liftoff Timeline",
+  "tag": "section",
+  "class": "bk-section-liftoff-tl",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What Should I Expect From Consistent Use?"
+    },
+    {
+      "type": "image_picker",
+      "id": "time_icon",
+      "label": "Time label icon (calendar)"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / dot color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "dot_border_color",
+      "label": "Dot border color",
+      "default": "#0A0807"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0A0807"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background",
+      "default": "#3A332D"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border",
+      "default": "#8B2020"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "timeline_item",
+      "name": "Timeline Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "time_label",
+          "label": "Time label",
+          "default": "1 Week"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Card icon"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Likely <b>lift in energy, mood, and cognition</b> from consistent supplementation.*</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Liftoff Timeline",
+      "blocks": [
+        {
+          "type": "timeline_item",
+          "settings": {
+            "time_label": "1 Week",
+            "description": "<p>Likely <b>lift in energy, mood, and cognition</b> from consistent Vitamin B12, Zinc, and Copper.*</p>"
+          }
+        },
+        {
+          "type": "timeline_item",
+          "settings": {
+            "time_label": "1 Month",
+            "description": "<p>Supported nutrient levels can promote <b>better vitality</b>, drive, and overall well-being.*</p>"
+          }
+        },
+        {
+          "type": "timeline_item",
+          "settings": {
+            "time_label": "2 Months",
+            "description": "<p>Abundance of key nutrients leads <b>to higher energy</b>, immune support, and aids in natural production.*</p>"
+          }
+        },
+        {
+          "type": "timeline_item",
+          "settings": {
+            "time_label": "3 Months",
+            "description": "<p>Key vitamins can lead to <b>clearer skin, improved health</b>, and better performance.*</p>"
+          }
+        },
+        {
+          "type": "timeline_item",
+          "settings": {
+            "time_label": "6 Months",
+            "description": "<p>Blend of vitamins, minerals, and amino acids peak for <b>enhanced mental clarity, better muscle function</b>, and improved recovery.*</p>"
+          }
+        },
+        {
+          "type": "timeline_item",
+          "settings": {
+            "time_label": "12 Months",
+            "description": "<p>Nutrient-dense superfoods help support <b>healthy cycles</b> and promote optimal hormone levels.*</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

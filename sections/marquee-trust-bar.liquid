@@ -75,7 +75,7 @@
     white-space: nowrap;
     flex: 0 0 auto;
     color: {{ section.settings.text_color }};
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: 15px;
     font-weight: 700;
     letter-spacing: 0.3px;
@@ -195,9 +195,9 @@
 
 {% schema %}
 {
-  "name": "BK Marquee Trust Bar",
+  "name": "Marquee Trust Bar",
   "tag": "section",
-  "class": "bk-marquee-trust-bar-section",
+  "class": "marquee-trust-bar-section",
   "settings": [
     {
       "type": "header",
@@ -242,7 +242,7 @@
       "type": "color",
       "id": "text_color",
       "label": "Text & Icon Color",
-      "default": "#ffffff"
+      "default": "#F4EFE8"
     }
   ],
   "blocks": [
@@ -266,7 +266,7 @@
   ],
   "presets": [
     {
-      "name": "BK Marquee Trust Bar",
+      "name": "Marquee Trust Bar",
       "blocks": [
         { "type": "trust_badge", "settings": { "text": "Science-Backed Ingredients" } },
         { "type": "trust_badge", "settings": { "text": "100% Satisfaction Guarantee" } },

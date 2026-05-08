@@ -1,0 +1,306 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF HERO
+  ===================================================================================
+  Full-bleed dark hero banner for the "Prepare for Lift Off" landing page.
+  Eyebrow text, large H1, subtitle paragraph, and orange CTA button.
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * eyebrow (text)
+  * heading (text)
+  * subtitle (richtext)
+  * cta_text / cta_link
+  * bg_image (image_picker)
+  * bg_color (color_background)
+  * overlay_opacity (range)
+  * accent_color / text_color
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff Hero
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+
+<style>
+  .liftoff-hero-{{ sid }} {
+    position: relative;
+    background-color: {{ s.bg_color }};
+    {%- if s.bg_image != blank -%}
+      background-image: url('{{ s.bg_image | image_url: width: 2400 }}');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+    {%- endif -%}
+    color: {{ s.text_color }};
+    padding: {{ s.padding_top }}px 20px {{ s.padding_bottom }}px;
+    overflow: hidden;
+    text-align: left;
+  }
+
+  .liftoff-hero-{{ sid }}__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, {{ s.overlay_opacity | divided_by: 100.0 }});
+    pointer-events: none;
+  }
+
+  .liftoff-hero-{{ sid }}__inner {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    z-index: 1;
+  }
+
+  .liftoff-hero-{{ sid }}__eyebrow {
+    color: {{ s.accent_color }};
+    font-size: clamp(11px, 1.2vw, 14px);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+
+  .liftoff-hero-{{ sid }}__heading {
+    
+    font-size: clamp(42px, 7vw, 64px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin: 0 0 18px;
+    color: {{ s.text_color }};
+  }
+
+  .liftoff-hero-{{ sid }}__subtitle {
+    font-size: clamp(14px, 1.4vw, 17px);
+    line-height: 1.65;
+    margin: 0 0 40px;
+    max-width: 620px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .liftoff-hero-{{ sid }}__subtitle p {
+    margin: 0;
+  }
+
+  .liftoff-hero-{{ sid }}__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 54px;
+    
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+  }
+
+  .liftoff-hero-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+
+  .liftoff-hero-{{ sid }}__cta svg {
+    width: 20px;
+    height: 20px;
+  }
+  .liftoff-hero-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+  @media (max-width: 768px) {
+    .liftoff-hero-{{ sid }} {
+      padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    }
+    .liftoff-hero-{{ sid }}__cta {
+      width: 100%;
+      padding: 18px 32px;
+    }
+  }
+</style>
+
+<section class="liftoff-hero-{{ sid }}">
+  <div class="liftoff-hero-{{ sid }}__overlay"></div>
+  <div class="liftoff-hero-{{ sid }}__inner">
+
+    {%- if s.eyebrow != blank -%}
+      <p class="liftoff-hero-{{ sid }}__eyebrow">{{ s.eyebrow }}</p>
+    {%- endif -%}
+
+    {%- if s.heading != blank -%}
+      <h1 class="liftoff-hero-{{ sid }}__heading">{{ s.heading }}</h1>
+    {%- endif -%}
+
+    {%- if s.subtitle != blank -%}
+      <div class="liftoff-hero-{{ sid }}__subtitle">{{ s.subtitle }}</div>
+    {%- endif -%}
+
+    {%- if s.cta_text != blank -%}
+      <a href="{{ s.cta_link | default: '#' }}" class="liftoff-hero-{{ sid }}__cta">
+        {{ s.cta_text }}
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BK Liftoff Hero",
+  "tag": "section",
+  "class": "bk-section-liftoff-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "THE SCIENCE BEHIND BREAK800 + WHAT TO EXPECT"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "PREPARE FOR LIFTOFF."
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "<p>Here's how BREAK800 works and what you can expect once you start.</p>"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity (%)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 300,
+      "step": 4,
+      "unit": "px",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 300,
+      "step": 4,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Liftoff Hero",
+      "settings": {
+        "eyebrow": "THE SCIENCE BEHIND BREAK800 + WHAT TO EXPECT",
+        "heading": "PREPARE FOR LIFTOFF.",
+        "subtitle": "<p>Here's how BREAK800 works and what you can expect once you start.</p>",
+        "cta_text": "TRY IT NOW"
+      }
+    }
+  ]
+}
+{% endschema %}

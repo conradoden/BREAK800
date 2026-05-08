@@ -1,0 +1,398 @@
+{% comment %}
+  ===================================================================================
+  LIFTOFF WHY KEEP GOING
+  ===================================================================================
+  Two sub-sections:
+  1. "Why Keep Going?" — circular progress chart + text with bullets
+  2. "Do You Need to Cycle Off?" — text content + product imagery
+
+  ********************************************
+  Parameters (Schema)
+  ********************************************
+  * heading_1, text_1, chart_percentage, chart_label, bullets (richtext)
+  * heading_2, text_2, product_image
+  * cta_text / cta_link
+  * accent_color / text_color / bg_color
+
+  ********************************************
+  Usage
+  ********************************************
+  Add via Shopify Theme Editor → Add Section → Liftoff Why Keep Going
+{% endcomment %}
+
+{%- assign s = section.settings -%}
+{%- assign sid = section.id -%}
+
+<style>
+  .liftoff-wkg-{{ sid }} {
+    background: {{ s.bg_color }};
+    padding: {{ s.padding_top }}px 20px {{ s.padding_bottom }}px;
+    color: {{ s.text_color }};
+  }
+
+  .liftoff-wkg-{{ sid }}__container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #191919;
+    border-radius: 22px;
+    padding: 25px 34px 31px;
+    box-shadow: -3px 2px 22.2px 0px rgba(0, 0, 0, 0.2), 5px -3px 18.9px 0px rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+  }
+
+  /* Section 1: Why Keep Going */
+  .liftoff-wkg-{{ sid }}__section-1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding-bottom: 60px;
+    border-bottom: 2px solid {{ s.accent_color }};
+    margin-bottom: 60px;
+  }
+
+  .liftoff-wkg-{{ sid }}__image-wrap {
+    width: 100%;
+  }
+
+  .liftoff-wkg-{{ sid }}__image-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  .liftoff-wkg-{{ sid }}__text-col h2 {
+    
+    font-size: clamp(26px, 3.5vw, 40px);
+    font-weight: 800;
+    margin: 0 0 18px;
+    line-height: 1.15;
+  }
+
+  .liftoff-wkg-{{ sid }}__text-col p {
+    font-size: 15px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0 0 14px;
+  }
+
+  .liftoff-wkg-{{ sid }}__bullets {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .liftoff-wkg-{{ sid }}__bullets ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .liftoff-wkg-{{ sid }}__bullets li {
+    margin-bottom: 6px;
+    padding-left: 22px;
+    position: relative;
+  }
+
+  .liftoff-wkg-{{ sid }}__bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 1l8 5-8 5V1z' fill='%23ff5600'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  /* Section 2: Cycle Off */
+  .liftoff-wkg-{{ sid }}__section-2 {
+    max-width: 900px;
+  }
+
+  .liftoff-wkg-{{ sid }}__section-2 h2 {
+    
+    font-size: clamp(26px, 3.5vw, 40px);
+    font-weight: 800;
+    margin: 0 0 18px;
+    line-height: 1.15;
+  }
+
+  .liftoff-wkg-{{ sid }}__section-2 .liftoff-wkg-{{ sid }}__text-2 {
+    font-size: 15px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .liftoff-wkg-{{ sid }}__section-2 .liftoff-wkg-{{ sid }}__text-2 p {
+    margin: 0 0 14px;
+  }
+
+  /* CTA */
+  .liftoff-wkg-{{ sid }}__cta-wrap {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  .liftoff-wkg-{{ sid }}__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
+    border-radius: 8px;
+    padding: 18px 54px;
+    
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
+  }
+
+  .liftoff-wkg-{{ sid }}__cta:hover {
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
+  }
+
+  .liftoff-wkg-{{ sid }}__cta svg {
+    width: 20px;
+    height: 20px;
+  }
+  .liftoff-wkg-{{ sid }}__cta:hover svg path {
+    fill: var(--bk-btn-bg);
+  }
+  /* Mobile */
+  @media (max-width: 768px) {
+    .liftoff-wkg-{{ sid }} {
+      padding: {{ s.padding_top_mb }}px 16px {{ s.padding_bottom_mb }}px;
+    }
+
+    .liftoff-wkg-{{ sid }}__section-1 {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      text-align: center;
+    }
+
+    .liftoff-wkg-{{ sid }}__image-wrap {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .liftoff-wkg-{{ sid }}__cta {
+      width: 100%;
+      padding: 18px 32px;
+    }
+  }
+</style>
+
+<section class="liftoff-wkg-{{ sid }}" id="liftoff-wkg-{{ sid }}">
+  <div class="liftoff-wkg-{{ sid }}__container">
+
+    {%- comment -%} Section 1: Why Keep Going {%- endcomment -%}
+    <div class="liftoff-wkg-{{ sid }}__section-1">
+      <div class="liftoff-wkg-{{ sid }}__image-wrap">
+        {%- if s.section_image != blank -%}
+          {{ s.section_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: s.heading_1 }}
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag }}
+        {%- endif -%}
+      </div>
+
+      <div class="liftoff-wkg-{{ sid }}__text-col">
+        {%- if s.heading_1 != blank -%}
+          <h2>{{ s.heading_1 }}</h2>
+        {%- endif -%}
+
+        {%- if s.text_1 != blank -%}
+          <p>{{ s.text_1 }}</p>
+        {%- endif -%}
+
+        {%- if s.bullets != blank -%}
+          <div class="liftoff-wkg-{{ sid }}__bullets">{{ s.bullets }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} Section 2: Cycle Off {%- endcomment -%}
+    <div class="liftoff-wkg-{{ sid }}__section-2">
+      {%- if s.heading_2 != blank -%}
+        <h2>{{ s.heading_2 }}</h2>
+      {%- endif -%}
+
+      {%- if s.text_2 != blank -%}
+        <div class="liftoff-wkg-{{ sid }}__text-2">{{ s.text_2 }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- if s.cta_text != blank -%}
+      <div class="liftoff-wkg-{{ sid }}__cta-wrap">
+        <a href="{{ s.cta_link | default: '#' }}" class="liftoff-wkg-{{ sid }}__cta">
+          {{ s.cta_text }}
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  /* No JS needed for this section */
+</script>
+
+{% schema %}
+{
+  "name": "BK Liftoff Why Keep Going",
+  "tag": "section",
+  "class": "bk-section-liftoff-wkg",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section 1: Why Keep Going"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_image",
+      "label": "Section image (graph/chart)"
+    },
+    {
+      "type": "text",
+      "id": "heading_1",
+      "label": "Heading",
+      "default": "Why Keep Going?"
+    },
+    {
+      "type": "textarea",
+      "id": "text_1",
+      "label": "Body text",
+      "default": "Many people stop taking a supplement once they feel good, but the key to long-term results is consistency. Think of it like fitness — you don't stop working out once you see initial gains."
+    },
+    {
+      "type": "richtext",
+      "id": "bullets",
+      "label": "Bullet points",
+      "default": "<ul><li>Without consistency, testosterone and energy levels may gradually decline</li><li>Staying on the supplement ensures your body continues performing at its peak</li><li>Proper hydration, diet, exercise, nutrition, and sleep will take your results even further</li></ul>"
+    },
+    {
+      "type": "header",
+      "content": "Section 2: Cycle Off"
+    },
+    {
+      "type": "text",
+      "id": "heading_2",
+      "label": "Heading",
+      "default": "Do You Need to Cycle Off?"
+    },
+    {
+      "type": "richtext",
+      "id": "text_2",
+      "label": "Body text",
+      "default": "<p>No. BREAK800's Natural Testosterone Support formula is safe to take continuously. It uses 8 natural, clinically dosed ingredients that support your body's own testosterone production.</p><p>We recommend taking a \"Reset Week\" every 3–4 months (1 week) to let your body recalibrate. Consider doing a \"Reset Week\" every few months with all supplementation. This can be a great way to give your body a short break while still maintaining the long-term benefits.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "TRY IT NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#8B2020"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F4EFE8"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "BK Liftoff Why Keep Going"
+    }
+  ]
+}
+{% endschema %}

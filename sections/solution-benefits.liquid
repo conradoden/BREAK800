@@ -2,7 +2,7 @@
   ===================================================================================
   SOLUTION BENEFITS
   ===================================================================================
-  "The Solution? Mars Men." — centered product image with optional circular
+  "The Solution? BREAK800." — centered product image with optional circular
   tech-ring graphic behind it; benefits listed on the right with dashed
   connector lines from the ring center to each benefit.
 
@@ -44,7 +44,7 @@
   }
 
   .solution__heading-{{ section.id }} {
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: clamp(30px, 4.5vw, 48px);
     font-weight: 800;
     margin: 0 0 18px;
@@ -58,7 +58,7 @@
   .solution__sub-text-{{ section.id }} {
     font-size: 16px;
     line-height: 1.6;
-    color: rgba(255,255,255,0.95);
+    color: rgba(244,239,232,0.95);
     max-width: 720px;
     margin: 0 auto;
     font-weight: 500;
@@ -80,7 +80,7 @@
     width: calc(30px + 30px);
     height: 0;
     margin-left: -30px;
-    border-top: 2px dashed rgba(255,255,255,0.55);
+    border-top: 2px dashed rgba(244,239,232,0.55);
     pointer-events: none;
     z-index: 3;
   }
@@ -139,7 +139,7 @@
     top: 20px;
     bottom: 20px;
     width: 0;
-    border-left: 2px dashed rgba(255,255,255,0.55);
+    border-left: 2px dashed rgba(244,239,232,0.55);
     pointer-events: none;
   }
 
@@ -157,7 +157,7 @@
     transform: translateY(-50%);
     width: 24px;
     height: 0;
-    border-top: 2px dashed rgba(255,255,255,0.55);
+    border-top: 2px dashed rgba(244,239,232,0.55);
     pointer-events: none;
   }
 
@@ -182,7 +182,7 @@
   }
 
   .solution__benefit-title-{{ section.id }} {
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    
     font-size: clamp(18px, 1.6vw, 22px);
     font-weight: 800;
     margin: 0 0 4px;
@@ -193,7 +193,7 @@
   .solution__benefit-desc-{{ section.id }} {
     font-size: clamp(14px, 1.2vw, 18px);
     line-height: 1.35;
-    color: rgba(255,255,255,0.85);
+    color: rgba(244,239,232,0.85);
     margin: 0;
   }
 
@@ -205,10 +205,11 @@
   .solution__cta-{{ section.id }} {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    background: {{ section.settings.accent_color }};
-    color: #fff;
-    font-family: 'foldgrotesqueboldpro', 'Inter', sans-serif;
+    background: var(--bk-btn-bg);
+    color: var(--bk-btn-text);
+    border: 2px solid var(--bk-btn-bg);
     font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
@@ -216,12 +217,17 @@
     padding: 18px 60px;
     border-radius: 8px;
     text-decoration: none;
-    transition: opacity 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, color .3s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 10px 30px -8px rgba(139, 32, 32, 0.6);
   }
 
   .solution__cta-{{ section.id }}:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
+    background: transparent;
+    border-color: var(--bk-btn-bg);
+    color: var(--bk-btn-bg);
+    box-shadow: none;
+    transform: translateY(-2px);
   }
 
   @media (max-width: 899px) {
@@ -289,7 +295,7 @@
           <img
             class="solution__product-{{ section.id }}"
             src="{{ section.settings.product_image | image_url: width: 500 }}"
-            alt="{{ section.settings.product_image.alt | default: 'Mars Men product' }}"
+            alt="{{ section.settings.product_image.alt | default: 'BREAK800 product' }}"
             loading="lazy"
             width="220"
             height="400"
@@ -364,7 +370,7 @@
       "type": "text",
       "id": "heading_highlight",
       "label": "Heading Highlight (accent color)",
-      "default": "Mars Men."
+      "default": "BREAK800."
     },
     {
       "type": "richtext",
@@ -426,13 +432,13 @@
       "type": "color",
       "id": "text_color",
       "label": "Text Color",
-      "default": "#ffffff"
+      "default": "#F4EFE8"
     },
     {
       "type": "color",
       "id": "accent_color",
       "label": "Accent Color",
-      "default": "#ff5600"
+      "default": "#8B2020"
     }
   ],
   "blocks": [
@@ -462,7 +468,7 @@
   ],
   "presets": [
     {
-      "name": "BK Solution Benefits",
+      "name": "Solution Benefits",
       "blocks": [
         { "type": "benefit", "settings": { "title": "Skyrocket Energy & Stamina", "description": "Increase energy & athletic performance" } },
         { "type": "benefit", "settings": { "title": "Support Male Vitality", "description": "Amplify passionate energy" } },
