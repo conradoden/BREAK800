@@ -33,19 +33,10 @@
         "fc645871-d789-4cfa-8584-4f8a29b6ce92": {
           "type": "image",
           "settings": {
-            "image_width": 100,
-            "alignment": "center",
+            "image": "shopify://shop_images/break800-natural-testosterone-support-no-background-removebg-preview_3.png",
+            "image_width": 260,
+            "alignment": "",
             "url": "",
-            "width_desktop": 4,
-            "width_mobile": "2"
-          }
-        },
-        "text_KU3Twd": {
-          "type": "text",
-          "settings": {
-            "heading": "Heading",
-            "block_headings_font_size": 1,
-            "subtext": "<p>Share contact information, store details, and brand content with your customers.</p>",
             "width_desktop": 3,
             "width_mobile": "2"
           }
@@ -55,18 +46,31 @@
           "settings": {
             "heading": "Quick links",
             "block_headings_font_size": 1,
-            "menu": "footer",
+            "menu": "main-menu",
             "font_size": 14,
             "menu_items_font": "body",
             "width_desktop": 4,
             "width_mobile": "1"
           }
+        },
+        "email_signup_YWHNb3": {
+          "type": "email_signup",
+          "settings": {
+            "heading": "Subscribe to our emails",
+            "block_headings_font_size": 1,
+            "subtext": "<p>A short sentence encouraging customers to subscribe to your newsletter.</p>",
+            "button_type": "solid",
+            "button_label": "Sign up",
+            "button_style_secondary": false,
+            "width_desktop": 5,
+            "width_mobile": "2"
+          }
         }
       },
       "block_order": [
         "fc645871-d789-4cfa-8584-4f8a29b6ce92",
-        "text_KU3Twd",
-        "1c647602-cc00-4009-a058-976435c8ee9e"
+        "1c647602-cc00-4009-a058-976435c8ee9e",
+        "email_signup_YWHNb3"
       ],
       "settings": {
         "color_scheme": "custom",
