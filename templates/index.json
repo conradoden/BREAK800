@@ -308,36 +308,42 @@
         "trust_badge_U7eeVL": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/1_69455117-f04d-4578-a6ed-431314e4a09c.svg",
             "text": "Made In A CGMP Facility"
           }
         },
         "trust_badge_zHbxYy": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/Frame_122_88d4a51c-bc2f-4933-8f49-d6fdf3576b89.svg",
             "text": "Hormone-Free"
           }
         },
         "trust_badge_7n7HL3": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/5_f6d121e2-6d43-46f4-9fc5-e28bfcdb066b.svg",
             "text": "Non-GMO"
           }
         },
         "trust_badge_t7Xgcr": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/2_44bdddc0-cecf-4053-82cb-ba37e0b6c213.svg",
             "text": "Vegan"
           }
         },
         "trust_badge_qtiiR4": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/4_c520c43c-3750-4521-a19e-a0094c5a03b5.svg",
             "text": "Third Party Tested"
           }
         },
         "trust_badge_WCfiCH": {
           "type": "trust_badge",
           "settings": {
+            "icon": "shopify://shop_images/6_5afc8a32-86b3-43b3-91cd-31d686d349db.svg",
             "text": "Made in USA"
           }
         }
